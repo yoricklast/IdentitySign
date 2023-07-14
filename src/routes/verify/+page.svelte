@@ -1,0 +1,160 @@
+<script lang="ts">
+  // Use PDF.js for reading PDF files
+  import * as PDFjs from "pdfjs-dist";
+  import type { WalletSigner } from "../../scripts/wallet-signer";
+  import { DUMMY_SIG_PREFIX, DummySigner } from "../../scripts/dummy-signer";
+  import type { Signature } from "../../scripts/signature";
+  import { WalletAttributeType } from "../../scripts/wallet-attribute";
+
+  // Get PDF.js worker from CDN, as using the one provided from the NPM package seems to cause issues in TypeScript
+  // https://github.com/mozilla/pdf.js#including-via-a-cdn
+  PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.js`;
+
+  let files: FileList;
+  let sigValid: boolean;
+  let sigFound: boolean;
+  // Prevents showing sigValid status before processing is done
+  let processDone = false;
+  let sig: Signature;
+
+  function processFile(): void {
+    const signer: WalletSigner = new DummySigner();
+    processDone = false;
+    sigValid = false;
+    sigFound = false;
+    const file = files[0];
+    if (file.type != "application/pdf") {
+      alert("The selected file is not a PDF!");
+    } else {
+      console.log(
+        `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`
+      );
+      file.arrayBuffer().then((value) => {
+        PDFjs.getDocument(value).promise.then((document) => {
+          document.getPage(document.numPages).then((page) => {
+            page.getTextContent().then((text) => {
+              text.items.forEach((x) => {
+                let itemValue = Object.values(x)[0];
+                if (typeof itemValue == "string" && itemValue !== "") {
+                  // Prevent unnecessary checking when sig prefix is not present (change when no longer using dummy signatures!)
+                  if (itemValue.includes(DUMMY_SIG_PREFIX)) {
+                    sigFound = true;
+                    if (signer.check(itemValue)) {
+                      sig = signer.decode(itemValue);
+                      sigValid = true;
+                    }
+                  }
+                }
+              });
+              processDone = true;
+              console.log(`Check done, sig validity: ${sigValid}`);
+            });
+          });
+        });
+      });
+    }
+  }
+</script>
+
+<div class="row" style="margin-top: 10%;">
+  <div class="col-sm-5">
+    <img
+      class="page-image position-relative top-50 start-0 translate-middle-y"
+      src="/img/img_check.svg"
+      alt="Verifying a document"
+    />
+  </div>
+  <div class="col-sm-7">
+    <div class="position-relative top-50 end-0 translate-middle-y">
+      <h1 style="margin-bottom: 30px;">
+        <i class="bi bi-file-earmark-check page-icon" />
+        Verify a document's signature
+      </h1>
+      <div class="mb-3 file-select">
+        <label for="formFile" class="form-label"
+          >Select a document to verify its signature.</label
+        >
+        <input
+          class="form-control"
+          accept="application/pdf"
+          type="file"
+          bind:files
+          on:change={processFile}
+        />
+      </div>
+      {#if processDone}
+        {#if sigValid}
+          <h2 class="validity valid">
+            <i class="bi bi-patch-check-fill" /><br />
+            Signature found!
+          </h2>
+          <p class="validity-text">
+            Verify the attributes below before trusting this document!
+          </p>
+          {#if sig && sig.attributes}
+            <div class="container signature-details">
+              <h3 class="attribute-heading">Signed with:</h3>
+              {#each sig.attributes as attribute}
+                <div class="card attribute-card">
+                  <div class="card-header">
+                    <i class="bi bi-patch-check card-icon" /><b
+                      >{WalletAttributeType[attribute.attributeType]}</b
+                    >
+                  </div>
+                  <div class="card-body">
+                    <p>{attribute.value.toString()}</p>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        {/if}
+        {#if !sigValid && sigFound}
+          <h2 class="validity invalid">
+            <i class="bi bi-x-circle-fill" /><br />
+            Signature invalid!
+          </h2>
+          <p class="validity-text">
+            This document contains an invalid signature. Do <b>NOT</b> trust this
+            document!
+          </p>
+        {/if}
+        {#if !sigFound}
+          <h2 class="validity notfound">
+            <i class="bi bi-exclamation-triangle-fill" /><br />
+            No signature found!
+          </h2>
+          <p class="validity-text">
+            IdentitySign could not find a signature in this document. Verify
+            that it has indeed been signed using IdentitySign.
+          </p>
+        {/if}
+      {/if}
+    </div>
+  </div>
+</div>
+
+<style>
+  .validity {
+    text-align: center;
+    margin-top: 50px;
+  }
+  .validity-text {
+    text-align: center;
+  }
+  .valid {
+    color: var(--bs-success);
+  }
+  .invalid {
+    color: var(--bs-danger);
+  }
+  .notfound {
+    color: var(--bs-warning);
+  }
+  .signature-details {
+    margin-top: 50px;
+  }
+  .file-select {
+    margin-top: 50px;
+  }
+</style>

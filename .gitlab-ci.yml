@@ -1,0 +1,36 @@
+image: node:latest
+
+cache:
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - .npm/
+
+before_script:
+  - npm ci --cache .npm
+
+stages:
+  - build
+  - check
+
+build-job:
+  stage: build
+  artifacts:
+    paths:
+      - build/
+  script:
+    - npm run build
+
+check-job:
+  stage: check
+  script:
+    - npm run check
+
+lint-job:
+  stage: check
+  script:
+    - npx eslint .
+
+format-job:
+  stage: check
+  script:
+    - npx prettier --check .
