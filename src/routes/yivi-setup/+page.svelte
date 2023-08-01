@@ -19,7 +19,8 @@
     <p class="main-text infoblock-text">
       If you haven't done so already, please download and install Yivi on your
       smartphone. You can find out where to download Yivi <a
-        href="https://www.yivi.app/en/download">here</a
+        href="https://www.yivi.app/en/download"
+        target="_blank">here</a
       >.
     </p>
   </div>
