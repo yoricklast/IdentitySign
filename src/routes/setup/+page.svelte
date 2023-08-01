@@ -6,6 +6,7 @@
     disclosePopup,
   } from "../../scripts/yivi-disclose";
   import { getDefaultYiviUrl } from "../../scripts/util";
+  import { issuePopup } from "../../scripts/yivi-issue";
 
   const URL_PARAMS = new URLSearchParams(window.location.search);
   const PARAM_URL = URL_PARAMS.get("url");
@@ -125,6 +126,9 @@
     <h5 class="card-title">Yivi</h5>
     <p>Setup demo cards for Yivi.</p>
     <div class="d-grid gap-2 d-md-block">
+      <button class="btn btn-primary" on:click={issuePopup}>
+        Setup all demo cards
+      </button>
       <button class="btn btn-secondary" on:click={discloseFullName}
         >Setup personal data demo card</button
       >
