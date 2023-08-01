@@ -29,16 +29,19 @@
         instructions on how to use this application.
       </p>
 
+      <hr />
+
       <h2 id="signing">Creating a signature</h2>
       <p>
         IdentitySign lets you create signatures with a set of personal data.
-        This personal data is verified and collected through <a
+        This personal data is verified by a trusted party, such as your
+        municipality, and collected through <a
           target="_blank"
           href="https://www.yivi.app/en">Yivi</a
         >. To be able to create signatures, you will first need to install the
         Yivi app on your phone. You can then obtain the cards that contain the
-        relevant personal data either beforehand or during the signing process.
-        For more information on how Yivi works, check out
+        relevant verified personal data either beforehand or during the signing
+        process. For more information on how Yivi works, check out
         <a target="_blank" href="https://www.yivi.app/en/for-me/how-yivi-works"
           >their website</a
         >.
@@ -63,20 +66,38 @@
         <li class="step">Proving your identity with Yivi</li>
         <p>
           When you have completed both previous steps, you can use Yivi to
-          obtain the selected personal data. A QR-code will be displayed which
-          can be scanned using the Yivi app (see <a
+          disclose the selected personal data and prove who you are. If you do
+          not have the relevant data in your Yivi app yet, you can obtain it
+          during this step. A QR-code will be displayed which can be scanned
+          using the Yivi app (see <a
             target="_blank"
             href="https://www.yivi.app/en/for-me/how-yivi-works"
             >their website</a
-          > for more information). Once completed, the signed document will show
-          up as a download in your browser.
+          > for more information). By scanning this QR-code, you prove who you are
+          and provide this information to IdentitySign so that you can make a signature
+          using this information.
         </p>
         <li class="step">Sign your document</li>
         <p>
           An overview of your personal data will be presented and you will now
-          be able to sign your document.
+          be able to sign your document. After signing, the (now signed)
+          document will show up as a download in your browser.
         </p>
       </ol>
+      <p>
+        That's it! You can take the signed document from your downloads and save
+        it wherever you would like to. You can also send the signed document to
+        someone else, for example by email.
+      </p>
+      <p>
+        <i class="text-primary-emphasis"
+          >Please note that IdentitySign signatures only work on <b>digital</b> documents!
+          Printed documents will stay display the IdentitySign banner, but no longer
+          contain a signature (even when scanned).</i
+        >
+      </p>
+
+      <hr />
 
       <h2 id="verifying">Verifying a signature</h2>
       <p>
@@ -105,6 +126,33 @@
           valid. <b>Do not trust the signature on this document!</b>
         </p>
       </ul>
+      <h3 id="whentotrust">When should I not trust a document?</h3>
+      <p>
+        A valid signature does <b>not</b> automatically mean that you should trust
+        a document! You should make sure that the document contains personal data
+        from the right person. It is also important that you think about whether
+        or not the signature of that person is enough to trust a document.
+      </p>
+      <p>
+        For example, say you receive a document signed with the name <i
+          class="text-primary-emphasis">John Doe</i
+        >, who claims to represent
+        <i class="text-primary-emphasis">Company X</i>. While you can be sure
+        that the document you have received indeed came from someone named
+        <i class="text-primary-emphasis">John Doe</i>, there is <b>no</b>
+        guarantuee that this person actually works for
+        <i class="text-primary-emphasis">Company X</i> (to guarantuee this, the document
+        should be signed with the company name).
+      </p>
+      <p>
+        <i class="text-primary-emphasis"
+          ><b>Always visit IdentitySign to check documents!</b> Other websites
+          or applications should <b>not</b> be trusted to verify signatures made
+          by IdentitySign.</i
+        >
+      </p>
+
+      <hr />
 
       <h2 id="requesting">Requesting a signature</h2>
       <p>
@@ -122,10 +170,19 @@
       </p>
     </div>
   </div>
+  <p class="faq">
+    Still have questions? Check out our <a href="/faq"
+      >frequently asked questions</a
+    >!
+  </p>
 </div>
 
 <style>
   h2 {
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  h3 {
     font-weight: 600;
   }
   p {
@@ -147,7 +204,7 @@
     max-width: 1200px;
   }
   .help-main {
-    margin-top: 7%;
+    margin-top: 5%;
     height: 70vh;
     overflow-y: scroll;
   }
@@ -165,5 +222,9 @@
     font-size: 18px;
     font-weight: 600;
     color: var(--bs-body);
+  }
+  .faq {
+    font-size: 16px;
+    margin-top: 5px;
   }
 </style>

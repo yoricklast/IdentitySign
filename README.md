@@ -56,3 +56,10 @@ Before running the application, install its dependencies using `npm install`. Af
 **Author**: SIDN\
 **License**: [Apache License 2.0](https://github.com/privacybydesign/yivi-frontend-packages/blob/master/LICENCE)\
 **Source**: [https://github.com/privacybydesign/yivi-frontend-packages](https://github.com/privacybydesign/yivi-frontend-packages)
+
+### Font
+
+**Title**: Open Sans\
+**Author**: The Open Sans Project Authors\
+**License**: [OFL](https://scripts.sil.org/OFL)\
+**Source**: [https://github.com/googlefonts/opensans](https://github.com/googlefonts/opensans)

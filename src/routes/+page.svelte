@@ -24,6 +24,7 @@
         <i class="bi bi-3-circle heading-icon" />Sign documents in three steps
       </h2>
 
+      <!-- prettier-ignore -->
       <div class="main-text infoblock-text">
         IdentitySign works in three simple steps:
 
@@ -41,7 +42,7 @@
         <h5>3. Sign your document</h5>
         <p>Sign your document using the personal data obtained from Yivi.</p>
 
-        Get started with<a class="signlink" href="/sign"> signing a document</a>
+        Get started with <a class="signlink" href="/sign">signing a document</a>
         or <a href="/verify">verifying a signature</a> now!
       </div>
     </div>

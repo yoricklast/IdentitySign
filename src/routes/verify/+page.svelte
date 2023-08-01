@@ -56,10 +56,10 @@
   }
 </script>
 
-<div class="row" style="margin-top: 10%;">
+<div class="row" style="margin-top: 7%;">
   <div class="col-sm-5">
     <img
-      class="page-image position-relative top-50 start-0 translate-middle-y"
+      class="page-image"
       src="/img/img_check.svg"
       alt="Verifying a document"
     />
@@ -89,7 +89,13 @@
             Signature found!
           </h2>
           <p class="validity-text">
-            Verify the attributes below before trusting this document!
+            <b>Verify the personal data below before trusting this document!</b>
+          </p>
+          <p class="validity-text">
+            <a href="/help/#whentotrust" target="_blank" class="helplink">
+              <i class="bi bi-question-circle" />
+              When should I not trust a document?
+            </a>
           </p>
           {#if sig && sig.attributes}
             <div class="container signature-details">
@@ -102,7 +108,27 @@
                     >
                   </div>
                   <div class="card-body">
-                    <p>{attribute.value.toString()}</p>
+                    <p class="attribute-value">{attribute.value.toString()}</p>
+                    <h6>
+                      <i class="bi bi-question-circle" />
+                      What does this mean?
+                    </h6>
+                    {#if attribute.attributeType == WalletAttributeType.Name}
+                      <p class="explainer">
+                        The document was signed by a person or organization with
+                        this name.
+                      </p>
+                    {:else if attribute.attributeType == WalletAttributeType.Address}
+                      <p class="explainer">
+                        The document was signed by a person or organization
+                        registered at this address.
+                      </p>
+                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                      <p class="explainer">
+                        The document was signed by a person or organization that
+                        owns this email address.
+                      </p>
+                    {/if}
                   </div>
                 </div>
               {/each}
@@ -135,6 +161,21 @@
 </div>
 
 <style>
+  h6 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .explainer {
+    font-size: 14px;
+  }
+  .attribute-value {
+    font-weight: 500;
+    color: var(--bs-primary);
+  }
+  .attribute-heading {
+    color: var(--bs-secondary);
+  }
   .validity {
     text-align: center;
     margin-top: 50px;
@@ -156,5 +197,8 @@
   }
   .file-select {
     margin-top: 50px;
+  }
+  .helplink {
+    text-decoration: none;
   }
 </style>
