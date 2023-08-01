@@ -61,8 +61,9 @@
   </h3>
 
   <p class="main-text">
-    We have made the code available as a Git repository here <i
-      >(link pending)</i
+    We have made the source code for IdentitySign available as a Git repository <a
+      href="https://gitlab.science.ru.nl/ylast/identity-sign"
+      target="_blank">here</a
     >.
   </p>
 </div>

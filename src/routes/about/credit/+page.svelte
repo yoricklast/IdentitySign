@@ -48,12 +48,21 @@
     <div class="col">
       <div class="card">
         <div class="card-body">
+          <h5 class="card-title">Font</h5>
+          <p class="credit-title">Open Sans</p>
+          <p>The Open Sans Project Authors</p>
+          <a href="https://github.com/googlefonts/opensans"
+            >https://github.com/googlefonts/opensans</a
+          >
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
           <h5 class="card-title">PDF editing</h5>
           <p class="credit-title">PDF-lib</p>
           <p>Andrew Dillon</p>
-          <a href="https://pdf-lib.js.org/>https://pdf-lib.js.org/"
-            >https://pdf-lib.js.org/</a
-          ><br />
+          <a href="https://pdf-lib.js.org/">https://pdf-lib.js.org/</a><br />
           <a href="https://github.com/Hopding/pdf-lib"
             >https://github.com/Hopding/pdf-lib</a
           >

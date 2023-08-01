@@ -1,4 +1,5 @@
 import { StandardFonts, type PDFDocument, rgb } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
 
 /**
  * Adds a signature and banner to a PDF.
@@ -10,9 +11,23 @@ export async function editPdf(
   input: PDFDocument,
   signature: string
 ): Promise<PDFDocument> {
+  const regularFontUrl = "/opensans/OpenSans-Regular.ttf";
+  const boldFontUrl = "/opensans/OpenSans-Bold.ttf";
+
+  const boldFontBytes = await fetch(boldFontUrl).then((res) =>
+    res.arrayBuffer()
+  );
+  const regularFontBytes = await fetch(regularFontUrl).then((res) =>
+    res.arrayBuffer()
+  );
+
+  input.registerFontkit(fontkit);
+  const openSansFont = await input.embedFont(regularFontBytes);
+  const openSansBoldFont = await input.embedFont(boldFontBytes);
+
+  // TODO: Replace with open font
   const courierFont = await input.embedFont(StandardFonts.Courier);
-  const helvetFont = await input.embedFont(StandardFonts.Helvetica);
-  const helvetBoldFont = await input.embedFont(StandardFonts.HelveticaBold);
+
   const DEFAULT_FONT_SIZE = 10;
 
   const firstPage = input.getPage(0);
@@ -22,10 +37,10 @@ export async function editPdf(
   const pages = input.getPages();
   const lastPage = pages[input.getPageCount() - 1];
 
-  const BADGE_URL = "/badge.png";
+  const BADGE_URL = "/img/logo_white.png";
   const badgeBytes = await fetch(BADGE_URL).then((res) => res.arrayBuffer());
   const badge = await input.embedPng(badgeBytes);
-  const badgeDims = badge.scale(0.05);
+  const badgeDims = badge.scaleToFit(40, 40);
 
   firstPage.drawRectangle({
     x: 0,
@@ -36,34 +51,48 @@ export async function editPdf(
     opacity: 0.75,
   });
   firstPage.drawImage(badge, {
-    x: 5,
+    x: 10,
     y: 5,
     width: badgeDims.width,
     height: badgeDims.height,
   });
-
-  lastPage.drawText(
-    "Signed using IdentitySign, verify this document at https://identitysign-prototype.cs.ru.nl/.",
+  firstPage.drawText("This document is digitally signed using IdentitySign!", {
+    x: 60,
+    y: 28,
+    size: 14,
+    font: openSansBoldFont,
+    color: rgb(1, 1, 1),
+  });
+  firstPage.drawText(
+    "Before trusting this document, verify it at: https://identitysign-prototype.cs.ru.nl/",
     {
-      x: 50,
-      y: height - 5 * DEFAULT_FONT_SIZE,
-      size: 12,
-      font: helvetBoldFont,
-      color: rgb(0, 0, 0),
+      x: 60,
+      y: 12,
+      size: 11,
+      font: openSansFont,
+      color: rgb(1, 1, 1),
     }
   );
+
+  lastPage.drawText("Signed using IdentitySign", {
+    x: 30,
+    y: height - 5 * DEFAULT_FONT_SIZE,
+    size: 12,
+    font: openSansBoldFont,
+    color: rgb(0, 0, 0),
+  });
   lastPage.drawText(
     "This page contains information needed by IdentitySign to verify the document.",
     {
-      x: 50,
-      y: height - 7 * DEFAULT_FONT_SIZE,
+      x: 30,
+      y: height - 6.5 * DEFAULT_FONT_SIZE,
       size: DEFAULT_FONT_SIZE,
-      font: helvetFont,
+      font: openSansFont,
       color: rgb(0, 0, 0),
     }
   );
   lastPage.drawText(signature, {
-    x: 50,
+    x: 30,
     y: height - 9 * DEFAULT_FONT_SIZE,
     size: 3,
     font: courierFont,

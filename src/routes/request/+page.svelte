@@ -137,7 +137,9 @@
 
       {#if request != ""}
         <div class="mb-3 request">
-          <label for="request-textarea" class="form-label">Request:</label>
+          <label for="request-textarea" class="form-label">
+            Please note: this request does <b>not</b> include the document itself!
+          </label>
           <textarea
             class="form-control"
             id="request-textarea"
@@ -163,6 +165,11 @@
               ><i class="bi bi-plus-lg btn-icon" />New request</button
             >
           </div>
+          <h5 class="verify-warning text-primary">
+            <i class="bi bi-exclamation-circle" />
+            Verify the signature using IdentitySign before trusting a document you
+            receive!
+          </h5>
         </div>
       {/if}
     </div>
@@ -172,6 +179,9 @@
 <style>
   h1 {
     margin-bottom: 30px;
+  }
+  .verify-warning {
+    margin-top: 20px;
   }
   .form-check {
     font-size: 18px;
