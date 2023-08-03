@@ -3,7 +3,7 @@
 </script>
 
 <div class="narrower position-relative start-50 translate-middle-x">
-  <h1>Yivi setup</h1>
+  <h1>Yivi demo setup</h1>
 
   <p class="main-text">
     Let's get you started with setting up Yivi for use with IdentitySign! Please
@@ -28,7 +28,7 @@
   <div class="infoblock rounded border">
     <h2>
       <i class="bi bi-2-circle heading-icon" />
-      Add personal data to Yivi
+      Add demo data to Yivi
     </h2>
 
     <p class="main-text infoblock-text">
@@ -40,6 +40,12 @@
     <button class="btn btn-primary" on:click={issuePopup}>
       Add personal data
     </button>
+
+    <p class="note infoblock-text">
+      <i class="bi bi-exclamation-triangle" />
+      Note that personal data would normally come from a trusted source such as a
+      municipality. Using demo data is only possible during this study!
+    </p>
   </div>
 
   <div class="infoblock rounded border">
@@ -64,5 +70,9 @@
   }
   .heading-icon {
     margin-right: 10px;
+  }
+  .note {
+    margin-top: 20px;
+    color: var(--bs-primary);
   }
 </style>
