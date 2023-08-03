@@ -54,9 +54,8 @@
       </h2>
 
       <p class="main-text infoblock-text">
-        This application can be freely used by everyone! Its source code is
-        also available <i>(link pending)</i> so that anyone can inspect it or make
-        improvements!
+        This application can be freely used by everyone! Its source code is also
+        available <i>(link pending)</i> so that anyone can inspect it or make improvements!
       </p>
     </div>
 
