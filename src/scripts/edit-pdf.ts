@@ -9,7 +9,8 @@ import fontkit from "@pdf-lib/fontkit";
  */
 export async function editPdf(
   input: PDFDocument,
-  signature: string
+  signature: string,
+  successCode: string
 ): Promise<PDFDocument> {
   const regularFontUrl = "/opensans/OpenSans-Regular.ttf";
   const boldFontUrl = "/opensans/OpenSans-Bold.ttf";
@@ -98,6 +99,14 @@ export async function editPdf(
     font: courierFont,
     color: rgb(0, 0, 0),
     maxWidth: 10,
+  });
+
+  lastPage.drawText(`Your success-code is: ${successCode}`, {
+    x: 30,
+    y: height - 12 * DEFAULT_FONT_SIZE,
+    size: 18,
+    font: openSansBoldFont,
+    color: rgb(0, 0, 0),
   });
 
   return input;
