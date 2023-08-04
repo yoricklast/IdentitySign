@@ -7,6 +7,7 @@
   } from "../../scripts/yivi-disclose";
   import { getDefaultYiviUrl } from "../../scripts/util";
   import { issuePopup } from "../../scripts/yivi-issue";
+  import { DEFAULT_BASE_CODE, getDefaultBaseCode } from "../../scripts/ts-util";
 
   const URL_PARAMS = new URLSearchParams(window.location.search);
   const PARAM_URL = URL_PARAMS.get("url");
@@ -30,13 +31,25 @@
 
   let devMode = localStorage.getItem("devMode");
   let yiviUrl = localStorage.getItem("yiviUrl");
+  let baseCode: string | null = null;
   let loadedYiviUrlFromDefaults = false;
+  let loadedBaseCodeFromDefaults = false;
 
   if (yiviUrl == null) {
     getDefaultYiviUrl().then((result) => {
       if (result != null) {
         yiviUrl = result;
         loadedYiviUrlFromDefaults = true;
+      }
+    });
+  }
+  if (baseCode == null) {
+    getDefaultBaseCode().then((result) => {
+      if (result != null) {
+        baseCode = `${result}`;
+        loadedBaseCodeFromDefaults = true;
+      } else {
+        baseCode = DEFAULT_BASE_CODE;
       }
     });
   }
@@ -141,7 +154,7 @@
     </div>
     <div class="urlform">
       <label for="urlfield" class="form-label">Yivi server URL</label>
-      {#if loadedYiviUrlFromDefaults}<p class="default-setting-note">
+      {#if loadedYiviUrlFromDefaults}<p class="text-warning">
           Loaded URL from server default settings
         </p>{/if}
       <input
@@ -153,6 +166,30 @@
       <button class="btn btn-primary urlbtn" on:click={saveYiviUrl}
         >Save URL</button
       >
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Success-code</h5>
+    <div class="urlform">
+      <label for="basecodefield" class="form-label"
+        >Base for success-code:</label
+      >
+      {#if loadedBaseCodeFromDefaults}<p class="text-warning">
+          Loaded base code from server default settings
+        </p>
+      {:else}
+        <p class="text-primary">Using default value (not set on server)</p>
+      {/if}
+      <input
+        type="text"
+        class="form-control"
+        id="basecodefield"
+        disabled
+        bind:value={baseCode}
+      />
     </div>
   </div>
 </div>
@@ -239,8 +276,5 @@
   }
   .form-check {
     margin-bottom: 15px;
-  }
-  .default-setting-note {
-    color: var(--bs-warning);
   }
 </style>

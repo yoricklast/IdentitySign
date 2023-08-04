@@ -1,9 +1,16 @@
 import type { PDFDocument } from "pdf-lib";
 
 import type { WalletSigner } from "./wallet-signer";
-import type { WalletAttribute } from "./wallet-attribute";
+import { WalletAttributeType, type WalletAttribute } from "./wallet-attribute";
 import { editPdf } from "./edit-pdf";
 import type { Signature } from "./signature";
+import {
+  ADDRESS_CODE,
+  DEFAULT_BASE_CODE,
+  EMAIL_CODE,
+  NAME_CODE,
+  getDefaultBaseCode,
+} from "./ts-util";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
 const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
@@ -17,7 +24,13 @@ export class DummySigner implements WalletSigner {
     input: PDFDocument,
     attributes: WalletAttribute[]
   ): Promise<Uint8Array> {
-    return (await editPdf(input, generateDummySignature(attributes))).save();
+    return (
+      await editPdf(
+        input,
+        generateDummySignature(attributes),
+        await generateSuccessCode(attributes)
+      )
+    ).save();
   }
 
   public check(input: string): boolean {
@@ -48,8 +61,8 @@ export class DummySigner implements WalletSigner {
  * @returns A dummy signature.
  */
 function generateDummySignature(input: WalletAttribute[]): string {
-  for (const ATTRIBUTE of input) {
-    ATTRIBUTE.value = btoa(ATTRIBUTE.value.toString());
+  for (const attribute of input) {
+    attribute.value = btoa(attribute.value.toString());
   }
 
   const resultSignature: Signature = {
@@ -59,4 +72,36 @@ function generateDummySignature(input: WalletAttribute[]): string {
   };
 
   return JSON.stringify(resultSignature);
+}
+
+async function generateSuccessCode(input: WalletAttribute[]): Promise<string> {
+  let result = `${DEFAULT_BASE_CODE}-`;
+  let code = 0;
+
+  await getDefaultBaseCode().then((resultBaseCode) => {
+    if (resultBaseCode != null) {
+      result = `${resultBaseCode}-`;
+    }
+  });
+
+  for (const attribute of input) {
+    switch (attribute.attributeType) {
+      case WalletAttributeType.Name: {
+        code = code + NAME_CODE;
+        break;
+      }
+      case WalletAttributeType.Address: {
+        code = code + ADDRESS_CODE;
+        break;
+      }
+      case WalletAttributeType.Email: {
+        code = code + EMAIL_CODE;
+        break;
+      }
+    }
+  }
+
+  result = result.concat(code.toString());
+
+  return result;
 }
