@@ -13,6 +13,8 @@ stages:
   - check
 
 build-job:
+  tags:
+    - shared
   stage: build
   artifacts:
     paths:
@@ -21,16 +23,22 @@ build-job:
     - npm run build
 
 check-job:
+  tags:
+    - shared
   stage: check
   script:
     - npm run check
 
 lint-job:
+  tags:
+    - shared
   stage: check
   script:
     - npx eslint .
 
 format-job:
+  tags:
+    - shared
   stage: check
   script:
     - npx prettier --check .
