@@ -65,7 +65,7 @@ export async function editPdf(
     color: rgb(1, 1, 1),
   });
   firstPage.drawText(
-    "Before trusting this document, verify it at: https://identitysign-prototype.cs.ru.nl/",
+    "Before trusting this document, verify it at: https://identitysign-prototype.cs.upb.de/",
     {
       x: 60,
       y: 12,
