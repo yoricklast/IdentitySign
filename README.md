@@ -20,6 +20,10 @@ Before running the application, install its dependencies using `npm install`. Af
 
 [ESLint](https://eslint.org/) can be used for code analysis by running `npx eslint .` from the project's root directory.
 
+## License
+
+This software is licensed under the [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0.en.html). See the "LICENSE" file for more information.
+
 ## Credit
 
 ### Web framework
