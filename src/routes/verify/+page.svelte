@@ -8,7 +8,7 @@
 
   // Get PDF.js worker from CDN, as using the one provided from the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
-  PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.js`;
+  PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
   let files: FileList;
   let sigValid: boolean;
