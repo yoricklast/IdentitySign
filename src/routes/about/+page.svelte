@@ -75,7 +75,7 @@
     already answered them for you!
   </p>
 
-  <a href="/about/credit">Credits</a>
+  <a class="button" href="/about/credit">Credits</a>
 </div>
 
 <style>
