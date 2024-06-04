@@ -22,13 +22,13 @@ const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
 export class DummySigner implements WalletSigner {
   public async sign(
     input: PDFDocument,
-    attributes: WalletAttribute[]
+    attributes: WalletAttribute[],
   ): Promise<Uint8Array> {
     return (
       await editPdf(
         input,
         generateDummySignature(attributes),
-        await generateSuccessCode(attributes)
+        await generateSuccessCode(attributes),
       )
     ).save();
   }

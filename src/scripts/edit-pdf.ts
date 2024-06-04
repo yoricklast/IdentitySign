@@ -10,16 +10,16 @@ import fontkit from "@pdf-lib/fontkit";
 export async function editPdf(
   input: PDFDocument,
   signature: string,
-  successCode: string
+  successCode: string,
 ): Promise<PDFDocument> {
   const regularFontUrl = "/opensans/OpenSans-Regular.ttf";
   const boldFontUrl = "/opensans/OpenSans-Bold.ttf";
 
   const boldFontBytes = await fetch(boldFontUrl).then((res) =>
-    res.arrayBuffer()
+    res.arrayBuffer(),
   );
   const regularFontBytes = await fetch(regularFontUrl).then((res) =>
-    res.arrayBuffer()
+    res.arrayBuffer(),
   );
 
   input.registerFontkit(fontkit);
@@ -72,7 +72,7 @@ export async function editPdf(
       size: 11,
       font: openSansFont,
       color: rgb(1, 1, 1),
-    }
+    },
   );
 
   lastPage.drawText("Signed using IdentitySign", {
@@ -90,7 +90,7 @@ export async function editPdf(
       size: DEFAULT_FONT_SIZE,
       font: openSansFont,
       color: rgb(0, 0, 0),
-    }
+    },
   );
   lastPage.drawText(signature, {
     x: 30,
