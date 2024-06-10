@@ -21,7 +21,7 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-3-circle heading-icon" />Sign documents in three steps
+        <i class="bi bi-pencil-square heading-icon" />Sign documents in three steps
       </h2>
 
       <!-- prettier-ignore -->
