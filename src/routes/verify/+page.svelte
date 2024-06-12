@@ -6,7 +6,7 @@
   import type { Signature } from "../../scripts/signature";
   import { WalletAttributeType } from "../../scripts/wallet-attribute";
 
-  // Get PDF.js worker from CDN, as using the one provided from the NPM package seems to cause issues in TypeScript
+  // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
   PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
@@ -85,8 +85,8 @@
       {#if processDone}
         {#if sigValid}
           <h2 class="validity valid">
-            <i class="bi bi-patch-check-fill" /><br />
-            Signature found!
+            <i class="bi bi-search" /><br />
+            Signature found…
           </h2>
           <p class="validity-text">
             <b>Verify the personal data below before trusting this document!</b>
@@ -103,9 +103,13 @@
               {#each sig.attributes as attribute}
                 <div class="card attribute-card">
                   <div class="card-header">
-                    <i class="bi bi-patch-check card-icon" /><b
-                      >{WalletAttributeType[attribute.attributeType]}</b
-                    >
+                    {#if attribute.attributeType == WalletAttributeType.Name}
+                      <i class="bi bi-person card-icon" /><b>Name</b>
+                    {:else if attribute.attributeType == WalletAttributeType.Address}
+                      <i class="bi bi-mailbox card-icon" /><b>Address</b>
+                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                      <i class="bi bi-envelope-at card-icon" /><b>Email</b>
+                    {/if}
                   </div>
                   <div class="card-body">
                     <p class="attribute-value">{attribute.value.toString()}</p>
@@ -171,7 +175,7 @@
   }
   .attribute-value {
     font-weight: 500;
-    color: var(--bs-primary);
+    color: var(--bs-emphasis-color);
   }
   .attribute-heading {
     color: var(--bs-secondary);
@@ -184,7 +188,7 @@
     text-align: center;
   }
   .valid {
-    color: var(--bs-success);
+    color: var(--bs-emphasis-color);
   }
   .invalid {
     color: var(--bs-danger);
