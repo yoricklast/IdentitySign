@@ -115,7 +115,7 @@
    * @param inputAttributes Attributes to obtain.
    */
   async function getYiviData(
-    inputAttributes: WalletAttributeType[]
+    inputAttributes: WalletAttributeType[],
   ): Promise<WalletAttribute[]> {
     // Build string for disclosure
     let attributesToDisclose = Array<string>();
@@ -195,7 +195,7 @@
       await signPdf(files[0]);
     } else {
       alert(
-        "Please select a file and attributes and authenticate using Yivi first!"
+        "Please select a file and attributes and authenticate using Yivi first!",
       );
     }
   }

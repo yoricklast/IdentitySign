@@ -27,7 +27,7 @@
       alert("The selected file is not a PDF!");
     } else {
       console.log(
-        `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`
+        `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
         PDFjs.getDocument(value).promise.then((document) => {
