@@ -1,8 +1,9 @@
 # IdentitySign Prototype
 
-A prototype web application for signing PDF-files using an identity wallet (Yivi).
+A prototype web application for signing PDF-files using a digital identity wallet ([Yivi](https://www.yivi.app/en/)).
 
-**Please note: this application is a prototype and does not create actual signatures. Do _not_ use this application to actually sign documents!**
+> [!CAUTION]
+> This application is a prototype and does **not** create actual cryptographic signatures!
 
 ## Requirements
 
