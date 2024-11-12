@@ -141,7 +141,7 @@
 
     // Disclose attributes
     let attributes = Array<WalletAttribute>();
-    await disclose(attributesToDisclose).then((result: any) => {
+    await disclose(attributesToDisclose).then((result) => {
       let address = null;
       for (const x of result) {
         if (DISCLOSE_FULL_NAME.includes(x.id)) {

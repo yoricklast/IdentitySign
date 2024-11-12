@@ -38,7 +38,7 @@
 
   onMount(() => {
     if (yiviUrl == null) {
-      getDefaultYiviUrl().then((result: any) => {
+      getDefaultYiviUrl().then((result) => {
         if (result != null) {
           yiviUrl = result;
           loadedYiviUrlFromDefaults = true;
