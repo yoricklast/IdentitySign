@@ -1,14 +1,18 @@
 <script lang="ts">
-  let files: FileList;
+  let files = $state<FileList>();
 
-  let name = false;
-  let mail = false;
-  let address = false;
+  let name = $state(false);
+  let mail = $state(false);
+  let address = $state(false);
 
-  let request = "";
+  let request = $state("");
   let link = "";
 
   function btnGenerateClick() {
+    if (!files || files.length === 0) {
+      alert("No file selected!");
+      return;
+    }
     const file = files[0];
     if (file.type != "application/pdf") {
       alert("The selected file is not a PDF!");
@@ -56,7 +60,7 @@
   <div class="col-sm-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <h1>
-        <i class="bi bi-envelope-check page-icon" />
+        <i class="bi bi-envelope-check page-icon"></i>
         Request a signature
       </h1>
       <p>Create a signature request link to share by email.</p>
@@ -130,7 +134,7 @@
           <button
             type="submit"
             class="btn btn-primary btn-generate"
-            on:click={btnGenerateClick}>Generate request</button
+            onclick={btnGenerateClick}>Generate request</button
           >
         {/if}
       </div>
@@ -146,27 +150,27 @@
             rows="3"
             bind:value={request}
             disabled
-          />
+          ></textarea>
           <div style="margin-top: 10px;">
-            <button type="button" class="btn btn-light" on:click={btnCopyClick}
-              ><i class="bi bi-clipboard btn-icon" />Copy to clipboard</button
+            <button type="button" class="btn btn-light" onclick={btnCopyClick}
+              ><i class="bi bi-clipboard btn-icon"></i>Copy to clipboard</button
             >
             <button
               type="button"
               class="btn btn-light"
-              on:click={btnCopyLinkClick}
-              ><i class="bi bi-link-45deg btn-icon" />Copy link only</button
+              onclick={btnCopyLinkClick}
+              ><i class="bi bi-link-45deg btn-icon"></i>Copy link only</button
             >
             <button
               type="button"
               class="btn btn-primary"
               style="margin-left: 5px;"
-              on:click={btnClearClick}
-              ><i class="bi bi-plus-lg btn-icon" />New request</button
+              onclick={btnClearClick}
+              ><i class="bi bi-plus-lg btn-icon"></i>New request</button
             >
           </div>
           <h5 class="verify-warning text-primary">
-            <i class="bi bi-exclamation-circle" />
+            <i class="bi bi-exclamation-circle"></i>
             Verify the signature using IdentitySign before trusting a document you
             receive!
           </h5>

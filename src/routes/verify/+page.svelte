@@ -6,28 +6,32 @@
   import type { Signature } from "../../scripts/signature";
   import { WalletAttributeType } from "../../scripts/wallet-attribute";
 
-  // Get PDF.js worker from CDN, as using the one provided from the NPM package seems to cause issues in TypeScript
+  // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
   PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
-  let files: FileList;
-  let sigValid: boolean;
-  let sigFound: boolean;
+  let files = $state<FileList>();
+  let sigValid = $state<boolean>();
+  let sigFound = $state<boolean>();
   // Prevents showing sigValid status before processing is done
-  let processDone = false;
-  let sig: Signature;
+  let processDone = $state(false);
+  let sig = $state<Signature>();
 
   function processFile(): void {
     const signer: WalletSigner = new DummySigner();
     processDone = false;
     sigValid = false;
     sigFound = false;
+    if (!files || files.length === 0) {
+      alert("No file selected!");
+      return;
+    }
     const file = files[0];
     if (file.type != "application/pdf") {
       alert("The selected file is not a PDF!");
     } else {
       console.log(
-        `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`
+        `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
         PDFjs.getDocument(value).promise.then((document) => {
@@ -67,7 +71,7 @@
   <div class="col-sm-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <h1 style="margin-bottom: 30px;">
-        <i class="bi bi-file-earmark-check page-icon" />
+        <i class="bi bi-file-earmark-check page-icon"></i>
         Verify a document's signature
       </h1>
       <div class="mb-3 file-select">
@@ -79,21 +83,21 @@
           accept="application/pdf"
           type="file"
           bind:files
-          on:change={processFile}
+          onchange={processFile}
         />
       </div>
       {#if processDone}
         {#if sigValid}
           <h2 class="validity valid">
-            <i class="bi bi-patch-check-fill" /><br />
-            Signature found!
+            <i class="bi bi-search"></i><br />
+            Signature found…
           </h2>
           <p class="validity-text">
             <b>Verify the personal data below before trusting this document!</b>
           </p>
           <p class="validity-text">
             <a href="/help/#whentotrust" target="_blank" class="helplink">
-              <i class="bi bi-question-circle" />
+              <i class="bi bi-question-circle"></i>
               When should I not trust a document?
             </a>
           </p>
@@ -103,14 +107,18 @@
               {#each sig.attributes as attribute}
                 <div class="card attribute-card">
                   <div class="card-header">
-                    <i class="bi bi-patch-check card-icon" /><b
-                      >{WalletAttributeType[attribute.attributeType]}</b
-                    >
+                    {#if attribute.attributeType == WalletAttributeType.Name}
+                      <i class="bi bi-person card-icon"></i><b>Name</b>
+                    {:else if attribute.attributeType == WalletAttributeType.Address}
+                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
+                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                      <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
+                    {/if}
                   </div>
                   <div class="card-body">
                     <p class="attribute-value">{attribute.value.toString()}</p>
                     <h6>
-                      <i class="bi bi-question-circle" />
+                      <i class="bi bi-question-circle"></i>
                       What does this mean?
                     </h6>
                     {#if attribute.attributeType == WalletAttributeType.Name}
@@ -137,7 +145,7 @@
         {/if}
         {#if !sigValid && sigFound}
           <h2 class="validity invalid">
-            <i class="bi bi-x-circle-fill" /><br />
+            <i class="bi bi-x-circle-fill"></i><br />
             Signature invalid!
           </h2>
           <p class="validity-text">
@@ -147,7 +155,7 @@
         {/if}
         {#if !sigFound}
           <h2 class="validity notfound">
-            <i class="bi bi-exclamation-triangle-fill" /><br />
+            <i class="bi bi-exclamation-triangle-fill"></i><br />
             No signature found!
           </h2>
           <p class="validity-text">
@@ -171,7 +179,7 @@
   }
   .attribute-value {
     font-weight: 500;
-    color: var(--bs-primary);
+    color: var(--bs-emphasis-color);
   }
   .attribute-heading {
     color: var(--bs-secondary);
@@ -184,7 +192,7 @@
     text-align: center;
   }
   .valid {
-    color: var(--bs-success);
+    color: var(--bs-emphasis-color);
   }
   .invalid {
     color: var(--bs-danger);

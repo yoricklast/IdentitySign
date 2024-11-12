@@ -6,7 +6,7 @@
   <h1 style="margin-top: 20px;">Frequently asked questions</h1>
 
   <h3>
-    <i class="bi bi-caret-right-fill" />
+    <i class="bi bi-caret-right-fill"></i>
     What is a digital signature and why would I use one to sign a document?
   </h3>
 
@@ -18,7 +18,7 @@
   </p>
 
   <h3>
-    <i class="bi bi-caret-right-fill" />
+    <i class="bi bi-caret-right-fill"></i>
     What types of documents does IdentitySign work with?
   </h3>
 
@@ -29,7 +29,7 @@
   </p>
 
   <h3>
-    <i class="bi bi-caret-right-fill" />
+    <i class="bi bi-caret-right-fill"></i>
     How is IdentitySign different from other signature providers?
   </h3>
 
@@ -43,7 +43,7 @@
   </p>
 
   <h3>
-    <i class="bi bi-caret-right-fill" />
+    <i class="bi bi-caret-right-fill"></i>
     Why does the file selection window say "Upload file" (or something similar) when
     none of my information should be shared?
   </h3>
@@ -56,7 +56,7 @@
   </p>
 
   <h3>
-    <i class="bi bi-caret-right-fill" />
+    <i class="bi bi-caret-right-fill"></i>
     How can I access the source code for IdentitySign?
   </h3>
 
