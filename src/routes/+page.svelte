@@ -9,7 +9,7 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-patch-check heading-icon" />Be sure of documents you
+        <i class="bi bi-patch-check heading-icon"></i>Be sure of documents you
         send and receive
       </h2>
 
@@ -21,7 +21,7 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-pencil-square heading-icon" />Sign documents in three
+        <i class="bi bi-pencil-square heading-icon"></i>Sign documents in three
         steps
       </h2>
 
@@ -50,7 +50,7 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-emoji-laughing heading-icon" />Available for free to
+        <i class="bi bi-emoji-laughing heading-icon"></i>Available for free to
         everyone
       </h2>
 
@@ -62,7 +62,7 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-shield-shaded heading-icon" />All data stays on your
+        <i class="bi bi-shield-shaded heading-icon"></i>All data stays on your
         device
       </h2>
 

@@ -30,42 +30,44 @@
   let paramAddress = urlParams.get(PARAM_ADDRESS);
   let paramFile = urlParams.get(PARAM_FILE);
 
-  let progress = 0;
+  let progress = $state(0);
 
-  let files: FileList;
+  let files = $state<FileList>();
 
-  let nameChecked: boolean;
-  let mailChecked: boolean;
-  let addressChecked: boolean;
+  let nameChecked = $state<boolean>();
+  let mailChecked = $state<boolean>();
+  let addressChecked = $state<boolean>();
 
   let selectedAttributes: WalletAttributeType[] = [];
 
-  let yiviAttributes: WalletAttribute[] | null = null;
+  let yiviAttributes: WalletAttribute[] | null = $state(null);
 
-  let fileSelected = false;
-  let attributeSelected = false;
-  let yiviActive = false;
-  let yiviDone = false;
-  let signedDone = false;
+  let fileSelected = $state(false);
+  let attributeSelected = $state(false);
+  let yiviActive = $state(false);
+  let yiviDone = $state(false);
+  let signedDone = $state(false);
 
   let signedPdfName: string | null = null;
   let signedPdfBytes: Uint8Array | null = null;
 
-  $: if (files) {
-    if (files[0].type != "application/pdf") {
-      alert("The selected file is not a PDF!");
-      progress = 0;
-    } else if (paramFile && files[0].name != paramFile) {
-      alert("The selected file is not the one requested!");
-      progress = 0;
-    } else {
-      fileSelected = true;
-      progress = 0;
-      if (attributeSelected) {
-        progress = 50;
+  $effect(() => {
+    if (files) {
+      if (files[0].type != "application/pdf") {
+        alert("The selected file is not a PDF!");
+        progress = 0;
+      } else if (paramFile && files[0].name != paramFile) {
+        alert("The selected file is not the one requested!");
+        progress = 0;
+      } else {
+        fileSelected = true;
+        progress = 0;
+        if (attributeSelected) {
+          progress = 50;
+        }
       }
     }
-  }
+  });
 
   if (paramAttributesGiven()) {
     attributeSelected = true;
@@ -139,7 +141,7 @@
 
     // Disclose attributes
     let attributes = Array<WalletAttribute>();
-    await disclose(attributesToDisclose).then((result) => {
+    await disclose(attributesToDisclose).then((result: any) => {
       let address = null;
       for (const x of result) {
         if (DISCLOSE_FULL_NAME.includes(x.id)) {
@@ -191,7 +193,7 @@
    * Logic for the "Sign" button.
    */
   async function btnSignClick() {
-    if (fileSelected && attributeSelected && yiviDone) {
+    if (files && fileSelected && attributeSelected && yiviDone) {
       await signPdf(files[0]);
     } else {
       alert(
@@ -287,7 +289,7 @@
             {#if paramFile != null}
               <div class="card card-attr">
                 <div class="card-body">
-                  <i class="bi bi-file-earmark attr-icon" />
+                  <i class="bi bi-file-earmark attr-icon"></i>
                   {paramFile}
                 </div>
               </div>
@@ -298,7 +300,7 @@
             {#if paramName != null}
               <div class="card card-attr">
                 <div class="card-body">
-                  <i class="bi bi-person attr-icon" />
+                  <i class="bi bi-person attr-icon"></i>
                   Name
                 </div>
               </div>
@@ -306,7 +308,7 @@
             {#if paramMail != null}
               <div class="card card-attr">
                 <div class="card-body">
-                  <i class="bi bi-at attr-icon" />
+                  <i class="bi bi-at attr-icon"></i>
                   Email address
                 </div>
               </div>
@@ -314,7 +316,7 @@
             {#if paramAddress != null}
               <div class="card card-attr">
                 <div class="card-body">
-                  <i class="bi bi-house attr-icon" />
+                  <i class="bi bi-house attr-icon"></i>
                   Address
                 </div>
               </div>
@@ -333,7 +335,7 @@
   <div class="col-sm-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <h1>
-        <i class="bi bi-pencil-square page-icon" />
+        <i class="bi bi-pencil-square page-icon"></i>
         Sign a document
       </h1>
 
@@ -467,7 +469,7 @@
                 button. Follow the instructions in the Yivi app to continue.
               </p>
             </div>
-            <div class="yivi-web-form col" id="yivi-web-form" />
+            <div class="yivi-web-form col" id="yivi-web-form"></div>
           </div>
         {/if}
         {#if !signedDone && yiviDone}
@@ -477,7 +479,7 @@
             {#each yiviAttributes as attribute}
               <div class="card attribute-card">
                 <div class="card-header">
-                  <i class="bi bi-patch-check card-icon" /><b
+                  <i class="bi bi-patch-check card-icon"></i><b
                     >{WalletAttributeType[attribute.attributeType]}</b
                   >
                 </div>
@@ -490,7 +492,7 @@
         {/if}
         {#if signedDone}
           <h2 class="text-success">
-            <i class="bi bi-check-circle" />
+            <i class="bi bi-check-circle"></i>
             Done!
           </h2>
           You can find the signed file in your downloads folder.
@@ -502,44 +504,44 @@
           <button
             class="btn btn-secondary btn-sign"
             type="button"
-            on:click={btnResetClick}
-            ><i class="bi bi-x-octagon btn-sign-icon" />Cancel</button
+            onclick={btnResetClick}
+            ><i class="bi bi-x-octagon btn-sign-icon"></i>Cancel</button
           >
         {/if}
         {#if fileSelected && !yiviDone && !signedDone && !yiviActive}
           <button
             class="btn btn-primary btn-sign"
             type="button"
-            on:click={btnNext}
-            ><i class="bi bi-arrow-right-circle btn-sign-icon" />Next
+            onclick={btnNext}
+            ><i class="bi bi-arrow-right-circle btn-sign-icon"></i>Next
           </button>
         {/if}
         {#if fileSelected && yiviDone && !signedDone}
           <button
             class="btn btn-primary btn-sign"
             type="button"
-            on:click={btnSignClick}
-            ><i class="bi bi-pencil-square btn-sign-icon" />Sign
+            onclick={btnSignClick}
+            ><i class="bi bi-pencil-square btn-sign-icon"></i>Sign
           </button>
         {/if}
         {#if signedDone}
           <button
             class="btn btn-primary btn-sign"
             type="button"
-            on:click={btnResetClick}
-            ><i class="bi bi-plus-lg btn-sign-icon" />Sign another file</button
+            onclick={btnResetClick}
+            ><i class="bi bi-plus-lg btn-sign-icon"></i>Sign another file</button
           >
           <button
             class="btn btn-primary btn-sign"
             type="button"
-            on:click={btnDownloadAgainClick}
-            ><i class="bi bi-download btn-sign-icon" />Download again</button
+            onclick={btnDownloadAgainClick}
+            ><i class="bi bi-download btn-sign-icon"></i>Download again</button
           >
         {/if}
       </div>
 
       <div class="progress" role="progressbar" aria-label="Progress">
-        <div class="progress-bar" style="width: {progress}%" />
+        <div class="progress-bar" style="width: {progress}%"></div>
       </div>
       <div class="progress-label-div row">
         <div class="progress-label text-wrap col text-begin">

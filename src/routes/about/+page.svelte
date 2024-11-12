@@ -5,7 +5,7 @@
 
 <div class="narrower position-relative start-50 translate-middle-x">
   <h1 style="margin-top: 10%;">
-    <i class="bi bi-info-circle page-icon" />
+    <i class="bi bi-info-circle page-icon"></i>
     About IdentitySign
   </h1>
 
