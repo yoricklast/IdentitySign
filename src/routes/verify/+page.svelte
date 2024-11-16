@@ -105,37 +105,151 @@
             <div class="container signature-details">
               <h3 class="attribute-heading">Signed with:</h3>
               {#each sig.attributes as attribute}
-                <div class="card attribute-card">
-                  <div class="card-header">
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <i class="bi bi-person card-icon"></i><b>Name</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
-                    {/if}
+                <div
+                  class="d-flex flex-row justify-content-between column-gap-3"
+                >
+                  <div class="card attribute-card">
+                    <div class="card-header">
+                      {#if attribute.attributeType == WalletAttributeType.Name}
+                        <i class="bi bi-person card-icon"></i><b>Name</b>
+                      {:else if attribute.attributeType == WalletAttributeType.Address}
+                        <i class="bi bi-mailbox card-icon"></i><b>Address</b>
+                      {:else if attribute.attributeType == WalletAttributeType.Email}
+                        <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
+                      {/if}
+                    </div>
+                    <div class="card-body">
+                      <p class="attribute-value">
+                        {attribute.value.toString()}
+                      </p>
+                      <h6>
+                        <i class="bi bi-question-circle"></i>
+                        What does this mean?
+                      </h6>
+                      {#if attribute.attributeType == WalletAttributeType.Name}
+                        <p class="explainer">
+                          The document was signed by a person or organization
+                          with this name.
+                        </p>
+                      {:else if attribute.attributeType == WalletAttributeType.Address}
+                        <p class="explainer">
+                          The document was signed by a person or organization
+                          registered at this address.
+                        </p>
+                      {:else if attribute.attributeType == WalletAttributeType.Email}
+                        <p class="explainer">
+                          The document was signed by a person or organization
+                          that owns this email address.
+                        </p>
+                      {/if}
+                    </div>
                   </div>
-                  <div class="card-body">
-                    <p class="attribute-value">{attribute.value.toString()}</p>
-                    <h6>
-                      <i class="bi bi-question-circle"></i>
-                      What does this mean?
-                    </h6>
+                  <div>
                     {#if attribute.attributeType == WalletAttributeType.Name}
-                      <p class="explainer">
-                        The document was signed by a person or organization with
-                        this name.
-                      </p>
+                      <b>Do you trust this person?</b>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="nameYes"
+                        />
+                        <label class="form-check-label" for="nameYes">
+                          Yes
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="nameNo"
+                        />
+                        <label class="form-check-label" for="nameNo">
+                          No
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="nameNotSure"
+                        />
+                        <label class="form-check-label" for="nameNotSure">
+                          Not sure
+                        </label>
+                      </div>
                     {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <p class="explainer">
-                        The document was signed by a person or organization
-                        registered at this address.
-                      </p>
+                      <b>Do you trust this adress?</b>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="adressYes"
+                        />
+                        <label class="form-check-label" for="adressYes">
+                          Yes
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="adressNo"
+                        />
+                        <label class="form-check-label" for="adressNo">
+                          No
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="adressNotSure"
+                        />
+                        <label class="form-check-label" for="adressNotSure">
+                          Not sure
+                        </label>
+                      </div>
                     {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <p class="explainer">
-                        The document was signed by a person or organization that
-                        owns this email address.
-                      </p>
+                      <b>Do you trust this email?</b>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="emailYes"
+                        />
+                        <label class="form-check-label" for="emailYes">
+                          Yes
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="emailNo"
+                        />
+                        <label class="form-check-label" for="emailNo">
+                          No
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id="emailNotSure"
+                        />
+                        <label class="form-check-label" for="emailNotSure">
+                          Not sure
+                        </label>
+                      </div>
                     {/if}
                   </div>
                 </div>
