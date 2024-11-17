@@ -105,49 +105,50 @@
             <div class="container signature-details">
               <h3 class="attribute-heading">Signed with:</h3>
               {#each sig.attributes as attribute}
-                <div
-                  class="d-flex flex-row justify-content-between column-gap-3"
-                >
-                  <div class="card attribute-card">
-                    <div class="card-header">
-                      {#if attribute.attributeType == WalletAttributeType.Name}
-                        <i class="bi bi-person card-icon"></i><b>Name</b>
-                      {:else if attribute.attributeType == WalletAttributeType.Address}
-                        <i class="bi bi-mailbox card-icon"></i><b>Address</b>
-                      {:else if attribute.attributeType == WalletAttributeType.Email}
-                        <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
-                      {/if}
-                    </div>
-                    <div class="card-body">
-                      <p class="attribute-value">
-                        {attribute.value.toString()}
-                      </p>
-                      <h6>
-                        <i class="bi bi-question-circle"></i>
-                        What does this mean?
-                      </h6>
-                      {#if attribute.attributeType == WalletAttributeType.Name}
-                        <p class="explainer">
-                          The document was signed by a person or organization
-                          with this name.
+                <div class="row row-cols-2">
+                  <div class="col-8">
+                    <div class="card attribute-card">
+                      <div class="card-header">
+                        {#if attribute.attributeType == WalletAttributeType.Name}
+                          <i class="bi bi-person card-icon"></i><b>Name</b>
+                        {:else if attribute.attributeType == WalletAttributeType.Address}
+                          <i class="bi bi-mailbox card-icon"></i><b>Address</b>
+                        {:else if attribute.attributeType == WalletAttributeType.Email}
+                          <i class="bi bi-envelope-at card-icon"></i><b>Email</b
+                          >
+                        {/if}
+                      </div>
+                      <div class="card-body">
+                        <p class="attribute-value">
+                          {attribute.value.toString()}
                         </p>
-                      {:else if attribute.attributeType == WalletAttributeType.Address}
-                        <p class="explainer">
-                          The document was signed by a person or organization
-                          registered at this address.
-                        </p>
-                      {:else if attribute.attributeType == WalletAttributeType.Email}
-                        <p class="explainer">
-                          The document was signed by a person or organization
-                          that owns this email address.
-                        </p>
-                      {/if}
+                        <h6>
+                          <i class="bi bi-question-circle"></i>
+                          What does this mean?
+                        </h6>
+                        {#if attribute.attributeType == WalletAttributeType.Name}
+                          <p class="explainer">
+                            The document was signed by a person or organization
+                            with this name.
+                          </p>
+                        {:else if attribute.attributeType == WalletAttributeType.Address}
+                          <p class="explainer">
+                            The document was signed by a person or organization
+                            registered at this address.
+                          </p>
+                        {:else if attribute.attributeType == WalletAttributeType.Email}
+                          <p class="explainer">
+                            The document was signed by a person or organization
+                            that owns this email address.
+                          </p>
+                        {/if}
+                      </div>
                     </div>
                   </div>
-                  <div>
+                  <div class="col-4">
                     {#if attribute.attributeType == WalletAttributeType.Name}
                       <b>Do you trust this person?</b>
-                      <div class="form-check">
+                      <div class="form-check mt-2">
                         <input
                           class="form-check-input"
                           type="radio"
@@ -182,7 +183,7 @@
                       </div>
                     {:else if attribute.attributeType == WalletAttributeType.Address}
                       <b>Do you trust this adress?</b>
-                      <div class="form-check">
+                      <div class="form-check mt-2">
                         <input
                           class="form-check-input"
                           type="radio"
@@ -217,7 +218,7 @@
                       </div>
                     {:else if attribute.attributeType == WalletAttributeType.Email}
                       <b>Do you trust this email?</b>
-                      <div class="form-check">
+                      <div class="form-check mt-2">
                         <input
                           class="form-check-input"
                           type="radio"
@@ -254,6 +255,11 @@
                   </div>
                 </div>
               {/each}
+              <div class="row justify-content-end">
+                <div class="col-4 alert alert-danger" role="alert">
+                  This document was <strong>not</strong> signed by someone you trust!
+                </div>
+              </div>
             </div>
           {/if}
         {/if}
