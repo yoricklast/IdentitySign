@@ -16,6 +16,29 @@
   // Prevents showing sigValid status before processing is done
   let processDone = $state(false);
   let sig = $state<Signature>();
+  let nameFound = $derived.by(
+    () =>
+      sig?.attributes.find(
+        (x) => x.attributeType == WalletAttributeType.Name,
+      ) !== undefined,
+  );
+  let addressFound = $derived.by(
+    () =>
+      sig?.attributes.find(
+        (x) => x.attributeType == WalletAttributeType.Address,
+      ) !== undefined,
+  );
+  let emailFound = $derived.by(
+    () =>
+      sig?.attributes.find(
+        (x) => x.attributeType == WalletAttributeType.Email,
+      ) !== undefined,
+  );
+
+  let personTrust = $state<String>();
+  let addressTrust = $state<String>();
+  let emailTrust = $state<String>();
+  let alertType = $state<String>();
 
   function processFile(): void {
     const signer: WalletSigner = new DummySigner();
@@ -46,6 +69,10 @@
                     if (signer.check(itemValue)) {
                       sig = signer.decode(itemValue);
                       sigValid = true;
+                      personTrust = nameFound ? "" : "notSet";
+                      addressTrust = addressFound ? "" : "notSet";
+                      emailTrust = emailFound ? "" : "notSet";
+                      alertType = "";
                     }
                   }
                 }
@@ -58,6 +85,26 @@
       });
     }
   }
+
+  $effect(() => {
+    if (personTrust && addressTrust && emailTrust) {
+      if (
+        personTrust === "no" ||
+        addressTrust === "no" ||
+        emailTrust === "no"
+      ) {
+        alertType = "danger";
+      } else if (
+        personTrust === "notSure" ||
+        addressTrust === "notSure" ||
+        emailTrust === "notSure"
+      ) {
+        alertType = "warning";
+      } else {
+        alertType = "success";
+      }
+    }
+  });
 </script>
 
 <div class="row" style="margin-top: 7%;">
@@ -152,32 +199,34 @@
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="nameYes"
+                          name="flexRadioName"
+                          id="yes"
+                          bind:group={personTrust}
+                          value="yes"
                         />
-                        <label class="form-check-label" for="nameYes">
-                          Yes
-                        </label>
+                        <label class="form-check-label" for="yes"> Yes </label>
                       </div>
                       <div class="form-check">
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="nameNo"
+                          name="flexRadioName"
+                          id="no"
+                          bind:group={personTrust}
+                          value="no"
                         />
-                        <label class="form-check-label" for="nameNo">
-                          No
-                        </label>
+                        <label class="form-check-label" for="no"> No </label>
                       </div>
                       <div class="form-check">
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="nameNotSure"
+                          name="flexRadioName"
+                          id="notSure"
+                          bind:group={personTrust}
+                          value="notSure"
                         />
-                        <label class="form-check-label" for="nameNotSure">
+                        <label class="form-check-label" for="notSure">
                           Not sure
                         </label>
                       </div>
@@ -187,32 +236,34 @@
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="adressYes"
+                          name="flexRadioAdress"
+                          id="yes"
+                          bind:group={addressTrust}
+                          value="yes"
                         />
-                        <label class="form-check-label" for="adressYes">
-                          Yes
-                        </label>
+                        <label class="form-check-label" for="yes"> Yes </label>
                       </div>
                       <div class="form-check">
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="adressNo"
+                          name="flexRadioAdress"
+                          id="no"
+                          bind:group={addressTrust}
+                          value="no"
                         />
-                        <label class="form-check-label" for="adressNo">
-                          No
-                        </label>
+                        <label class="form-check-label" for="no"> No </label>
                       </div>
                       <div class="form-check">
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="adressNotSure"
+                          name="flexRadioAdress"
+                          id="notSure"
+                          bind:group={addressTrust}
+                          value="notSure"
                         />
-                        <label class="form-check-label" for="adressNotSure">
+                        <label class="form-check-label" for="notSure">
                           Not sure
                         </label>
                       </div>
@@ -222,32 +273,34 @@
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="emailYes"
+                          name="flexRadioEmail"
+                          id="yes"
+                          bind:group={emailTrust}
+                          value="yes"
                         />
-                        <label class="form-check-label" for="emailYes">
-                          Yes
-                        </label>
+                        <label class="form-check-label" for="yes"> Yes </label>
                       </div>
                       <div class="form-check">
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="emailNo"
+                          name="flexRadioEmail"
+                          id="no"
+                          bind:group={emailTrust}
+                          value="no"
                         />
-                        <label class="form-check-label" for="emailNo">
-                          No
-                        </label>
+                        <label class="form-check-label" for="no"> No </label>
                       </div>
                       <div class="form-check">
                         <input
                           class="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
-                          id="emailNotSure"
+                          name="flexRadioEmail"
+                          id="notSure"
+                          bind:group={emailTrust}
+                          value="notSure"
                         />
-                        <label class="form-check-label" for="emailNotSure">
+                        <label class="form-check-label" for="notSure">
                           Not sure
                         </label>
                       </div>
@@ -255,11 +308,24 @@
                   </div>
                 </div>
               {/each}
-              <div class="row justify-content-end">
-                <div class="col-4 alert alert-danger" role="alert">
-                  This document was <strong>not</strong> signed by someone you trust!
+              {#if alertType}
+                <div class="row justify-content-end">
+                  <div class="col-4 alert alert-{alertType}" role="alert">
+                    {#if alertType === "danger"}
+                      This document was <strong>not</strong> signed by someone you
+                      trust!
+                    {:else if alertType === "warning"}
+                      This document was signed by someone you're <strong
+                        >not sure</strong
+                      > you trust.
+                    {:else if alertType === "success"}
+                      This document was signed by someone you <strong
+                        >trust</strong
+                      >!
+                    {/if}
+                  </div>
                 </div>
-              </div>
+              {/if}
             </div>
           {/if}
         {/if}
