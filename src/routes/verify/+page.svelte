@@ -89,15 +89,15 @@
   $effect(() => {
     if (personTrust && addressTrust && emailTrust) {
       if (
-        personTrust === "no" ||
-        addressTrust === "no" ||
-        emailTrust === "no"
+        personTrust === "No" ||
+        addressTrust === "No" ||
+        emailTrust === "No"
       ) {
         alertType = "danger";
       } else if (
-        personTrust === "notSure" ||
-        addressTrust === "notSure" ||
-        emailTrust === "notSure"
+        personTrust === "Not sure" ||
+        addressTrust === "Not sure" ||
+        emailTrust === "Not sure"
       ) {
         alertType = "warning";
       } else {
@@ -105,7 +105,49 @@
       }
     }
   });
+
+  let option = ["Yes", "No", "Not sure"];
 </script>
+
+{#snippet personAnswers(label: any)}
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="flexRadioName"
+      id={label}
+      bind:group={personTrust}
+      value={label}
+    />
+    <label class="form-check-label" for={label}> {label} </label>
+  </div>
+{/snippet}
+{#snippet addressAnswers(label: any)}
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="flexRadioName"
+      id={label}
+      bind:group={addressTrust}
+      value={label}
+    />
+    <label class="form-check-label" for={label}> {label} </label>
+  </div>
+{/snippet}
+{#snippet emailAnswers(label: any)}
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="flexRadioName"
+      id={label}
+      bind:group={emailTrust}
+      value={label}
+    />
+    <label class="form-check-label" for={label}> {label} </label>
+  </div>
+{/snippet}
 
 <div class="row" style="margin-top: 7%;">
   <div class="col-sm-5">
@@ -194,116 +236,20 @@
                   </div>
                   <div class="col-4">
                     {#if attribute.attributeType == WalletAttributeType.Name}
-                      <b>Do you trust this person?</b>
-                      <div class="form-check mt-2">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioName"
-                          id="yes"
-                          bind:group={personTrust}
-                          value="yes"
-                        />
-                        <label class="form-check-label" for="yes"> Yes </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioName"
-                          id="no"
-                          bind:group={personTrust}
-                          value="no"
-                        />
-                        <label class="form-check-label" for="no"> No </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioName"
-                          id="notSure"
-                          bind:group={personTrust}
-                          value="notSure"
-                        />
-                        <label class="form-check-label" for="notSure">
-                          Not sure
-                        </label>
-                      </div>
+                      <p class="question">Do you trust this person?</p>
+                      {#each option as label}
+                        {@render personAnswers(label)}
+                      {/each}
                     {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <b>Do you trust this adress?</b>
-                      <div class="form-check mt-2">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioAdress"
-                          id="yes"
-                          bind:group={addressTrust}
-                          value="yes"
-                        />
-                        <label class="form-check-label" for="yes"> Yes </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioAdress"
-                          id="no"
-                          bind:group={addressTrust}
-                          value="no"
-                        />
-                        <label class="form-check-label" for="no"> No </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioAdress"
-                          id="notSure"
-                          bind:group={addressTrust}
-                          value="notSure"
-                        />
-                        <label class="form-check-label" for="notSure">
-                          Not sure
-                        </label>
-                      </div>
+                      <p class="question">Do you trust this address?</p>
+                      {#each option as label}
+                        {@render addressAnswers(label)}
+                      {/each}
                     {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <b>Do you trust this email?</b>
-                      <div class="form-check mt-2">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioEmail"
-                          id="yes"
-                          bind:group={emailTrust}
-                          value="yes"
-                        />
-                        <label class="form-check-label" for="yes"> Yes </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioEmail"
-                          id="no"
-                          bind:group={emailTrust}
-                          value="no"
-                        />
-                        <label class="form-check-label" for="no"> No </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioEmail"
-                          id="notSure"
-                          bind:group={emailTrust}
-                          value="notSure"
-                        />
-                        <label class="form-check-label" for="notSure">
-                          Not sure
-                        </label>
-                      </div>
+                      <p class="question">Do you trust this email?</p>
+                      {#each option as label}
+                        {@render emailAnswers(label)}
+                      {/each}
                     {/if}
                   </div>
                 </div>
@@ -312,12 +258,15 @@
                 <div class="row justify-content-end">
                   <div class="col-4 alert alert-{alertType}" role="alert">
                     {#if alertType === "danger"}
-                      This document was <strong>not</strong> signed by someone you
-                      trust!
+                      <strong
+                        >This document was not signed by someone you trust!</strong
+                      > <br />
+                      You marked attribute X as not trusted. <br />
+                      Do not trust it solely because of this signature!
                     {:else if alertType === "warning"}
-                      This document was signed by someone you're <strong
-                        >not sure</strong
-                      > you trust.
+                      Be careful with trusting documents without a trusted
+                      signature. <br />
+                      Are the assurances of this person enough?
                     {:else if alertType === "success"}
                       This document was signed by someone you <strong
                         >trust</strong
@@ -359,6 +308,10 @@
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 2px;
+  }
+  .question {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
   }
   .explainer {
     font-size: 14px;
