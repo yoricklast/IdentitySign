@@ -16,29 +16,64 @@
   // Prevents showing sigValid status before processing is done
   let processDone = $state(false);
   let sig = $state<Signature>();
-  let nameFound = $derived.by(
-    () =>
-      sig?.attributes.find(
-        (x) => x.attributeType == WalletAttributeType.Name,
-      ) !== undefined,
-  );
-  let addressFound = $derived.by(
-    () =>
-      sig?.attributes.find(
-        (x) => x.attributeType == WalletAttributeType.Address,
-      ) !== undefined,
-  );
-  let emailFound = $derived.by(
-    () =>
-      sig?.attributes.find(
-        (x) => x.attributeType == WalletAttributeType.Email,
-      ) !== undefined,
-  );
+  let signatureAttributes = $derived.by(() => {
+    if (sig && sig.attributes) {
+      return [
+        {
+          name: "name",
+          value: sig.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Name,
+          )?.value,
+          trust: personTrust,
+        },
+        {
+          name: "address",
+          value: sig.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Address,
+          )?.value,
+          trust: addressTrust,
+        },
+        {
+          name: "email",
+          value: sig.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Email,
+          )?.value,
+          trust: emailTrust,
+        },
+      ].filter((x) => x.value !== undefined);
+    }
+  });
+
+  let options = ["Yes", "No", "Not sure"];
 
   let personTrust = $state<String>();
   let addressTrust = $state<String>();
   let emailTrust = $state<String>();
-  let alertType = $state<String>();
+  let alertData = $derived.by(() => {
+    if (
+      signatureAttributes?.filter((x) => x.trust !== undefined).length ==
+      signatureAttributes?.length
+    ) {
+      if (
+        personTrust === "No" ||
+        addressTrust === "No" ||
+        emailTrust === "No"
+      ) {
+        const noAttributes = signatureAttributes
+          ?.filter((x) => x.trust === "No")
+          .map((x) => x.name);
+        return { type: "danger", info: noAttributes };
+      } else if (
+        personTrust === "Not sure" ||
+        addressTrust === "Not sure" ||
+        emailTrust === "Not sure"
+      ) {
+        return { type: "warning", info: undefined };
+      } else {
+        return { type: "success", info: undefined };
+      }
+    }
+  });
 
   function processFile(): void {
     const signer: WalletSigner = new DummySigner();
@@ -69,10 +104,11 @@
                     if (signer.check(itemValue)) {
                       sig = signer.decode(itemValue);
                       sigValid = true;
-                      personTrust = nameFound ? "" : "notSet";
-                      addressTrust = addressFound ? "" : "notSet";
-                      emailTrust = emailFound ? "" : "notSet";
-                      alertType = "";
+                      // Reset trust values
+                      personTrust = undefined;
+                      addressTrust = undefined;
+                      emailTrust = undefined;
+                      console.log(`Length: ${signatureAttributes?.length}`);
                     }
                   }
                 }
@@ -85,28 +121,6 @@
       });
     }
   }
-
-  $effect(() => {
-    if (personTrust && addressTrust && emailTrust) {
-      if (
-        personTrust === "No" ||
-        addressTrust === "No" ||
-        emailTrust === "No"
-      ) {
-        alertType = "danger";
-      } else if (
-        personTrust === "Not sure" ||
-        addressTrust === "Not sure" ||
-        emailTrust === "Not sure"
-      ) {
-        alertType = "warning";
-      } else {
-        alertType = "success";
-      }
-    }
-  });
-
-  let option = ["Yes", "No", "Not sure"];
 </script>
 
 {#snippet personAnswers(label: any)}
@@ -127,7 +141,7 @@
     <input
       class="form-check-input"
       type="radio"
-      name="flexRadioName"
+      name="flexRadioAddress"
       id={label}
       bind:group={addressTrust}
       value={label}
@@ -140,7 +154,7 @@
     <input
       class="form-check-input"
       type="radio"
-      name="flexRadioName"
+      name="flexRadioEmail"
       id={label}
       bind:group={emailTrust}
       value={label}
@@ -237,37 +251,37 @@
                   <div class="col-4">
                     {#if attribute.attributeType == WalletAttributeType.Name}
                       <p class="question">Do you trust this person?</p>
-                      {#each option as label}
+                      {#each options as label}
                         {@render personAnswers(label)}
                       {/each}
                     {:else if attribute.attributeType == WalletAttributeType.Address}
                       <p class="question">Do you trust this address?</p>
-                      {#each option as label}
+                      {#each options as label}
                         {@render addressAnswers(label)}
                       {/each}
                     {:else if attribute.attributeType == WalletAttributeType.Email}
                       <p class="question">Do you trust this email?</p>
-                      {#each option as label}
+                      {#each options as label}
                         {@render emailAnswers(label)}
                       {/each}
                     {/if}
                   </div>
                 </div>
               {/each}
-              {#if alertType}
+              {#if alertData}
                 <div class="row justify-content-end">
-                  <div class="col-4 alert alert-{alertType}" role="alert">
-                    {#if alertType === "danger"}
+                  <div class="col-4 alert alert-{alertData.type}" role="alert">
+                    {#if alertData.type === "danger"}
                       <strong
                         >This document was not signed by someone you trust!</strong
                       > <br />
-                      You marked attribute X as not trusted. <br />
+                      You marked {alertData.info} as not trusted. <br />
                       Do not trust it solely because of this signature!
-                    {:else if alertType === "warning"}
+                    {:else if alertData.type === "warning"}
                       Be careful with trusting documents without a trusted
                       signature. <br />
                       Are the assurances of this person enough?
-                    {:else if alertType === "success"}
+                    {:else if alertData.type === "success"}
                       This document was signed by someone you <strong
                         >trust</strong
                       >!
