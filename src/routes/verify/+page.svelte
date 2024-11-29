@@ -61,16 +61,24 @@
       ) {
         const noAttributes = signatureAttributes
           ?.filter((x) => x.trust === "No")
-          .map((x) => x.name);
+          .map((x) => x.name)
+          .join(", ");
         return { type: "danger", info: noAttributes };
       } else if (
         personTrust === "Not sure" ||
         addressTrust === "Not sure" ||
         emailTrust === "Not sure"
       ) {
-        return { type: "warning", info: undefined };
+        const notSureAttributes = signatureAttributes
+          ?.filter((x) => x.trust === "Not sure")
+          .map((x) => x.name)
+          .join(", ");
+        return { type: "warning", info: notSureAttributes };
       } else {
-        return { type: "success", info: undefined };
+        const allAttributes = signatureAttributes
+          ?.map((x) => x.name)
+          .join(", ");
+        return { type: "success", info: allAttributes };
       }
     }
   });
@@ -279,12 +287,16 @@
                       Do not trust it solely because of this signature!
                     {:else if alertData.type === "warning"}
                       Be careful with trusting documents without a trusted
-                      signature. <br />
+                      signature! <br />
+                      You marked {alertData.info} as having uncertain trust.
+                      <br />
                       Are the assurances of this person enough?
                     {:else if alertData.type === "success"}
                       This document was signed by someone you <strong
                         >trust</strong
-                      >!
+                      >! <br />
+                      You marked all given signature details: {alertData.info} as
+                      trustworthy.
                     {/if}
                   </div>
                 </div>
