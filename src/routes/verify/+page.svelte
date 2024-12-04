@@ -78,7 +78,7 @@
         const allAttributes = signatureAttributes
           ?.map((x) => x.name)
           .join(", ");
-        return { type: "success", info: allAttributes };
+        return { type: "primary", info: allAttributes };
       }
     }
   });
@@ -200,7 +200,18 @@
       {#if processDone}
         {#if sigValid}
           <h2 class="validity valid">
-            <i class="bi bi-search"></i><br />
+            {#if alertData}
+              {#if alertData.type === "danger"}
+                <i class="bi bi-x-octagon"></i>
+              {:else if alertData.type === "warning"}
+                <i class="bi bi-exclamation-triangle"></i>
+              {:else if alertData.type === "primary"}
+                <i class="bi bi-check-circle"></i>
+              {/if}
+            {:else}
+              <i class="bi bi-search"></i>
+            {/if}
+            <br />
             Signature found…
           </h2>
           <p class="validity-text">
@@ -291,7 +302,7 @@
                       You marked {alertData.info} as having uncertain trust.
                       <br />
                       Are the assurances of this person enough?
-                    {:else if alertData.type === "success"}
+                    {:else if alertData.type === "primary"}
                       This document was signed by someone you <strong
                         >trust</strong
                       >! <br />
