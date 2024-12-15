@@ -205,8 +205,8 @@
                 <i class="bi bi-x-octagon"></i>
               {:else if alertData.type === "warning"}
                 <i class="bi bi-exclamation-triangle"></i>
-              {:else if alertData.type === "primary"}
-                <i class="bi bi-check-circle"></i>
+              {:else}
+                <i class="bi bi-search"></i>
               {/if}
             {:else}
               <i class="bi bi-search"></i>
