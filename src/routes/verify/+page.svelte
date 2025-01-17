@@ -16,6 +16,72 @@
   // Prevents showing sigValid status before processing is done
   let processDone = $state(false);
   let sig = $state<Signature>();
+  let signatureAttributes = $derived.by(() => {
+    if (sig && sig.attributes) {
+      return [
+        {
+          name: "name",
+          value: sig.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Name,
+          )?.value,
+          trust: personTrust,
+        },
+        {
+          name: "address",
+          value: sig.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Address,
+          )?.value,
+          trust: addressTrust,
+        },
+        {
+          name: "email",
+          value: sig.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Email,
+          )?.value,
+          trust: emailTrust,
+        },
+      ].filter((x) => x.value !== undefined);
+    }
+  });
+
+  let options = ["Yes", "No", "Not sure"];
+
+  let personTrust = $state<String>();
+  let addressTrust = $state<String>();
+  let emailTrust = $state<String>();
+  let alertData = $derived.by(() => {
+    if (
+      signatureAttributes?.filter((x) => x.trust !== undefined).length ==
+      signatureAttributes?.length
+    ) {
+      if (
+        personTrust === "No" ||
+        addressTrust === "No" ||
+        emailTrust === "No"
+      ) {
+        const noAttributes = signatureAttributes
+          ?.filter((x) => x.trust === "No")
+          .map((x) => x.name)
+          .join(", ");
+        return { type: "danger", info: noAttributes };
+      } else if (
+        personTrust === "Not sure" ||
+        addressTrust === "Not sure" ||
+        emailTrust === "Not sure"
+      ) {
+        const notSureAttributes = signatureAttributes
+          ?.filter((x) => x.trust === "Not sure")
+          .map((x) => x.name)
+          .join(", ");
+        return { type: "warning", info: notSureAttributes };
+      } else {
+        const allAttributes = signatureAttributes
+          ?.map((x) => x.name)
+          .join(", ");
+        return { type: "primary", info: allAttributes };
+      }
+    }
+  });
 
   function processFile(): void {
     const signer: WalletSigner = new DummySigner();
@@ -46,6 +112,11 @@
                     if (signer.check(itemValue)) {
                       sig = signer.decode(itemValue);
                       sigValid = true;
+                      // Reset trust values
+                      personTrust = undefined;
+                      addressTrust = undefined;
+                      emailTrust = undefined;
+                      console.log(`Length: ${signatureAttributes?.length}`);
                     }
                   }
                 }
@@ -59,6 +130,46 @@
     }
   }
 </script>
+
+{#snippet personAnswers(label: any)}
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="flexRadioName"
+      id={label}
+      bind:group={personTrust}
+      value={label}
+    />
+    <label class="form-check-label" for={label}> {label} </label>
+  </div>
+{/snippet}
+{#snippet addressAnswers(label: any)}
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="flexRadioAddress"
+      id={label}
+      bind:group={addressTrust}
+      value={label}
+    />
+    <label class="form-check-label" for={label}> {label} </label>
+  </div>
+{/snippet}
+{#snippet emailAnswers(label: any)}
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="flexRadioEmail"
+      id={label}
+      bind:group={emailTrust}
+      value={label}
+    />
+    <label class="form-check-label" for={label}> {label} </label>
+  </div>
+{/snippet}
 
 <div class="row" style="margin-top: 7%;">
   <div class="col-sm-5">
@@ -89,7 +200,18 @@
       {#if processDone}
         {#if sigValid}
           <h2 class="validity valid">
-            <i class="bi bi-search"></i><br />
+            {#if alertData}
+              {#if alertData.type === "danger"}
+                <i class="bi bi-x-octagon"></i>
+              {:else if alertData.type === "warning"}
+                <i class="bi bi-exclamation-triangle"></i>
+              {:else}
+                <i class="bi bi-search"></i>
+              {/if}
+            {:else}
+              <i class="bi bi-search"></i>
+            {/if}
+            <br />
             Signature found…
           </h2>
           <p class="validity-text">
@@ -105,41 +227,91 @@
             <div class="container signature-details">
               <h3 class="attribute-heading">Signed with:</h3>
               {#each sig.attributes as attribute}
-                <div class="card attribute-card">
-                  <div class="card-header">
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <i class="bi bi-person card-icon"></i><b>Name</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
-                    {/if}
+                <div class="row row-cols-2">
+                  <div class="col-8">
+                    <div class="card attribute-card">
+                      <div class="card-header">
+                        {#if attribute.attributeType == WalletAttributeType.Name}
+                          <i class="bi bi-person card-icon"></i><b>Name</b>
+                        {:else if attribute.attributeType == WalletAttributeType.Address}
+                          <i class="bi bi-mailbox card-icon"></i><b>Address</b>
+                        {:else if attribute.attributeType == WalletAttributeType.Email}
+                          <i class="bi bi-envelope-at card-icon"></i><b>Email</b
+                          >
+                        {/if}
+                      </div>
+                      <div class="card-body">
+                        <p class="attribute-value">
+                          {attribute.value.toString()}
+                        </p>
+                        <h6>
+                          <i class="bi bi-question-circle"></i>
+                          What does this mean?
+                        </h6>
+                        {#if attribute.attributeType == WalletAttributeType.Name}
+                          <p class="explainer">
+                            The document was signed by a person or organization
+                            with this name.
+                          </p>
+                        {:else if attribute.attributeType == WalletAttributeType.Address}
+                          <p class="explainer">
+                            The document was signed by a person or organization
+                            registered at this address.
+                          </p>
+                        {:else if attribute.attributeType == WalletAttributeType.Email}
+                          <p class="explainer">
+                            The document was signed by a person or organization
+                            that owns this email address.
+                          </p>
+                        {/if}
+                      </div>
+                    </div>
                   </div>
-                  <div class="card-body">
-                    <p class="attribute-value">{attribute.value.toString()}</p>
-                    <h6>
-                      <i class="bi bi-question-circle"></i>
-                      What does this mean?
-                    </h6>
+                  <div class="col-4">
                     {#if attribute.attributeType == WalletAttributeType.Name}
-                      <p class="explainer">
-                        The document was signed by a person or organization with
-                        this name.
-                      </p>
+                      <p class="question">Do you trust this person?</p>
+                      {#each options as label}
+                        {@render personAnswers(label)}
+                      {/each}
                     {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <p class="explainer">
-                        The document was signed by a person or organization
-                        registered at this address.
-                      </p>
+                      <p class="question">Do you trust this address?</p>
+                      {#each options as label}
+                        {@render addressAnswers(label)}
+                      {/each}
                     {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <p class="explainer">
-                        The document was signed by a person or organization that
-                        owns this email address.
-                      </p>
+                      <p class="question">Do you trust this email?</p>
+                      {#each options as label}
+                        {@render emailAnswers(label)}
+                      {/each}
                     {/if}
                   </div>
                 </div>
               {/each}
+              {#if alertData}
+                <div class="row justify-content-end">
+                  <div class="col-4 alert alert-{alertData.type}" role="alert">
+                    {#if alertData.type === "danger"}
+                      <strong
+                        >This document was not signed by someone you trust!</strong
+                      > <br />
+                      You marked {alertData.info} as not trusted. <br />
+                      Do not trust it solely because of this signature!
+                    {:else if alertData.type === "warning"}
+                      Be careful with trusting documents without a trusted
+                      signature! <br />
+                      You marked {alertData.info} as having uncertain trust.
+                      <br />
+                      Are the assurances of this person enough?
+                    {:else if alertData.type === "primary"}
+                      This document was signed by someone you <strong
+                        >trust</strong
+                      >! <br />
+                      You marked all given signature details: {alertData.info} as
+                      trustworthy.
+                    {/if}
+                  </div>
+                </div>
+              {/if}
             </div>
           {/if}
         {/if}
@@ -173,6 +345,10 @@
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 2px;
+  }
+  .question {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
   }
   .explainer {
     font-size: 14px;
