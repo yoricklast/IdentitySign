@@ -51,6 +51,7 @@
   let signedPdfName: string | null = null;
   let signedPdfBytes: Uint8Array | null = null;
 
+  // avoid use of effect if possible, needs to be changed in future work
   $effect(() => {
     if (files) {
       if (files[0].type != "application/pdf") {

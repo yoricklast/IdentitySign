@@ -5,6 +5,7 @@
   import { DUMMY_SIG_PREFIX, DummySigner } from "../../scripts/dummy-signer";
   import type { Signature } from "../../scripts/signature";
   import { WalletAttributeType } from "../../scripts/wallet-attribute";
+  import { fade, fly } from "svelte/transition";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -16,6 +17,8 @@
   // Prevents showing sigValid status before processing is done
   let processDone = $state(false);
   let sig = $state<Signature>();
+  let transitionDone = $state(false);
+  let imageVisible = $derived(!sigValid);
   let signatureAttributes = $derived.by(() => {
     if (sig && sig.attributes) {
       return [
@@ -88,6 +91,7 @@
     processDone = false;
     sigValid = false;
     sigFound = false;
+    transitionDone = false;
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
@@ -122,6 +126,7 @@
                 }
               });
               processDone = true;
+
               console.log(`Check done, sig validity: ${sigValid}`);
             });
           });
@@ -172,171 +177,187 @@
 {/snippet}
 
 <div class="row" style="margin-top: 7%;">
-  <div class="col-sm-5">
-    <img
-      class="page-image"
-      src="/img/img_check.svg"
-      alt="Verifying a document"
-    />
-  </div>
-  <div class="col-sm-7">
-    <div class="position-relative top-50 end-0 translate-middle-y">
-      <h1 style="margin-bottom: 30px;">
-        <i class="bi bi-file-earmark-check page-icon"></i>
-        Verify a document's signature
-      </h1>
-      <div class="mb-3 file-select">
-        <label for="formFile" class="form-label"
-          >Select a document to verify its signature.</label
-        >
-        <input
-          class="form-control"
-          accept="application/pdf"
-          type="file"
-          bind:files
-          onchange={processFile}
-        />
-      </div>
-      {#if processDone}
-        {#if sigValid}
-          <h2 class="validity valid">
-            {#if alertData}
-              {#if alertData.type === "danger"}
-                <i class="bi bi-x-octagon"></i>
-              {:else if alertData.type === "warning"}
-                <i class="bi bi-exclamation-triangle"></i>
-              {:else}
-                <i class="bi bi-search"></i>
-              {/if}
+  <div
+    class="col-sm {processDone && sigValid
+      ? 'align-self-start'
+      : 'align-self-center'}"
+  >
+    <h1 style="margin-bottom: 30px;">
+      <i class="bi bi-file-earmark-check page-icon"></i>
+      Verify a document's signature
+    </h1>
+    <div class="mb-3 file-select">
+      <label for="formFile" class="form-label"
+        >Select a document to verify its signature.</label
+      >
+      <input
+        class="form-control"
+        accept="application/pdf"
+        type="file"
+        bind:files
+        onchange={processFile}
+      />
+    </div>
+    {#if processDone}
+      {#if sigValid}
+        <h2 class="validity valid">
+          {#if alertData}
+            {#if alertData.type === "danger"}
+              <i class="bi bi-x-octagon"></i>
+            {:else if alertData.type === "warning"}
+              <i class="bi bi-exclamation-triangle"></i>
             {:else}
               <i class="bi bi-search"></i>
             {/if}
-            <br />
-            Signature found…
-          </h2>
-          <p class="validity-text">
-            <b>Verify the personal data below before trusting this document!</b>
-          </p>
-          <p class="validity-text">
-            <a href="/help/#whentotrust" target="_blank" class="helplink">
-              <i class="bi bi-question-circle"></i>
-              When should I not trust a document?
-            </a>
-          </p>
-          {#if sig && sig.attributes}
-            <div class="container signature-details">
-              <h3 class="attribute-heading">Signed with:</h3>
-              {#each sig.attributes as attribute}
-                <div class="row row-cols-2">
-                  <div class="col-8">
-                    <div class="card attribute-card">
-                      <div class="card-header">
-                        {#if attribute.attributeType == WalletAttributeType.Name}
-                          <i class="bi bi-person card-icon"></i><b>Name</b>
-                        {:else if attribute.attributeType == WalletAttributeType.Address}
-                          <i class="bi bi-mailbox card-icon"></i><b>Address</b>
-                        {:else if attribute.attributeType == WalletAttributeType.Email}
-                          <i class="bi bi-envelope-at card-icon"></i><b>Email</b
-                          >
-                        {/if}
-                      </div>
-                      <div class="card-body">
-                        <p class="attribute-value">
-                          {attribute.value.toString()}
-                        </p>
-                        <h6>
-                          <i class="bi bi-question-circle"></i>
-                          What does this mean?
-                        </h6>
-                        {#if attribute.attributeType == WalletAttributeType.Name}
-                          <p class="explainer">
-                            The document was signed by a person or organization
-                            with this name.
-                          </p>
-                        {:else if attribute.attributeType == WalletAttributeType.Address}
-                          <p class="explainer">
-                            The document was signed by a person or organization
-                            registered at this address.
-                          </p>
-                        {:else if attribute.attributeType == WalletAttributeType.Email}
-                          <p class="explainer">
-                            The document was signed by a person or organization
-                            that owns this email address.
-                          </p>
-                        {/if}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-4">
+          {:else}
+            <i class="bi bi-search"></i>
+          {/if}
+          <br />
+          Signature found…
+        </h2>
+        <p class="validity-text">
+          <b>Verify the personal data below before trusting this document!</b>
+        </p>
+        <p class="validity-text">
+          <a href="/help/#whentotrust" target="_blank" class="helplink">
+            <i class="bi bi-question-circle"></i>
+            When should I not trust a document?
+          </a>
+        </p>
+      {/if}
+      {#if !sigValid && sigFound}
+        <h2 class="validity invalid">
+          <i class="bi bi-x-circle-fill"></i><br />
+          Signature invalid!
+        </h2>
+        <p class="validity-text">
+          This document contains an invalid signature. Do <b>NOT</b> trust this document!
+        </p>
+      {/if}
+      {#if !sigFound}
+        <h2 class="validity notfound">
+          <i class="bi bi-exclamation-triangle-fill"></i><br />
+          No signature found!
+        </h2>
+        <p class="validity-text">
+          IdentitySign could not find a signature in this document. Verify that
+          it has indeed been signed using IdentitySign.
+        </p>
+      {/if}
+    {/if}
+  </div>
+  <div
+    class="col-sm-5 ps-5"
+    style={processDone && sigValid
+      ? "width: 55%; transition: width 0.5s ease;"
+      : "transition: all 0s;"}
+    ontransitionend={() => (transitionDone = true)}
+  >
+    {#if imageVisible}
+      <img
+        class="w-100"
+        in:fade={{ duration: 1000, delay: 100 }}
+        src="/img/img_check.svg"
+        alt="Verifying a document"
+      />
+    {/if}
+    {#if processDone && sigValid && transitionDone}
+      {#if sig && sig.attributes}
+        <div
+          class="container"
+          in:fly|global={{
+            y: "35%",
+            duration: 500,
+            delay: 100,
+          }}
+        >
+          <h3 class="attribute-heading">Signed with:</h3>
+          {#each sig.attributes as attribute}
+            <div class="row row-cols-2">
+              <div class="col-8">
+                <div class="card attribute-card">
+                  <div class="card-header">
                     {#if attribute.attributeType == WalletAttributeType.Name}
-                      <p class="question">Do you trust this person?</p>
-                      {#each options as label}
-                        {@render personAnswers(label)}
-                      {/each}
+                      <i class="bi bi-person card-icon"></i><b>Name</b>
                     {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <p class="question">Do you trust this address?</p>
-                      {#each options as label}
-                        {@render addressAnswers(label)}
-                      {/each}
+                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
                     {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <p class="question">Do you trust this email?</p>
-                      {#each options as label}
-                        {@render emailAnswers(label)}
-                      {/each}
+                      <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
+                    {/if}
+                  </div>
+                  <div class="card-body">
+                    <p class="attribute-value">
+                      {attribute.value.toString()}
+                    </p>
+                    <h6>
+                      <i class="bi bi-question-circle"></i>
+                      What does this mean?
+                    </h6>
+                    {#if attribute.attributeType == WalletAttributeType.Name}
+                      <p class="explainer">
+                        The document was signed by a person or organization with
+                        this name.
+                      </p>
+                    {:else if attribute.attributeType == WalletAttributeType.Address}
+                      <p class="explainer">
+                        The document was signed by a person or organization
+                        registered at this address.
+                      </p>
+                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                      <p class="explainer">
+                        The document was signed by a person or organization that
+                        owns this email address.
+                      </p>
                     {/if}
                   </div>
                 </div>
-              {/each}
-              {#if alertData}
-                <div class="row justify-content-end">
-                  <div class="col-4 alert alert-{alertData.type}" role="alert">
-                    {#if alertData.type === "danger"}
-                      <strong
-                        >This document was not signed by someone you trust!</strong
-                      > <br />
-                      You marked {alertData.info} as not trusted. <br />
-                      Do not trust it solely because of this signature!
-                    {:else if alertData.type === "warning"}
-                      Be careful with trusting documents without a trusted
-                      signature! <br />
-                      You marked {alertData.info} as having uncertain trust.
-                      <br />
-                      Are the assurances of this person enough?
-                    {:else if alertData.type === "primary"}
-                      This document was signed by someone you <strong
-                        >trust</strong
-                      >! <br />
-                      You marked all given signature details: {alertData.info} as
-                      trustworthy.
-                    {/if}
-                  </div>
-                </div>
-              {/if}
+              </div>
+              <div class="col-4">
+                {#if attribute.attributeType == WalletAttributeType.Name}
+                  <p class="question">Do you trust this person?</p>
+                  {#each options as label}
+                    {@render personAnswers(label)}
+                  {/each}
+                {:else if attribute.attributeType == WalletAttributeType.Address}
+                  <p class="question">Do you trust this address?</p>
+                  {#each options as label}
+                    {@render addressAnswers(label)}
+                  {/each}
+                {:else if attribute.attributeType == WalletAttributeType.Email}
+                  <p class="question">Do you trust this email?</p>
+                  {#each options as label}
+                    {@render emailAnswers(label)}
+                  {/each}
+                {/if}
+              </div>
+            </div>
+          {/each}
+          {#if alertData}
+            <div class="row justify-content-end">
+              <div class="col-4 alert alert-{alertData.type}" role="alert">
+                {#if alertData.type === "danger"}
+                  <strong
+                    >This document was not signed by someone you trust!</strong
+                  > <br />
+                  You marked {alertData.info} as not trusted. <br />
+                  Do not trust it solely because of this signature!
+                {:else if alertData.type === "warning"}
+                  Be careful with trusting documents without a trusted
+                  signature! <br />
+                  You marked {alertData.info} as having uncertain trust.
+                  <br />
+                  Are the assurances of this person enough?
+                {:else if alertData.type === "primary"}
+                  This document was signed by someone you <strong>trust</strong
+                  >! <br />
+                  You marked all given signature details: {alertData.info} as trustworthy.
+                {/if}
+              </div>
             </div>
           {/if}
-        {/if}
-        {#if !sigValid && sigFound}
-          <h2 class="validity invalid">
-            <i class="bi bi-x-circle-fill"></i><br />
-            Signature invalid!
-          </h2>
-          <p class="validity-text">
-            This document contains an invalid signature. Do <b>NOT</b> trust this
-            document!
-          </p>
-        {/if}
-        {#if !sigFound}
-          <h2 class="validity notfound">
-            <i class="bi bi-exclamation-triangle-fill"></i><br />
-            No signature found!
-          </h2>
-          <p class="validity-text">
-            IdentitySign could not find a signature in this document. Verify
-            that it has indeed been signed using IdentitySign.
-          </p>
-        {/if}
+        </div>
       {/if}
-    </div>
+    {/if}
   </div>
 </div>
 
@@ -376,9 +397,9 @@
   .notfound {
     color: var(--bs-warning);
   }
-  .signature-details {
+  /* .signature-details {
     margin-top: 50px;
-  }
+  } */
   .file-select {
     margin-top: 50px;
   }
