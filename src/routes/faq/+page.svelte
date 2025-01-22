@@ -55,17 +55,6 @@
     verify this!
   </p>
 
-  <h3>
-    <i class="bi bi-caret-right-fill"></i>
-    How can I access the source code for IdentitySign?
-  </h3>
-
-  <p class="main-text">
-    We have made the source code for IdentitySign available as a Git repository <a
-      href="https://gitlab.science.ru.nl/ylast/identity-sign"
-      target="_blank">here</a
-    >.
-  </p>
 </div>
 
 <style>

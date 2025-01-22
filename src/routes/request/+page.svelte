@@ -63,11 +63,11 @@
         <i class="bi bi-envelope-check page-icon"></i>
         Request a signature
       </h1>
-      <p>Create a signature request link to share by email.</p>
+      <p class="main-text">Create a signature request link to share by email.</p>
       <div class="mb-3">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Document</h5>
+            <h4 class="card-title">Document</h4>
             <label for="formFile" class="form-label"
               >Select a document you want the other person to sign.</label
             >
@@ -82,7 +82,7 @@
 
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Personal data</h5>
+            <h4 class="card-title">Personal data</h4>
             <label for="attr-checks" class="form-label"
               >Select the personal data you want the other person to sign with.</label
             >
