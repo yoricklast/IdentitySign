@@ -206,13 +206,21 @@
           Signature found…
         </h2>
         <p class="validity-text">
-          <b>Verify the personal data used in this signature before trusting this document!</b>
+          <b
+            >Verify the personal data used in this signature before trusting
+            this document!</b
+          >
         </p>
         <p class="validity-text">
-          IdentitySign found a valid signature in this document! However, you should make sure that the person or organization that made this signature provides enough assurance to trust this document.
+          IdentitySign found a valid signature in this document! However, you
+          should make sure that the person or organization that made this
+          signature provides enough assurance to trust this document.
         </p>
         <p class="validity-text text-primary-emphasis">
-          <b>Use the questions next to the signature details to help you judge whether or not this signature provides enough assurances!</b>
+          <b
+            >Use the questions next to the signature details to help you judge
+            whether or not this signature provides enough assurances!</b
+          >
         </p>
         <p class="validity-text">
           <a href="/help/trust" target="_blank" class="helplink">
@@ -310,17 +318,26 @@
               </div>
               <div class="col-4">
                 {#if attribute.attributeType == WalletAttributeType.Name}
-                  <p class="question">Are the assurances of this person/organization appropriate for this document?</p>
+                  <p class="question">
+                    Are the assurances of this person/organization appropriate
+                    for this document?
+                  </p>
                   {#each options as label}
                     {@render personAnswers(label)}
                   {/each}
                 {:else if attribute.attributeType == WalletAttributeType.Address}
-                  <p class="question">Are the assurances of someone with this verified address appropriate for this document?</p>
+                  <p class="question">
+                    Are the assurances of someone with this verified address
+                    appropriate for this document?
+                  </p>
                   {#each options as label}
                     {@render addressAnswers(label)}
                   {/each}
                 {:else if attribute.attributeType == WalletAttributeType.Email}
-                  <p class="question">Are the assurances of someone with this email address appropriate for this document?</p>
+                  <p class="question">
+                    Are the assurances of someone with this email address
+                    appropriate for this document?
+                  </p>
                   {#each options as label}
                     {@render emailAnswers(label)}
                   {/each}
@@ -333,18 +350,30 @@
               <div class="alert alert-{alertData.type}" role="alert">
                 {#if alertData.type === "danger"}
                   <strong>
-                    <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This document was not signed by someone you trust!
+                    <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
+                    document was not signed by someone you trust!
                   </strong><br />
-                  <hr>
-                  You marked {alertData.info} as not trusted. While this signature may be valid, it may not provide the appropriate level of assurance for this document.
+                  <hr />
+                  You marked {alertData.info} as not trusted. While this signature
+                  may be valid, it may not provide the appropriate level of assurance
+                  for this document.
                 {:else if alertData.type === "warning"}
-                  <strong><i class="bi bi-exclamation-triangle-fill alert-icon"></i> This signature may not provide sufficient assurances...</strong>
-                  <hr>
-                  IdentitySign found a valid signature, but the assurances provided by the person that made this signature may not be sufficient to trust this document.
+                  <strong
+                    ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
+                    signature may not provide sufficient assurances...</strong
+                  >
+                  <hr />
+                  IdentitySign found a valid signature, but the assurances provided
+                  by the person that made this signature may not be sufficient to
+                  trust this document.
                 {:else if alertData.type === "primary"}
-                  <strong><i class="bi bi-info-circle-fill alert-icon"></i> This document was signed by someone you trust!</strong> <br />
-                  <hr>
-                  You indicated that the person who signed this document provides enough assurance to trust this document.
+                  <strong
+                    ><i class="bi bi-info-circle-fill alert-icon"></i> This document
+                    was signed by someone you trust!</strong
+                  > <br />
+                  <hr />
+                  You indicated that the person who signed this document provides
+                  enough assurance to trust this document.
                 {/if}
               </div>
             </div>

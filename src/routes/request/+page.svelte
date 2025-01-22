@@ -63,7 +63,9 @@
         <i class="bi bi-envelope-check page-icon"></i>
         Request a signature
       </h1>
-      <p class="main-text">Create a signature request link to share by email.</p>
+      <p class="main-text">
+        Create a signature request link to share by email.
+      </p>
       <div class="mb-3">
         <div class="card">
           <div class="card-body">

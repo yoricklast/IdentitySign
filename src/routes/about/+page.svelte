@@ -44,21 +44,25 @@
     <p class="main-text">
       IdentitySign is a project developed by researchers from the <a
         class="text-reset"
-        href="https://en.cs.uni-paderborn.de/its" target="_blank">Human-Centered IT Security</a
+        href="https://en.cs.uni-paderborn.de/its"
+        target="_blank">Human-Centered IT Security</a
       >
       group at Paderborn University (Germany), and
-      <a class="text-reset" href="https://ihub.ru.nl/" target="_blank">iHub</a> at Radboud University
-      (The Netherlands).
+      <a class="text-reset" href="https://ihub.ru.nl/" target="_blank">iHub</a> at
+      Radboud University (The Netherlands).
     </p>
 
     <h3>Source code</h3>
 
     <p class="main-text" style="margin-bottom: 10px;">
-      IdentitySign is an open-source application, licensed under the GNU General Public License (GPL) version 3.
+      IdentitySign is an open-source application, licensed under the GNU General
+      Public License (GPL) version 3.
     </p>
     <p class="main-text">
-      <b>Links:</b><br>
-      <a href="https://github.com/yoricklast/IdentitySign" target="_blank"><i class="bi bi-github"></i> IdentitySign GitHub project</a>
+      <b>Links:</b><br />
+      <a href="https://github.com/yoricklast/IdentitySign" target="_blank"
+        ><i class="bi bi-github"></i> IdentitySign GitHub project</a
+      >
     </p>
 
     <h3>Got any questions?</h3>

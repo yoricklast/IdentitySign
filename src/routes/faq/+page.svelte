@@ -54,7 +54,6 @@
     will always remain the same. If you want, you can look at our source code to
     verify this!
   </p>
-
 </div>
 
 <style>
