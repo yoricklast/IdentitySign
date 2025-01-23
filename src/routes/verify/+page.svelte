@@ -49,9 +49,9 @@
 
   let options = ["Yes", "No", "Not sure"];
 
-  let personTrust = $state<String>();
-  let addressTrust = $state<String>();
-  let emailTrust = $state<String>();
+  let personTrust = $state<string>();
+  let addressTrust = $state<string>();
+  let emailTrust = $state<string>();
   let alertData = $derived.by(() => {
     if (
       signatureAttributes?.filter((x) => x.trust !== undefined).length ==
@@ -136,7 +136,7 @@
   }
 </script>
 
-{#snippet personAnswers(label: any)}
+{#snippet personAnswers(label: string)}
   <div class="form-check">
     <input
       class="form-check-input"
@@ -149,7 +149,7 @@
     <label class="form-check-label" for={label}> {label} </label>
   </div>
 {/snippet}
-{#snippet addressAnswers(label: any)}
+{#snippet addressAnswers(label: string)}
   <div class="form-check">
     <input
       class="form-check-input"
@@ -162,7 +162,7 @@
     <label class="form-check-label" for={label}> {label} </label>
   </div>
 {/snippet}
-{#snippet emailAnswers(label: any)}
+{#snippet emailAnswers(label: string)}
   <div class="form-check">
     <input
       class="form-check-input"
