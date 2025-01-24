@@ -5,34 +5,34 @@ import globals from "globals";
 import ts from "typescript-eslint";
 
 export default ts.config(
-    js.configs.recommended,
-    ...ts.configs.recommended,
-    ...svelte.configs["flat/recommended"],
-    prettier,
-    {
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-            },
-        },
+  js.configs.recommended,
+  ...ts.configs.recommended,
+  ...svelte.configs["flat/recommended"],
+  prettier,
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
     },
-    {
-        files: ["**/*.svelte"],
+  },
+  {
+    files: ["**/*.svelte"],
 
-        languageOptions: {
-            parser: svelte.parser,
-            parserOptions: {
-                parser: ts.parser,
-            },
-        },
+    languageOptions: {
+      parser: svelte.parser,
+      parserOptions: {
+        parser: ts.parser,
+      },
     },
-    {
-        ignores: ["build/", ".svelte-kit/", "dist/", "static/yivi/"],
+  },
+  {
+    ignores: ["build/", ".svelte-kit/", "dist/", "static/yivi/"],
+  },
+  {
+    plugins: {
+      "@typescript-eslint": ts.plugin,
     },
-    {
-        plugins: {
-            "@typescript-eslint": ts.plugin,
-        },
-    },
+  },
 );
