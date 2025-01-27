@@ -8,6 +8,7 @@
   import { getDefaultYiviUrl } from "../../scripts/util";
   import { issuePopup } from "../../scripts/yivi-issue";
   import { DEFAULT_BASE_CODE, getDefaultBaseCode } from "../../scripts/ts-util";
+  import { onMount } from "svelte";
 
   const URL_PARAMS = new URLSearchParams(window.location.search);
   const PARAM_URL = URL_PARAMS.get("url");
@@ -29,33 +30,35 @@
     }
   }
 
-  let devMode = localStorage.getItem("devMode");
-  let yiviUrl = localStorage.getItem("yiviUrl");
-  let baseCode: string | null = null;
-  let loadedYiviUrlFromDefaults = false;
-  let loadedBaseCodeFromDefaults = false;
+  let devMode = $state(localStorage.getItem("devMode"));
+  let yiviUrl = $state(localStorage.getItem("yiviUrl"));
+  let baseCode: string | null = $state(null);
+  let loadedYiviUrlFromDefaults = $state(false);
+  let loadedBaseCodeFromDefaults = $state(false);
 
-  if (yiviUrl == null) {
-    getDefaultYiviUrl().then((result) => {
-      if (result != null) {
-        yiviUrl = result;
-        loadedYiviUrlFromDefaults = true;
-      }
-    });
-  }
-  if (baseCode == null) {
-    getDefaultBaseCode().then((result) => {
-      if (result != null) {
-        baseCode = `${result}`;
-        loadedBaseCodeFromDefaults = true;
-      } else {
-        baseCode = DEFAULT_BASE_CODE;
-      }
-    });
-  }
+  onMount(() => {
+    if (yiviUrl == null) {
+      getDefaultYiviUrl().then((result) => {
+        if (result != null) {
+          yiviUrl = result;
+          loadedYiviUrlFromDefaults = true;
+        }
+      });
+    }
+    if (baseCode == null) {
+      getDefaultBaseCode().then((result) => {
+        if (result != null) {
+          baseCode = `${result}`;
+          loadedBaseCodeFromDefaults = true;
+        } else {
+          baseCode = DEFAULT_BASE_CODE;
+        }
+      });
+    }
+  });
 
-  let link = genLink();
-  let goHome = false;
+  let link = $state(genLink());
+  let goHome = $state(false);
 
   function enableDevMode() {
     setDevMode(true);
@@ -120,7 +123,7 @@
 </script>
 
 <h1 style="margin-top: 5%;">
-  <i class="bi bi-gear-wide-connected" />
+  <i class="bi bi-gear-wide-connected"></i>
   Setup
 </h1>
 
@@ -139,16 +142,16 @@
     <h5 class="card-title">Yivi</h5>
     <p>Setup demo cards for Yivi.</p>
     <div class="d-grid gap-2 d-md-block">
-      <button class="btn btn-primary" on:click={issuePopup}>
+      <button class="btn btn-primary" onclick={issuePopup}>
         Setup all demo cards
       </button>
-      <button class="btn btn-secondary" on:click={discloseFullName}
+      <button class="btn btn-secondary" onclick={discloseFullName}
         >Setup personal data demo card</button
       >
-      <button class="btn btn-secondary" on:click={discloseAddress}
+      <button class="btn btn-secondary" onclick={discloseAddress}
         >Setup address demo card</button
       >
-      <button class="btn btn-secondary" on:click={discloseEmail}
+      <button class="btn btn-secondary" onclick={discloseEmail}
         >Setup email demo card</button
       >
     </div>
@@ -163,7 +166,7 @@
         id="urlfield"
         bind:value={yiviUrl}
       />
-      <button class="btn btn-primary urlbtn" on:click={saveYiviUrl}
+      <button class="btn btn-primary urlbtn" onclick={saveYiviUrl}
         >Save URL</button
       >
     </div>
@@ -207,10 +210,10 @@
         >{:else}<b style="color: var(--bs-danger);">disabled</b>{/if}.
     </p>
     <div class="d-grid gap-2 d-md-block">
-      <button class="btn btn-primary" on:click={enableDevMode}
+      <button class="btn btn-primary" onclick={enableDevMode}
         >Enable developer mode</button
       >
-      <button class="btn btn-secondary" on:click={disableDevMode}
+      <button class="btn btn-secondary" onclick={disableDevMode}
         >Disable developer mode</button
       >
     </div>
@@ -222,25 +225,21 @@
     <h5 class="card-title">Quick setup link</h5>
     <p>A quick setup link for the current settings.</p>
     <div class="d-grid gap-2 d-md-block">
-      <textarea
-        class="form-control linkbox"
-        bind:value={link}
-        rows="3"
-        disabled
-      />
+      <textarea class="form-control linkbox" bind:value={link} rows="3" disabled
+      ></textarea>
       <div class="form-check">
         <input
           class="form-check-input"
           type="checkbox"
           id="checkHome"
           bind:checked={goHome}
-          on:change={checkGoHome}
+          onchange={checkGoHome}
         />
         <label class="form-check-label" for="checkHome">
           Go to home screen after applying settings.
         </label>
       </div>
-      <button class="btn btn-secondary" on:click={btnCopyClick}
+      <button class="btn btn-secondary" onclick={btnCopyClick}
         >Copy to clipboard</button
       >
     </div>
@@ -255,7 +254,7 @@
         >Warning, this action cannot be undone!</b
       >
     </p>
-    <button class="btn btn-danger" on:click={clearSettings}
+    <button class="btn btn-danger" onclick={clearSettings}
       >Clear settings</button
     >
   </div>

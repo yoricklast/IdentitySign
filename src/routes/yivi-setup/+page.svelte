@@ -12,7 +12,7 @@
 
   <div class="infoblock rounded border">
     <h2>
-      <i class="bi bi-1-circle heading-icon" />
+      <i class="bi bi-1-circle heading-icon"></i>
       Download and install Yivi
     </h2>
 
@@ -27,7 +27,7 @@
 
   <div class="infoblock rounded border">
     <h2>
-      <i class="bi bi-2-circle heading-icon" />
+      <i class="bi bi-2-circle heading-icon"></i>
       Add demo data to Yivi
     </h2>
 
@@ -37,12 +37,12 @@
       the required personal data to your Yivi app.
     </p>
 
-    <button class="btn btn-primary" on:click={issuePopup}>
+    <button class="btn btn-primary" onclick={issuePopup}>
       Add personal data
     </button>
 
     <p class="note infoblock-text">
-      <i class="bi bi-exclamation-triangle" />
+      <i class="bi bi-exclamation-triangle"></i>
       Note that personal data would normally come from a trusted source such as a
       municipality. Using demo data is only possible during this study!
     </p>
@@ -50,7 +50,7 @@
 
   <div class="infoblock rounded border">
     <h2>
-      <i class="bi bi-check-circle heading-icon" />
+      <i class="bi bi-check-circle heading-icon"></i>
       Done!
     </h2>
 

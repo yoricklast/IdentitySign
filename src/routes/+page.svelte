@@ -9,7 +9,7 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-patch-check heading-icon" />Be sure of documents you
+        <i class="bi bi-patch-check heading-icon"></i>Be sure of documents you
         send and receive
       </h2>
 
@@ -21,7 +21,8 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-3-circle heading-icon" />Sign documents in three steps
+        <i class="bi bi-pencil-square heading-icon"></i>Sign documents in three
+        steps
       </h2>
 
       <!-- prettier-ignore -->
@@ -49,19 +50,21 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-emoji-laughing heading-icon" />Available for free to
+        <i class="bi bi-emoji-laughing heading-icon"></i>Available for free to
         everyone
       </h2>
 
       <p class="main-text infoblock-text">
-        This application can be freely used by everyone! Its source code is also
-        available <i>(link pending)</i> so that anyone can inspect it or make improvements!
+        This application can be freely used by everyone! Its source code is <a
+          href="https://github.com/yoricklast/IdentitySign"
+          target="_blank">available</a
+        > so that anyone can inspect it or make improvements!
       </p>
     </div>
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-shield-shaded heading-icon" />All data stays on your
+        <i class="bi bi-shield-shaded heading-icon"></i>All data stays on your
         device
       </h2>
 

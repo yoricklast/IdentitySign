@@ -16,7 +16,7 @@
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
       crossorigin="anonymous"
     ></script>
-    <script src="../yivi/yivi.js" type="text/javascript"></script>
+    <script src="/yivi/yivi.js" type="text/javascript"></script>
     %sveltekit.head%
   </head>
 
@@ -69,12 +69,6 @@
           About
         </a>
       </li>
-      <li class="nav-item main-nav">
-        <a href="/help" class="nav-link">
-          <i class="bi bi-question-circle icon-nav"></i>
-          Help
-        </a>
-      </li>
       <li class="nav-item main-nav" id="setupNavItem">
         <a href="/setup" class="nav-link setupNavLink">
           <i
@@ -92,10 +86,7 @@
       <div style="display: contents">%sveltekit.body%</div>
     </div>
     <div class="impressum">
-      <a
-        class="impressum-text"
-        href="https://www.uni-paderborn.de/impressum"
-        target="_blank"
+      <a href="https://www.uni-paderborn.de/impressum" target="_blank"
         >Impressum</a
       >
     </div>
@@ -131,6 +122,7 @@
   @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap");
   body {
     font-family: "Open Sans", sans-serif;
+    font-size: 18px;
     padding-bottom: 75px;
   }
   h1 {
@@ -155,7 +147,7 @@
   }
   .main-text {
     font-size: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
   }
   .main-nav {
     font-size: 18px;
@@ -216,14 +208,12 @@
   }
   .card-icon {
     margin-right: 10px;
-    color: var(--bs-success);
+    color: var(--bs-primary);
   }
   .impressum {
     width: 100%;
     margin-top: 20px;
-    text-align: center;
-  }
-  .impressum-text {
     font-size: 11pt;
+    text-align: center;
   }
 </style>
