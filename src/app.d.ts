@@ -7,7 +7,10 @@ declare global {
     // interface PageData {}
     // interface Platform {}
   }
+  interface Window {
+    bootstrap: typeof import("bootstrap");
+  }
   const APPLICATION_VERSION: string;
 }
 
-export {};
+export { };

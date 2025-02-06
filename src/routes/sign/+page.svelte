@@ -16,6 +16,8 @@
     disclose,
   } from "../../scripts/yivi-disclose";
 
+  import { onMount } from "svelte";
+
   const PARAM_NAME = "name";
   const PARAM_MAIL = "mail";
   const PARAM_ADDRESS = "address";
@@ -276,6 +278,15 @@
 </script>
 
 <!-- HTML / Svelte -->
+
+<button
+  type="button"
+  class="btn btn-lg btn-danger"
+  data-bs-toggle="popover"
+  data-bs-title="Popover title"
+  data-bs-content="And here's some amazing content. It's very engaging. Right?"
+  >Click to toggle popover</button
+>
 
 <div class="row" style="margin-top: 5%;">
   <div class="col-sm-5">

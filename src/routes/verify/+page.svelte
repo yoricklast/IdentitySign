@@ -199,7 +199,7 @@
       />
     </div>
     {#if processDone}
-      {#if sigValid}
+      {#if sigValid && transitionDone}
         <h2 class="validity valid">
           <i class="bi bi-search"></i>
           <br />
