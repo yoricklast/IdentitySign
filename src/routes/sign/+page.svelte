@@ -288,6 +288,15 @@
   >Click to toggle popover</button
 >
 
+<button
+  type="button"
+  class="btn btn-lg btn-danger"
+  data-bs-toggle="popover"
+  data-bs-title="Popover title"
+  data-bs-content="And here's some amazing content. It's very engaging. Right?"
+  >Click to toggle popover</button
+>
+
 <div class="row" style="margin-top: 5%;">
   <div class="col-sm-5">
     {#if paramsGiven()}
