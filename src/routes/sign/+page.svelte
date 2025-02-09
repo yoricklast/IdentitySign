@@ -16,8 +16,6 @@
     disclose,
   } from "../../scripts/yivi-disclose";
 
-  import { onMount } from "svelte";
-
   const PARAM_NAME = "name";
   const PARAM_MAIL = "mail";
   const PARAM_ADDRESS = "address";
@@ -279,24 +277,6 @@
 
 <!-- HTML / Svelte -->
 
-<button
-  type="button"
-  class="btn btn-lg btn-danger"
-  data-bs-toggle="popover"
-  data-bs-title="Popover title"
-  data-bs-content="And here's some amazing content. It's very engaging. Right?"
-  >Click to toggle popover</button
->
-
-<button
-  type="button"
-  class="btn btn-lg btn-danger"
-  data-bs-toggle="popover"
-  data-bs-title="Popover title"
-  data-bs-content="And here's some amazing content. It's very engaging. Right?"
-  >Click to toggle popover</button
->
-
 <div class="row" style="margin-top: 5%;">
   <div class="col-sm-5">
     {#if paramsGiven()}
@@ -374,7 +354,21 @@
               Creating a signature from a sign request.
             </p>
           {/if}
-          <h2>Select document</h2>
+          <h2>
+            Select document
+            <button
+              type="button"
+              class="btn btn-link mb-1"
+              data-bs-toggle="popover"
+              data-bs-placement="right"
+              data-bs-container="body"
+              data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want to sign."
+              aria-label="How to select a document"
+            >
+              <i class="bi bi-question-circle"></i>
+            </button>
+          </h2>
+
           <div class="mb-3 file-select">
             <label for="formFile" class="form-label"
               >Select a document to sign.</label
@@ -386,7 +380,18 @@
               bind:files
             />
           </div>
-          <h2 style="margin-top: 30px;">Select personal data</h2>
+          <h2 style="margin-top: 30px;">
+            Select personal data <button
+              type="button"
+              class="btn btn-link mb-1"
+              data-bs-toggle="popover"
+              data-bs-placement="right"
+              data-bs-container="body"
+              data-bs-content="A document has to be selected first. You can sign with: name (first name + last name), email and address (street, house number, zip code and city)"
+              aria-label="How to select personal data"
+              ><i class="bi bi-question-circle"> </i>
+            </button>
+          </h2>
           <label for="attr-checks" class="form-label"
             >Select the personal data you want to sign with. A signature will
             always contain the date and time.</label
@@ -517,6 +522,16 @@
             Done!
           </h2>
           You can find the signed file in your downloads folder.
+
+          <!-- Input YiviURL to check Ui changes -->
+          <p>
+            <i class="text-primary-emphasis"
+              >Please note that IdentitySign signatures only work on <b
+                >digital</b
+              > documents! Printed documents will stay display the IdentitySign banner,
+              but no longer contain a signature (even when scanned).</i
+            >
+          </p>
         {/if}
       </div>
 
