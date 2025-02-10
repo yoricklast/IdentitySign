@@ -354,24 +354,22 @@
               Creating a signature from a sign request.
             </p>
           {/if}
-          <h2>
-            Select document
-            <button
-              type="button"
-              class="btn btn-link mb-1"
-              data-bs-toggle="popover"
-              data-bs-placement="right"
-              data-bs-container="body"
-              data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want to sign."
-              aria-label="How to select a document"
-            >
-              <i class="bi bi-question-circle"></i>
-            </button>
-          </h2>
+          <h2>Select document</h2>
 
           <div class="mb-3 file-select">
             <label for="formFile" class="form-label"
-              >Select a document to sign.</label
+              >Select a document to sign.
+              <button
+                type="button"
+                class="btn btn-link mb-1"
+                data-bs-toggle="popover"
+                data-bs-placement="right"
+                data-bs-container="body"
+                data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want to sign."
+                aria-label="How to select a document"
+              >
+                <i class="bi bi-question-circle"></i>
+              </button></label
             >
             <input
               class="form-control"
@@ -380,8 +378,11 @@
               bind:files
             />
           </div>
-          <h2 style="margin-top: 30px;">
-            Select personal data <button
+          <h2 style="margin-top: 30px;">Select personal data</h2>
+          <label for="attr-checks" class="form-label"
+            >Select the personal data you want to sign with. A signature will
+            always contain the date and time.
+            <button
               type="button"
               class="btn btn-link mb-1"
               data-bs-toggle="popover"
@@ -390,11 +391,7 @@
               data-bs-content="A document has to be selected first. You can sign with: name (first name + last name), email and address (street, house number, zip code and city)"
               aria-label="How to select personal data"
               ><i class="bi bi-question-circle"> </i>
-            </button>
-          </h2>
-          <label for="attr-checks" class="form-label"
-            >Select the personal data you want to sign with. A signature will
-            always contain the date and time.</label
+            </button></label
           >
           {#if !attributeSelected && fileSelected}
             <div id="attr-checks">
@@ -522,8 +519,6 @@
             Done!
           </h2>
           You can find the signed file in your downloads folder.
-
-          <!-- Input YiviURL to check Ui changes -->
           <p>
             <i class="text-primary-emphasis"
               >Please note that IdentitySign signatures only work on <b
