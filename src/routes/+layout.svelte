@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { afterNavigate, beforeNavigate } from "$app/navigation";
 
   let { children } = $props();
@@ -7,8 +7,8 @@
     const popoverTriggerList = document.querySelectorAll(
       '[data-bs-toggle="popover"]',
     );
-    const popoverList = [...popoverTriggerList].map(
-      (popoverTriggerEl) => new bootstrap.Popover(popoverTriggerEl),
+    [...popoverTriggerList].map(
+      (popoverTriggerEl) => new window.bootstrap.Popover(popoverTriggerEl),
     );
   });
 

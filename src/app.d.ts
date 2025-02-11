@@ -13,4 +13,4 @@ declare global {
   const APPLICATION_VERSION: string;
 }
 
-export { };
+export {};
