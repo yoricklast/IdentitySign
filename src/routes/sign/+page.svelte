@@ -359,17 +359,23 @@
           <div class="mb-3 file-select">
             <label for="formFile" class="form-label"
               >Select a document to sign.
-              <button
-                type="button"
-                class="btn btn-link mb-1"
+              <span
+                class="d-inline-block"
+                data-bs-trigger="hover focus"
                 data-bs-toggle="popover"
                 data-bs-placement="right"
                 data-bs-container="body"
                 data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want to sign."
-                aria-label="How to select a document"
               >
-                <i class="bi bi-question-circle"></i>
-              </button></label
+                <button
+                  type="button"
+                  class="btn btn-link mb-1"
+                  tabindex="0"
+                  aria-label="How to select a document"
+                >
+                  <i class="bi bi-question-circle"></i>
+                </button></span
+              ></label
             >
             <input
               class="form-control"
@@ -382,17 +388,23 @@
           <label for="attr-checks" class="form-label"
             >Select the personal data you want to sign with. A signature will
             always contain the date and time.
-            <button
-              type="button"
-              class="btn btn-link mb-1"
+            <span
+              class="d-inline-block"
+              data-bs-trigger="hover focus"
               data-bs-toggle="popover"
               data-bs-placement="right"
               data-bs-container="body"
               data-bs-content="A document has to be selected first. You can sign with: name (first name + last name), email and address (street, house number, zip code and city)"
-              aria-label="How to select personal data"
-              ><i class="bi bi-question-circle"> </i>
-            </button></label
-          >
+            >
+              <button
+                type="button"
+                class="btn btn-link mb-1"
+                tabindex="0"
+                aria-label="How to select personal data"
+                ><i class="bi bi-question-circle"> </i>
+              </button>
+            </span>
+          </label>
           {#if !attributeSelected && fileSelected}
             <div id="attr-checks">
               <div class="mb-3 form-check form-check-inline">
@@ -518,7 +530,9 @@
             <i class="bi bi-check-circle"></i>
             Done!
           </h2>
-          You can find the signed file in your downloads folder.
+          <p>
+            You can find the signed file in your downloads folder. <br />
+          </p>
           <p>
             <i class="text-primary-emphasis"
               >Please note that IdentitySign signatures only work on <b
