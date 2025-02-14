@@ -27,13 +27,13 @@
 
   <p class="main-text">
     Anyone can sign a document using IdentitySign! Therefore, it is important
-    that you check that the person or organization who signed the document
-    provides enough assurances to trust the document.
+    that you check who signed the document and whether they have the authority
+    to sign this document.
   </p>
 
   <p class="main-text">
     For example, let's take a concert ticket as example. We expect such a
-    document to be signed by the ticket company, not by the concertgoer or
+    document to be signed by the ticket company, not by the concert-goer or
     someone else! Here's what this might look like:
   </p>
 

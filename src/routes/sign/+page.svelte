@@ -37,6 +37,18 @@
   let nameChecked = $state<boolean>();
   let mailChecked = $state<boolean>();
   let addressChecked = $state<boolean>();
+  let checkedAttributes = $derived.by(() => {
+    return [
+      nameChecked ? "name" : null,
+      mailChecked ? "email" : null,
+      addressChecked ? "address" : null,
+    ].filter((x) => x != null);
+  });
+
+  function join(attributesList: string[]) {
+    if (attributesList.length === 1) return attributesList[0];
+    return `${attributesList.slice(0, -1).join(", ")} and ${attributesList[attributesList.length - 1]}`;
+  }
 
   let selectedAttributes: WalletAttributeType[] = [];
 
@@ -339,7 +351,7 @@
         <i class="bi bi-pencil-square page-icon"></i>
         Sign a document
       </h1>
-
+      <!-- TODO: Remove text, change for next steps. Check if Yivi is setup yet.-->
       <p>
         Select a document and the personal data to sign with and create a
         signature using <a href="https://www.yivi.app/en" target="_blank"
@@ -380,7 +392,10 @@
                   id="checkName"
                   bind:checked={nameChecked}
                 />
-                <label class="form-check-label" for="checkName">Name</label>
+                <label class="form-check-label" for="checkName"
+                  >Name verified by your municipality</label
+                >
+                <!-- Or just "legal name" maybe? -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -413,7 +428,10 @@
                   disabled
                   bind:checked={nameChecked}
                 />
-                <label class="form-check-label" for="checkName">Name</label>
+                <label class="form-check-label" for="checkName"
+                  >Name verified by your municipality</label
+                >
+                <!-- See above -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -450,11 +468,10 @@
             <div class="yivi-text col">
               <h2>Prove your identity</h2>
               <p>
-                Now that you have selected your file and personal data, you have
-                to prove these are correct using <a
-                  href="https://www.yivi.app/en"
-                  target="_blank">Yivi</a
-                >.
+                To sign with your {join(checkedAttributes)}, you need to prove
+                that {checkedAttributes.length > 1 ? "they are" : "it is"}
+                really yours. You do this with the
+                <a href="https://www.yivi.app/en" target="_blank">Yivi</a> app.
               </p>
               <h3>How do I do this?</h3>
               <p>
@@ -549,7 +566,7 @@
           Select file & personal data
         </div>
         <div class="progress-label text-wrap col text-center">
-          Prove your identity
+          Prove your identity with Yivi
         </div>
         <div class="progress-label text-wrap col text-end">Sign file</div>
       </div>
