@@ -351,14 +351,14 @@
         <i class="bi bi-pencil-square page-icon"></i>
         Sign a document
       </h1>
-      <!-- TODO: Remove text, change for next steps. Check if Yivi is setup yet.-->
-      <p>
-        Select a document and the personal data to sign with and create a
-        signature using <a href="https://www.yivi.app/en" target="_blank"
-          >Yivi</a
-        >.
-      </p>
-
+      {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
+        <p>
+          Create a signature using <a
+            href="https://www.yivi.app/en"
+            target="_blank">Yivi</a
+          >.
+        </p>
+      {/if}
       <div class="infoblock rounded border">
         {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
           {#if paramsGiven()}

@@ -52,6 +52,7 @@
   let personTrust = $state<string>();
   let addressTrust = $state<string>();
   let emailTrust = $state<string>();
+
   // Change to alertType only, if alert message changes permanently
   let alertData = $derived.by(() => {
     if (
@@ -323,7 +324,6 @@
                     Is this email address owned by the right person or
                     organization?
                   </p>
-                  <!-- Is an email address sufficient? => Change questions depending of number of attributes? -->
                   {#each options as label}
                     {@render emailAnswers(label)}
                   {/each}

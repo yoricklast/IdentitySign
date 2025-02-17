@@ -21,7 +21,7 @@
       </p>
     </div>
 
-    <!-- TODO: Image/less text/space for verfication&request step. Maybe move to signing page? -->
+    <!-- TODO: Less text(Images)/ more focus on verfication&request step/ Maybe move to signing page? -->
     <div class="infoblock rounded border">
       <h2>
         <i class="bi bi-pencil-square heading-icon"></i>Sign documents in three
