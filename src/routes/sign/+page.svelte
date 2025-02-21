@@ -101,6 +101,7 @@
           SIGNED_FILE_ADDITION;
         downloadPdf(signedPdfName, signedPdfBytes);
         signedDone = true;
+        progress = 100;
       });
     }
   }
@@ -109,7 +110,7 @@
     getYiviData(selectedAttributes).then((result) => {
       yiviAttributes = result;
       yiviDone = true;
-      progress = 100;
+      progress = 90;
     });
   }
 
@@ -335,6 +336,19 @@
   </div>
   <div class="col-sm-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
+      <div class="progress-label-div row">
+        <div class="progress-label text-wrap col text-begin">
+          Select file & personal data
+        </div>
+        <div class="progress-label text-wrap col text-center">
+          Prove your identity
+        </div>
+        <div class="progress-label text-wrap col text-center">Sign file</div>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Progress">
+        <div class="progress-bar" style="width: {progress}%"></div>
+      </div>
+
       <h1>
         <i class="bi bi-pencil-square page-icon"></i>
         Sign a document
@@ -517,6 +531,14 @@
             ><i class="bi bi-arrow-right-circle btn-sign-icon"></i>Next
           </button>
         {/if}
+        {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
+          <button
+            class="btn btn-outline-primary btn-sign"
+            type="button"
+            disabled
+            ><i class="bi bi-qr-code-scan btn-sign-icon"></i>Scan QR to continue
+          </button>
+        {/if}
         {#if fileSelected && yiviDone && !signedDone}
           <button
             class="btn btn-primary btn-sign"
@@ -540,19 +562,6 @@
           >
         {/if}
       </div>
-
-      <div class="progress" role="progressbar" aria-label="Progress">
-        <div class="progress-bar" style="width: {progress}%"></div>
-      </div>
-      <div class="progress-label-div row">
-        <div class="progress-label text-wrap col text-begin">
-          Select file & personal data
-        </div>
-        <div class="progress-label text-wrap col text-center">
-          Prove your identity
-        </div>
-        <div class="progress-label text-wrap col text-end">Sign file</div>
-      </div>
     </div>
   </div>
 </div>
@@ -571,6 +580,8 @@
   }
   .btn-sign-div {
     margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
   }
   .btn-sign-icon {
     margin-right: 7px;
@@ -590,10 +601,10 @@
     font-size: 18px;
   }
   .progress {
-    margin-top: 30px;
+    margin-bottom: 30px;
   }
   .progress-label-div {
-    padding-top: 10px;
+    padding-bottom: 10px;
   }
   .progress-label {
     width: 33%;
