@@ -47,6 +47,7 @@
     }
   });
 
+  let progress = $state(0);
   let options = ["Yes", "No", "Not sure"];
 
   let personTrust = $state<string>();
@@ -85,6 +86,14 @@
       }
     }
   });
+
+  function setProgress(): void {
+    signatureAttributes?.forEach((x) => {
+      if (x.trust === undefined) {
+        progress += 50 / signatureAttributes.length;
+      }
+    });
+  }
 
   function processFile(): void {
     const signer: WalletSigner = new DummySigner();
@@ -126,6 +135,7 @@
                 }
               });
               processDone = true;
+              progress = 50;
 
               console.log(`Check done, sig validity: ${sigValid}`);
             });
@@ -182,6 +192,17 @@
       ? 'align-self-start'
       : 'align-self-center'}"
   >
+    <div class="progress-label-div row">
+      <div class="progress-label text-wrap col text-begin">Select document</div>
+      <div class="progress-label text-wrap col text-center">
+        Check signature
+      </div>
+      <div class="progress-label text-wrap col text-end">Verified</div>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Progress">
+      <div class="progress-bar" style="width: {progress}%"></div>
+    </div>
+
     <h1 style="margin-bottom: 30px;">
       <i class="bi bi-file-earmark-check page-icon"></i>
       Verify a document's signature

@@ -600,16 +600,6 @@
   .form-check {
     font-size: 18px;
   }
-  .progress {
-    margin-bottom: 30px;
-  }
-  .progress-label-div {
-    padding-bottom: 10px;
-  }
-  .progress-label {
-    width: 33%;
-    font-weight: 600;
-  }
   .request-note {
     font-size: 20px;
     font-weight: 600;
