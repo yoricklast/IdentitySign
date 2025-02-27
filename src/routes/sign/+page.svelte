@@ -337,13 +337,15 @@
   <div class="col-sm-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <div class="progress-label-div row">
-        <div class="progress-label text-wrap col text-begin">
+        <div class="progress-label text-wrap col text-begin align-self-end">
           Select file & personal data
         </div>
-        <div class="progress-label text-wrap col text-center">
+        <div class="progress-label text-wrap col text-center align-self-end">
           Prove your identity
         </div>
-        <div class="progress-label text-wrap col text-center">Sign file</div>
+        <div class="progress-label text-wrap col text-center align-self-end">
+          Sign file
+        </div>
       </div>
       <div class="progress" role="progressbar" aria-label="Progress">
         <div class="progress-bar" style="width: {progress}%"></div>

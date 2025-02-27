@@ -46,6 +46,7 @@
       ].filter((x) => x.value !== undefined);
     }
   });
+  let trustSet = $state<string[]>([]);
 
   let progress = $state(0);
   let options = ["Yes", "No", "Not sure"];
@@ -89,8 +90,9 @@
 
   function setProgress(): void {
     signatureAttributes?.forEach((x) => {
-      if (x.trust === undefined) {
+      if (x.trust != undefined && !trustSet.includes(x.name)) {
         progress += 50 / signatureAttributes.length;
+        trustSet.push(x.name);
       }
     });
   }
@@ -129,6 +131,7 @@
                       personTrust = undefined;
                       addressTrust = undefined;
                       emailTrust = undefined;
+                      trustSet = [];
                       console.log(`Length: ${signatureAttributes?.length}`);
                     }
                   }
@@ -155,6 +158,7 @@
       id={label}
       bind:group={personTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -168,6 +172,7 @@
       id={label}
       bind:group={addressTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -181,6 +186,7 @@
       id={label}
       bind:group={emailTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -193,11 +199,15 @@
       : 'align-self-center'}"
   >
     <div class="progress-label-div row">
-      <div class="progress-label text-wrap col text-begin">Select document</div>
-      <div class="progress-label text-wrap col text-center">
+      <div class="progress-label text-wrap col text-begin align-self-end">
+        Select document
+      </div>
+      <div class="progress-label text-wrap col text-center align-self-end">
         Check signature
       </div>
-      <div class="progress-label text-wrap col text-end">Verified</div>
+      <div class="progress-label text-wrap col text-end align-self-end">
+        Verified
+      </div>
     </div>
     <div class="progress" role="progressbar" aria-label="Progress">
       <div class="progress-bar" style="width: {progress}%"></div>
