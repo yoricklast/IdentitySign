@@ -551,13 +551,13 @@
         {/if}
         {#if signedDone}
           <button
-            class="btn btn-primary btn-sign"
+            class="btn btn-secondary btn-sign"
             type="button"
             onclick={btnResetClick}
             ><i class="bi bi-plus-lg btn-sign-icon"></i>Sign another file</button
           >
           <button
-            class="btn btn-primary btn-sign"
+            class="btn btn-secondary btn-sign"
             type="button"
             onclick={btnDownloadAgainClick}
             ><i class="bi bi-download btn-sign-icon"></i>Download again</button
