@@ -277,8 +277,8 @@
 
 <!-- HTML / Svelte -->
 
-<div class="row" style="margin-top: 5%;">
-  <div class="col-sm-5">
+<div class="row flex-wrap-reverse" style="margin-top: 5%;">
+  <div class="col-lg-5">
     {#if paramsGiven()}
       <div class="card request-card">
         <div
@@ -333,7 +333,7 @@
       />
     {/if}
   </div>
-  <div class="col-sm-7">
+  <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <h1>
         <i class="bi bi-pencil-square page-icon"></i>
@@ -446,16 +446,16 @@
           {/if}
         {/if}
         {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
-          <div class="row">
-            <div class="yivi-text col">
-              <h2>Prove your identity</h2>
-              <p>
-                Now that you have selected your file and personal data, you have
-                to prove these are correct using <a
-                  href="https://www.yivi.app/en"
-                  target="_blank">Yivi</a
-                >.
-              </p>
+          <h2>Prove your identity</h2>
+          <p>
+            Now that you have selected your file and personal data, you have to
+            prove these are correct using <a
+              href="https://www.yivi.app/en"
+              target="_blank">Yivi</a
+            >.
+          </p>
+          <div class="row flex-wrap-reverse flex-sm-wrap-reverse">
+            <div class="yivi-text col-md" style="min-width: 33.33%;">
               <h3>How do I do this?</h3>
               <p>
                 <b>If you are on a laptop or desktop</b> then use the Yivi app
@@ -470,7 +470,7 @@
                 button. Follow the instructions in the Yivi app to continue.
               </p>
             </div>
-            <div class="yivi-web-form col" id="yivi-web-form"></div>
+            <div class="yivi-web-form col-xl mb-3" id="yivi-web-form"></div>
           </div>
         {/if}
         {#if !signedDone && yiviDone}
