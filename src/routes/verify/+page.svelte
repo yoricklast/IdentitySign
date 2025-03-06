@@ -134,6 +134,10 @@
       });
     }
   }
+
+  $effect(() => {
+    console.log("Done:" + transitionDone);
+  });
 </script>
 
 {#snippet personAnswers(label: string)}
@@ -251,7 +255,7 @@
     {/if}
   </div>
   <div
-    class="col-lg-5 ps-5 fill-space"
+    class="col-lg-5 ps-5 {processDone && sigValid ? 'fill-space' : ''} "
     style={processDone && sigValid
       ? "width: 55%; transition: width 0.5s ease;"
       : "transition: all 0s;"}
@@ -439,8 +443,9 @@
   }
   @media (max-width: 768px) {
     .fill-space {
-      width: 100% !important;
-      transition: all 0s !important;
+      width: 99.99% !important;
+      transition: width 0s !important;
+      padding-left: 0 !important;
     }
   }
 </style>
