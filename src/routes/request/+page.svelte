@@ -49,15 +49,15 @@
   }
 </script>
 
-<div class="row" style="margin-top: 5%;">
-  <div class="col-sm-5">
+<div class="row flex-wrap-reverse" style="margin-top: 5%;">
+  <div class="col-lg-5 col-md-8 col-sm-8">
     <img
-      class="page-image position-relative top-50 start-0 translate-middle-y"
+      class="page-image position-relative top-0 start-0 pt-5"
       src="/img/img_request.svg"
       alt="Verifying a document"
     />
   </div>
-  <div class="col-sm-7">
+  <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <h1>
         <i class="bi bi-envelope-check page-icon"></i>

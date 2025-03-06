@@ -263,7 +263,7 @@
   >
     {#if imageVisible}
       <img
-        class="w-100"
+        class="w-100 pt-5 small-image"
         in:fade={{ duration: 1000, delay: 100 }}
         src="/img/img_check.svg"
         alt="Verifying a document"
@@ -446,6 +446,11 @@
       width: 99.99% !important;
       transition: width 0s !important;
       padding-left: 0 !important;
+    }
+  }
+  @media (max-width: 992px) {
+    .small-image {
+      width: 75% !important;
     }
   }
 </style>

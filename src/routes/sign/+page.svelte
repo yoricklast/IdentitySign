@@ -278,7 +278,7 @@
 <!-- HTML / Svelte -->
 
 <div class="row flex-wrap-reverse" style="margin-top: 5%;">
-  <div class="col-lg-5">
+  <div class="col-lg-5 col-md-8 col-sm-8">
     {#if paramsGiven()}
       <div class="card request-card">
         <div
@@ -327,7 +327,7 @@
       </div>
     {:else}
       <img
-        class="page-image"
+        class="page-image pt-3"
         src="/img/img_sign.svg"
         alt="Signing a document"
       />
