@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
+
   let files = $state<FileList>();
 
   let name = $state(false);
@@ -133,11 +135,19 @@
             disabled>Generate request</button
           >
         {:else}
-          <button
-            type="submit"
-            class="btn btn-primary btn-generate"
-            onclick={btnGenerateClick}>Generate request</button
-          >
+          <div class="d-flex gap-4">
+            <button
+              type="submit"
+              class="btn btn-primary btn-generate"
+              onclick={btnGenerateClick}>Generate request</button
+            >
+            {#if request != ""}
+              <button type="button" class="btn btn-generate" in:fade disabled
+                ><span class="bi bi-arrow-down-circle-fill me-2"></span>See
+                request below</button
+              >
+            {/if}
+          </div>
         {/if}
       </div>
 
@@ -153,20 +163,23 @@
             bind:value={request}
             disabled
           ></textarea>
-          <div style="margin-top: 10px;">
-            <button type="button" class="btn btn-light" onclick={btnCopyClick}
+          <div style="margin-top: 5px;">
+            <button
+              type="button"
+              class="btn btn-light mt-2"
+              onclick={btnCopyClick}
               ><i class="bi bi-clipboard btn-icon"></i>Copy to clipboard</button
             >
             <button
               type="button"
-              class="btn btn-light"
+              class="btn btn-light mt-2"
+              style="margin-right: 5px;"
               onclick={btnCopyLinkClick}
               ><i class="bi bi-link-45deg btn-icon"></i>Copy link only</button
             >
             <button
               type="button"
-              class="btn btn-primary"
-              style="margin-left: 5px;"
+              class="btn btn-primary mt-2"
               onclick={btnClearClick}
               ><i class="bi bi-plus-lg btn-icon"></i>New request</button
             >
