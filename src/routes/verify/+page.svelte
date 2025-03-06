@@ -178,7 +178,7 @@
 
 <div class="row" style="margin-top: 7%;">
   <div
-    class="col-sm {processDone && sigValid
+    class="col-md {processDone && sigValid
       ? 'align-self-start'
       : 'align-self-center'}"
   >
@@ -222,7 +222,7 @@
             whether or not this signature provides enough assurances!</b
           >
         </p>
-        <p class="validity-text">
+        <p class="validity-text mb-3">
           <a href="/help/trust" target="_blank" class="helplink">
             <i class="bi bi-question-circle"></i>
             When should I not trust a document?
@@ -251,7 +251,7 @@
     {/if}
   </div>
   <div
-    class="col-sm-5 ps-5"
+    class="col-lg-5 ps-5 fill-space"
     style={processDone && sigValid
       ? "width: 55%; transition: width 0.5s ease;"
       : "transition: all 0s;"}
@@ -277,8 +277,8 @@
         >
           <h3 class="attribute-heading">Signed with:</h3>
           {#each sig.attributes as attribute}
-            <div class="row row-cols-2">
-              <div class="col-8">
+            <div class="row row-cols-sm-1">
+              <div class="col-xxl-6">
                 <div class="card attribute-card">
                   <div class="card-header">
                     {#if attribute.attributeType == WalletAttributeType.Name}
@@ -316,7 +316,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-xxl">
                 {#if attribute.attributeType == WalletAttributeType.Name}
                   <p class="question">
                     Are the assurances of this person/organization appropriate
@@ -325,6 +325,7 @@
                   {#each options as label}
                     {@render personAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {:else if attribute.attributeType == WalletAttributeType.Address}
                   <p class="question">
                     Are the assurances of someone with this verified address
@@ -333,6 +334,7 @@
                   {#each options as label}
                     {@render addressAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {:else if attribute.attributeType == WalletAttributeType.Email}
                   <p class="question">
                     Are the assurances of someone with this email address
@@ -341,6 +343,7 @@
                   {#each options as label}
                     {@render emailAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {/if}
               </div>
             </div>
@@ -433,5 +436,11 @@
   .alert-icon {
     font-size: 20px;
     margin-right: 5px;
+  }
+  @media (max-width: 768px) {
+    .fill-space {
+      width: 100% !important;
+      transition: all 0s !important;
+    }
   }
 </style>
