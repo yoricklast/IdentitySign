@@ -2,10 +2,11 @@
   // Use PDF.js for reading PDF files
   import * as PDFjs from "pdfjs-dist";
   import type { WalletSigner } from "../../scripts/wallet-signer";
-  import { DUMMY_SIG_PREFIX, DummySigner } from "../../scripts/dummy-signer";
+  import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
   import type { Signature } from "../../scripts/signature";
-  import { WalletAttributeType } from "../../scripts/wallet-attribute";
   import { fade, fly } from "svelte/transition";
+  import { Unsealer } from "../../../../../Radboud/postguard/pg-wasm/pkg";
+  import { PKG_URL } from "../../scripts/Constants";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -19,28 +20,29 @@
   let sig = $state<Signature>();
   let transitionDone = $state(false);
   let imageVisible = $derived(!sigValid);
+
   let signatureAttributes = $derived.by(() => {
     if (sig && sig.attributes) {
       return [
         {
           name: "name",
           value: sig.attributes.find(
-            (x) => x.attributeType == WalletAttributeType.Name,
-          )?.value,
+            (x) => x.t == ATTRIBUTES[1]
+          )?.v,
           trust: personTrust,
         },
         {
           name: "address",
           value: sig.attributes.find(
-            (x) => x.attributeType == WalletAttributeType.Address,
-          )?.value,
+            (x) => x.t == ATTRIBUTES[2],
+          )?.v,
           trust: addressTrust,
         },
         {
           name: "email",
           value: sig.attributes.find(
-            (x) => x.attributeType == WalletAttributeType.Email,
-          )?.value,
+            (x) => x.t== ATTRIBUTES[0],
+          )?.v,
           trust: emailTrust,
         },
       ].filter((x) => x.value !== undefined);
@@ -86,8 +88,10 @@
     }
   });
 
+
+
   function processFile(): void {
-    const signer: WalletSigner = new DummySigner();
+    const signer: WalletSigner = new PostGuardSigner();
     processDone = false;
     sigValid = false;
     sigFound = false;
@@ -106,28 +110,10 @@
       file.arrayBuffer().then((value) => {
         PDFjs.getDocument(value).promise.then((document) => {
           document.getPage(document.numPages).then((page) => {
-            page.getTextContent().then((text) => {
-              text.items.forEach((x) => {
-                let itemValue = Object.values(x)[0];
-                if (typeof itemValue == "string" && itemValue !== "") {
-                  // Prevent unnecessary checking when sig prefix is not present (change when no longer using dummy signatures!)
-                  if (itemValue.includes(DUMMY_SIG_PREFIX)) {
-                    sigFound = true;
-                    if (signer.check(itemValue)) {
-                      sig = signer.decode(itemValue);
-                      sigValid = true;
-                      // Reset trust values
-                      personTrust = undefined;
-                      addressTrust = undefined;
-                      emailTrust = undefined;
-                      console.log(`Length: ${signatureAttributes?.length}`);
-                    }
-                  }
-                }
-              });
-              processDone = true;
-
-              console.log(`Check done, sig validity: ${sigValid}`);
+            console.log("Last page");
+            page.getTextContent().then(function(tokenizedText){
+              const text = tokenizedText.items.map(function (s) { if ("str" in s) { return s.str; } else { return '' }}).join('');
+              signer.check(text)
             });
           });
         });
@@ -175,6 +161,7 @@
     <label class="form-check-label" for={label}> {label} </label>
   </div>
 {/snippet}
+
 
 <div class="row" style="margin-top: 7%;">
   <div
@@ -281,43 +268,27 @@
               <div class="col-8">
                 <div class="card attribute-card">
                   <div class="card-header">
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <i class="bi bi-person card-icon"></i><b>Name</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                    {#if attribute.t === ATTRIBUTES[1]}
+                      <i class="bi bi-person card-icon"></i><b>Fullname</b>
+                    {:else if attribute.t === ATTRIBUTES[2] }
+                      <i class="bi bi-mailbox card-icon"></i><b>Street</b>
+                    {:else if attribute.t === ATTRIBUTES[0] }
                       <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
                     {/if}
                   </div>
                   <div class="card-body">
                     <p class="attribute-value">
-                      {attribute.value.toString()}
+                      {attribute.v?.toString()}
                     </p>
                     <h6>
                       <i class="bi bi-question-circle"></i>
                       What does this mean?
                     </h6>
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <p class="explainer">
-                        The document was signed by a person or organization with
-                        this name.
-                      </p>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <p class="explainer">
-                        The document was signed by a person or organization
-                        registered at this address.
-                      </p>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <p class="explainer">
-                        The document was signed by a person or organization that
-                        owns this email address.
-                      </p>
-                    {/if}
                   </div>
                 </div>
               </div>
               <div class="col-4">
-                {#if attribute.attributeType == WalletAttributeType.Name}
+                {#if attribute.t === ATTRIBUTES[1]}
                   <p class="question">
                     Are the assurances of this person/organization appropriate
                     for this document?
@@ -325,7 +296,7 @@
                   {#each options as label}
                     {@render personAnswers(label)}
                   {/each}
-                {:else if attribute.attributeType == WalletAttributeType.Address}
+                {:else if attribute.t === ATTRIBUTES[2] }
                   <p class="question">
                     Are the assurances of someone with this verified address
                     appropriate for this document?
@@ -333,7 +304,7 @@
                   {#each options as label}
                     {@render addressAnswers(label)}
                   {/each}
-                {:else if attribute.attributeType == WalletAttributeType.Email}
+                {:else if attribute.t === ATTRIBUTES[0] }
                   <p class="question">
                     Are the assurances of someone with this email address
                     appropriate for this document?
