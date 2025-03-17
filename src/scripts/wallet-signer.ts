@@ -21,7 +21,7 @@ export interface WalletSigner {
    * @param attributes Wallet attributes to check the PDF with.
    * @returns The validity as either true or false.
    */
-  check(input: string): Promise<boolean>;
+  check(input: Uint8Array): Promise<boolean>;
   /**
    * Decode the signature from a string to a signature object.
    * @param input The string containing a signature.

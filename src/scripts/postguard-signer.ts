@@ -36,13 +36,6 @@ async function getParameters(): Promise<string> {
   return params.publicKey;
 }
 
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  const decoder = new TextDecoder("utf-8");
-  const decodedString = decoder.decode(buffer);
-  return btoa(encodeURIComponent(decodedString));
-}
-
-
 async function applyEncryption(pubSignKey: ISigningKey, file: PDFDocument): Promise<PDFDocument>
 {
   const mpk = await getParameters();
@@ -80,11 +73,22 @@ async function applyEncryption(pubSignKey: ISigningKey, file: PDFDocument): Prom
 
   // Convert sealed document to a base64string so we can attach it to the existing PDF as a new page
   const arrayBuffer: ArrayBuffer = await new Blob(chunks).arrayBuffer()
-  const base64String = arrayBufferToBase64(arrayBuffer);
+  //const base64String = arrayBufferToBase64(arrayBuffer);
 
-  const page = file.addPage();
-  page.setFontSize(1)
-  page.drawText(base64String)
+  console.log("Base 64 encrypted string: ", arrayBuffer);
+
+  const currentDate = new Date();
+
+  await file.attach(arrayBuffer, 'postguard.jpg', {
+    mimeType: 'image/jpeg',
+    description: '️PostGuard encrypted PDF file',
+    creationDate: currentDate,
+    modificationDate: currentDate,
+  })
+
+  //const page = file.addPage();
+  //page.setFontSize(1)
+  //page.drawText(base64String)
 
   // Return
   return file;
@@ -100,6 +104,7 @@ export class PostGuardSigner implements WalletSigner {
     this._signKeys = value;
   }
 
+  private _signature: Signature;
   private _signKeys: SigningKeys;
 
   public async sign(
@@ -131,26 +136,16 @@ export class PostGuardSigner implements WalletSigner {
     return JSON.stringify(resultSignature);
   }
 
-  public async check(input: string): Promise<boolean> {
+  public async check(input: Uint8Array): Promise<boolean> {
     const vk = await fetch(`${PKG_URL}/v2/sign/parameters`)
       .then((r) => r.json())
       .then((j) => j.publicKey);
 
     console.log("retrieved verification key: ", vk);
 
-    function base64ToArrayBuffer(input: string) {
-      const temp = decodeURIComponent(atob( input ));
-      const encoder = new TextEncoder();
-      return encoder.encode(temp);
-    }
-
-    const encodedInpt = base64ToArrayBuffer(input)
-
-    console.log("String to check: ", encodedInpt);
-
     const readable = new ReadableStream({
       start(controller) {
-        controller.enqueue(base64ToArrayBuffer(encodedInpt));
+        controller.enqueue(input);
         controller.close();
       },
     });
@@ -159,15 +154,15 @@ export class PostGuardSigner implements WalletSigner {
     const recipients = unsealer.inspect_header();
     console.log("header contains the following recipients", recipients);
 
-    const usk = await fetch(`${PKG_URL}/v2/request/key/0`, {
+    const usk = await fetch(`${PKG_URL}/v2/request/key-default/0`, {
       headers: {
         ...METRICS_HEADER,
       },
     })
       .then((r) => r.json())
       .then((json) => {
-        if (json.status !== "DONE" || json.proofStatus !== "VALID")
-          throw new Error("not done and valid");
+        if (json.status !== "DONE")
+          throw new Error("not done");
         return json.key;
       })
       .catch((e: Error) => console.log("error: ", e));
@@ -191,7 +186,11 @@ export class PostGuardSigner implements WalletSigner {
 
     try {
       const pol = await unsealer.unseal("Default", usk, writable);
-      console.log("pol: ", pol);
+      this._signature = {
+        signature: "Signature",
+        attributes: pol.public.con,
+        date: new Date(pol.public.ts).toISOString(),
+      }
       return true;
     } catch (e) {
       console.log("error: ", e);
@@ -200,12 +199,6 @@ export class PostGuardSigner implements WalletSigner {
   }
 
   public decode(input: string): Signature {
-    let result = <Signature>{};
-    try {
-      result = JSON.parse(input);
-    } catch {
-      console.error("Could not parse signature!");
-    }
-    return result;
+    return this._signature;
   }
 }

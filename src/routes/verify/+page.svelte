@@ -5,8 +5,6 @@
   import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
   import type { Signature } from "../../scripts/signature";
   import { fade, fly } from "svelte/transition";
-  import { Unsealer } from "../../../../../Radboud/postguard/pg-wasm/pkg";
-  import { PKG_URL } from "../../scripts/Constants";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -109,15 +107,27 @@
       );
       file.arrayBuffer().then((value) => {
         PDFjs.getDocument(value).promise.then((document) => {
-          document.getPage(document.numPages).then((page) => {
-            console.log("Last page");
-            page.getTextContent().then(function(tokenizedText){
-              const text = tokenizedText.items.map(function (s) { if ("str" in s) { return s.str; } else { return '' }}).join('');
-              signer.check(text)
-            });
-          });
-        });
-      });
+          document.getAttachments().then((attachments) => {
+            for (const [name, attachment] of Object.entries(attachments)) {
+              if (name === "postguard.jpg") {
+                const content = attachment.content;
+                sigFound = true;
+                signer.check(content).then((hasSignature) => {
+                  if (hasSignature) {
+                    sig = signer.decode("not needed")
+                    sigValid = true;
+                    // Reset trust values
+                    personTrust = undefined;
+                    addressTrust = undefined;
+                    emailTrust = undefined;
+                    processDone = true;
+                  }
+                })
+              }
+            }
+          })
+        })
+      })
     }
   }
 </script>
