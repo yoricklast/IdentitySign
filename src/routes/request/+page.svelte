@@ -142,10 +142,10 @@
               onclick={btnGenerateClick}>Generate request</button
             >
             {#if request != ""}
-              <button type="button" class="btn btn-generate" in:fade disabled
-                ><span class="bi bi-arrow-down-circle-fill me-2"></span>See
-                request below</button
-              >
+              <p class="btn-generate mb-0 align-self-center" in:fade>
+                <span class="bi bi-arrow-down-circle-fill me-2"></span>See
+                request below
+              </p>
             {/if}
           </div>
         {/if}

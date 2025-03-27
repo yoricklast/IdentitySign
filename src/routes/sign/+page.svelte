@@ -277,52 +277,55 @@
 
 <!-- HTML / Svelte -->
 
-<div class="row flex-wrap-reverse" style="margin-top: 5%;">
-  <div class="col-lg-5 col-md-8 col-sm-8">
+<div
+  class="row {paramsGiven() ? 'flex-wrap' : 'flex-wrap-reverse'}"
+  style="margin-top: 5%;"
+>
+  <div
+    class="col-lg-5 col-md-8 col-sm-8 {paramsGiven()
+      ? ' align-self-center flex-sm-fill'
+      : ''}"
+  >
     {#if paramsGiven()}
       <div class="card request-card">
-        <div
-          class="card-container position-relative top-50 start-50 translate-middle"
-        >
-          <div class="card-body">
-            <h2 class="card-title">You have opened a sign request!</h2>
-            <p class="card-text">You are requested to sign file:</p>
-            {#if paramFile != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-file-earmark attr-icon"></i>
-                  {paramFile}
-                </div>
+        <div class="card-body p-5">
+          <h2 class="card-title">You have opened a sign request!</h2>
+          <p class="card-text">You are requested to sign file:</p>
+          {#if paramFile != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-file-earmark attr-icon"></i>
+                {paramFile}
               </div>
-            {/if}
-            {#if paramAttributesGiven()}
-              <p class="card-text">You are requested to sign with your:</p>
-            {/if}
-            {#if paramName != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-person attr-icon"></i>
-                  Name
-                </div>
+            </div>
+          {/if}
+          {#if paramAttributesGiven()}
+            <p class="card-text">You are requested to sign with your:</p>
+          {/if}
+          {#if paramName != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-person attr-icon"></i>
+                Name
               </div>
-            {/if}
-            {#if paramMail != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-at attr-icon"></i>
-                  Email address
-                </div>
+            </div>
+          {/if}
+          {#if paramMail != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-at attr-icon"></i>
+                Email address
               </div>
-            {/if}
-            {#if paramAddress != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-house attr-icon"></i>
-                  Address
-                </div>
+            </div>
+          {/if}
+          {#if paramAddress != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-house attr-icon"></i>
+                Address
               </div>
-            {/if}
-          </div>
+            </div>
+          {/if}
         </div>
       </div>
     {:else}
@@ -576,9 +579,8 @@
     margin-right: 7px;
   }
   .request-card {
-    margin-top: 2%;
     margin-right: 10%;
-    height: 100%;
+    margin-bottom: 20px;
   }
   .card-attr {
     margin-bottom: 15px;
@@ -616,9 +618,6 @@
   }
   .request-card {
     background-color: var(--bs-tertiary-bg);
-  }
-  .card-container {
-    width: 90%;
   }
   .yivi-web-form {
     margin-left: 10px;
