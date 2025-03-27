@@ -206,7 +206,7 @@
         Check signature
       </div>
       <div class="progress-label text-wrap col text-end align-self-end">
-        Verified
+        Done
       </div>
     </div>
     <div class="progress" role="progressbar" aria-label="Progress">

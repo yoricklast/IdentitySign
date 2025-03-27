@@ -110,7 +110,7 @@
     getYiviData(selectedAttributes).then((result) => {
       yiviAttributes = result;
       yiviDone = true;
-      progress = 90;
+      progress = 85;
     });
   }
 
@@ -337,14 +337,26 @@
   <div class="col-sm-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <div class="progress-label-div row">
-        <div class="progress-label text-wrap col text-begin align-self-end">
+        <div
+          class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0"
+        >
           Select file & personal data
         </div>
-        <div class="progress-label text-wrap col text-center align-self-end">
+        <div
+          class="progress-label text-wrap col position-absolute start-50 text-center translate-middle-x align-self-end"
+        >
           Prove your identity
         </div>
-        <div class="progress-label text-wrap col text-center align-self-end">
+        <div
+          class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end"
+          style="left: 85%;"
+        >
           Sign file
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+        >
+          Done
         </div>
       </div>
       <div class="progress" role="progressbar" aria-label="Progress">
@@ -534,12 +546,9 @@
           </button>
         {/if}
         {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
-          <button
-            class="btn btn-outline-primary btn-sign"
-            type="button"
-            disabled
-            ><i class="bi bi-qr-code-scan btn-sign-icon"></i>Scan QR to continue
-          </button>
+          <p class="ms-2 mb-0 btn-sign align-self-center text-primary-emphasis">
+            <i class="bi bi-qr-code-scan btn-sign-icon"></i>Scan QR to continue
+          </p>
         {/if}
         {#if fileSelected && yiviDone && !signedDone}
           <button
