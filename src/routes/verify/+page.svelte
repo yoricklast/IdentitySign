@@ -200,13 +200,13 @@
   >
     <div class="progress-label-div row">
       <div class="progress-label text-wrap col text-begin align-self-end">
-        Select document
+        <i class="bi bi-1-circle"></i> Select document
       </div>
       <div class="progress-label text-wrap col text-center align-self-end">
-        Check signature
+        <i class="bi bi-2-circle"></i> Check signature
       </div>
       <div class="progress-label text-wrap col text-end align-self-end">
-        Done
+        <i class="bi bi-3-circle"></i> Done
       </div>
     </div>
     <div class="progress" role="progressbar" aria-label="Progress">

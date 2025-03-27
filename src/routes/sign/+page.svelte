@@ -110,7 +110,7 @@
     getYiviData(selectedAttributes).then((result) => {
       yiviAttributes = result;
       yiviDone = true;
-      progress = 85;
+      progress = 82;
     });
   }
 
@@ -340,23 +340,23 @@
         <div
           class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0"
         >
-          Select file & personal data
+          <i class="bi bi-1-circle"></i> Select file & personal data
         </div>
         <div
           class="progress-label text-wrap col position-absolute start-50 text-center translate-middle-x align-self-end"
         >
-          Prove your identity
+          <i class="bi bi-2-circle"></i> Prove your identity
         </div>
         <div
           class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end"
-          style="left: 85%;"
+          style="left: 82%;"
         >
-          Sign file
+          <i class="bi bi-3-circle"></i> Sign file
         </div>
         <div
           class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
         >
-          Done
+          <i class="bi bi-4-circle"></i> Done
         </div>
       </div>
       <div class="progress" role="progressbar" aria-label="Progress">
