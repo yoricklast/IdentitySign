@@ -5,6 +5,7 @@
   import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
   import type { Signature } from "../../scripts/signature";
   import { fade, fly } from "svelte/transition";
+  import { POSTGUARD_FILE } from "../../scripts/Constants";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -109,7 +110,7 @@
         PDFjs.getDocument(value).promise.then((document) => {
           document.getAttachments().then((attachments) => {
             for (const [name, attachment] of Object.entries(attachments)) {
-              if (name === "postguard.jpg") {
+              if (name === POSTGUARD_FILE) {
                 const content = attachment.content;
                 sigFound = true;
                 signer.check(content).then((hasSignature) => {

@@ -2,20 +2,12 @@
 
 <script lang="ts">
   import { PDFDocument } from "pdf-lib";
-  import { ATTRIBUTES, PostGuardSigner, type SigningKeys } from "../../scripts/postguard-signer";
+  import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
   import {
     WalletAttributeType,
   } from "../../scripts/wallet-attribute";
-  import type { AttributeCon, ISigningKey } from "@e4a/pg-wasm";
-  import { PKG_URL } from "../../scripts/Constants";
+  import type { AttributeCon } from "@e4a/pg-wasm";
   import { tick } from 'svelte';
-
-  // @ts-ignore
-  import YiviCore from "@privacybydesign/yivi-core";
-  // @ts-ignore
-  import YiviWeb from "@privacybydesign/yivi-web";
-  // @ts-ignore
-  import YiviClient from "@privacybydesign/yivi-client";
 
   const signer: PostGuardSigner = new PostGuardSigner();
 
@@ -159,90 +151,7 @@
           }
         }
       }
-
-      console.log(attributesToDisclose);
-
-      const pub = attributesToDisclose;
-
-      const session = {
-        url: PKG_URL,
-        start: {
-          // @ts-ignore
-          url: (o) => `${o.url}/v2/request/start`,
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ con: [...pub ] }),
-        },
-        result: {
-          // @ts-ignore
-          url: (o, { sessionToken }) => `${o.url}/v2/request/jwt/${sessionToken}`,
-          // @ts-ignore
-          parseResponse: (r) => {
-            return (
-              r
-                .text()
-                // @ts-ignore
-                .then((jwt) =>
-                  fetch(`${PKG_URL}/v2/irma/sign/key`, {
-                    method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${jwt}`,
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      pubSignId: pub,
-                    }),
-                  }),
-                )
-                .then((r: Response) => r.json())
-                .then(
-                  (json: {
-                    status: string;
-                    proofStatus: string;
-                    pubSignKey: ISigningKey;
-                    privSignKey: ISigningKey;
-                  }): SigningKeys => {
-                    if (json.status !== "DONE" || json.proofStatus !== "VALID")
-                      throw new Error("not done and valid");
-                    return {
-                      pubSignKey: json.pubSignKey,
-                      privSignKey: json.privSignKey,
-                    };
-                  },
-                )
-                .catch((e: Error) => console.log("error: ", e))
-            );
-          },
-        },
-      };
-
-      const yivi = new YiviCore({
-        debugging: true,
-        element: "#yivi-web-form",
-        session,
-        state: {
-          serverSentEvents: false,
-          polling: {
-            endpoint: "status",
-            interval: 500,
-            startState: "INITIALIZED",
-          },
-        },
-        language: "en",
-      });
-
-      yivi.use(YiviWeb);
-      yivi.use(YiviClient);
-
-      const signKeys: SigningKeys = await yivi
-        .start()
-        .catch((e: Error) => console.error("failed Yivi session: ", e));
-
-      console.log(signKeys);
-
-      yiviAttributes = signKeys.pubSignKey.policy.con;
-      signer.signKeys = signKeys;
-
+      yiviAttributes = await signer.obtainSignKeys(attributesToDisclose)
       yiviDone = true;
     }
   }
