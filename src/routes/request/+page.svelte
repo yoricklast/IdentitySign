@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
+
   let files = $state<FileList>();
 
   let name = $state(false);
@@ -49,15 +51,15 @@
   }
 </script>
 
-<div class="row" style="margin-top: 5%;">
-  <div class="col-sm-5">
+<div class="row flex-wrap-reverse" style="margin-top: 5%;">
+  <div class="col-lg-5 col-md-8 col-sm-8">
     <img
-      class="page-image position-relative top-50 start-0 translate-middle-y"
+      class="page-image position-relative top-0 start-0 pt-5"
       src="/img/img_request.svg"
       alt="Verifying a document"
     />
   </div>
-  <div class="col-sm-7">
+  <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <h1>
         <i class="bi bi-envelope-check page-icon"></i>
@@ -166,11 +168,19 @@
             disabled>Generate request</button
           >
         {:else}
-          <button
-            type="submit"
-            class="btn btn-primary btn-generate"
-            onclick={btnGenerateClick}>Generate request</button
-          >
+          <div class="d-flex gap-4">
+            <button
+              type="submit"
+              class="btn btn-primary btn-generate"
+              onclick={btnGenerateClick}>Generate request</button
+            >
+            {#if request != ""}
+              <p class="btn-generate mb-0 align-self-center" in:fade>
+                <span class="bi bi-arrow-down-circle-fill me-2"></span>See
+                request below
+              </p>
+            {/if}
+          </div>
         {/if}
       </div>
 
@@ -186,20 +196,23 @@
             bind:value={request}
             disabled
           ></textarea>
-          <div style="margin-top: 10px;">
-            <button type="button" class="btn btn-light" onclick={btnCopyClick}
+          <div style="margin-top: 5px;">
+            <button
+              type="button"
+              class="btn btn-light mt-2"
+              onclick={btnCopyClick}
               ><i class="bi bi-clipboard btn-icon"></i>Copy to clipboard</button
             >
             <button
               type="button"
-              class="btn btn-light"
+              class="btn btn-light mt-2"
+              style="margin-right: 5px;"
               onclick={btnCopyLinkClick}
               ><i class="bi bi-link-45deg btn-icon"></i>Copy link only</button
             >
             <button
               type="button"
-              class="btn btn-primary"
-              style="margin-left: 5px;"
+              class="btn btn-primary mt-2"
               onclick={btnClearClick}
               ><i class="bi bi-plus-lg btn-icon"></i>New request</button
             >
