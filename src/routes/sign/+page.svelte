@@ -107,6 +107,7 @@
           SIGNED_FILE_ADDITION;
         downloadPdf(signedPdfName, signedPdfBytes);
         signedDone = true;
+        progress = 100;
       });
     }
   }
@@ -115,7 +116,7 @@
     getYiviData(selectedAttributes).then((result) => {
       yiviAttributes = result;
       yiviDone = true;
-      progress = 100;
+      progress = 82;
     });
   }
 
@@ -344,6 +345,33 @@
   </div>
   <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
+      <div class="progress-label-div row">
+        <div
+          class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0"
+        >
+          <i class="bi bi-1-circle"></i> Select file & personal data
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute start-50 text-center translate-middle-x align-self-end"
+        >
+          <i class="bi bi-2-circle"></i> Prove your identity
+        </div>
+        <div
+          class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end"
+          style="left: 82%;"
+        >
+          <i class="bi bi-3-circle"></i> Sign file
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+        >
+          <i class="bi bi-4-circle"></i> Done
+        </div>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Progress">
+        <div class="progress-bar" style="width: {progress}%"></div>
+      </div>
+
       <h1>
         <i class="bi bi-pencil-square page-icon"></i>
         Sign a document
@@ -574,6 +602,11 @@
             ><i class="bi bi-arrow-right-circle btn-sign-icon"></i>Next
           </button>
         {/if}
+        {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
+          <p class="ms-2 mb-0 btn-sign align-self-center text-primary-emphasis">
+            <i class="bi bi-qr-code-scan btn-sign-icon"></i>Scan QR to continue
+          </p>
+        {/if}
         {#if fileSelected && yiviDone && !signedDone}
           <button
             class="btn btn-primary btn-sign"
@@ -584,31 +617,18 @@
         {/if}
         {#if signedDone}
           <button
-            class="btn btn-primary btn-sign"
+            class="btn btn-secondary btn-sign"
             type="button"
             onclick={btnResetClick}
             ><i class="bi bi-plus-lg btn-sign-icon"></i>Sign another file</button
           >
           <button
-            class="btn btn-primary btn-sign"
+            class="btn btn-secondary btn-sign"
             type="button"
             onclick={btnDownloadAgainClick}
             ><i class="bi bi-download btn-sign-icon"></i>Download again</button
           >
         {/if}
-      </div>
-
-      <div class="progress" role="progressbar" aria-label="Progress">
-        <div class="progress-bar" style="width: {progress}%"></div>
-      </div>
-      <div class="progress-label-div row">
-        <div class="progress-label text-wrap col text-begin">
-          Select file & personal data
-        </div>
-        <div class="progress-label text-wrap col text-center">
-          Prove your identity
-        </div>
-        <div class="progress-label text-wrap col text-end">Sign file</div>
       </div>
     </div>
   </div>
@@ -628,6 +648,8 @@
   }
   .btn-sign-div {
     margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
   }
   .btn-sign-icon {
     margin-right: 7px;
@@ -644,16 +666,6 @@
   }
   .form-check {
     font-size: 18px;
-  }
-  .progress {
-    margin-top: 30px;
-  }
-  .progress-label-div {
-    padding-top: 10px;
-  }
-  .progress-label {
-    width: 33%;
-    font-weight: 600;
   }
   .request-note {
     font-size: 20px;

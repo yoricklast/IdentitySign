@@ -46,7 +46,9 @@
       ].filter((x) => x.value !== undefined);
     }
   });
+  let trustSet = $state<string[]>([]);
 
+  let progress = $state(0);
   let options = ["Yes", "No", "Not sure"];
 
   let personTrust = $state<string>();
@@ -86,6 +88,15 @@
     }
   });
 
+  function setProgress(): void {
+    signatureAttributes?.forEach((x) => {
+      if (x.trust != undefined && !trustSet.includes(x.name)) {
+        progress += 50 / signatureAttributes.length;
+        trustSet.push(x.name);
+      }
+    });
+  }
+
   function processFile(): void {
     const signer: WalletSigner = new DummySigner();
     processDone = false;
@@ -120,12 +131,14 @@
                       personTrust = undefined;
                       addressTrust = undefined;
                       emailTrust = undefined;
+                      trustSet = [];
                       console.log(`Length: ${signatureAttributes?.length}`);
                     }
                   }
                 }
               });
               processDone = true;
+              progress = 50;
 
               console.log(`Check done, sig validity: ${sigValid}`);
             });
@@ -149,6 +162,7 @@
       id={label}
       bind:group={personTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -162,6 +176,7 @@
       id={label}
       bind:group={addressTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -175,6 +190,7 @@
       id={label}
       bind:group={emailTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -186,6 +202,21 @@
       ? 'align-self-start'
       : 'align-self-center'}"
   >
+    <div class="progress-label-div row">
+      <div class="progress-label text-wrap col text-begin align-self-end">
+        <i class="bi bi-1-circle"></i> Select document
+      </div>
+      <div class="progress-label text-wrap col text-center align-self-end">
+        <i class="bi bi-2-circle"></i> Check signature
+      </div>
+      <div class="progress-label text-wrap col text-end align-self-end">
+        <i class="bi bi-3-circle"></i> Done
+      </div>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Progress">
+      <div class="progress-bar" style="width: {progress}%"></div>
+    </div>
+
     <h1 style="margin-bottom: 30px;">
       <i class="bi bi-file-earmark-check page-icon"></i>
       Verify a document's signature
