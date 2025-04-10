@@ -361,9 +361,27 @@
             </p>
           {/if}
           <h2>Select document</h2>
+
           <div class="mb-3 file-select">
             <label for="formFile" class="form-label"
-              >Select a document to sign.</label
+              >Select a document to sign.
+              <span
+                class="d-inline-block"
+                data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
+                data-bs-placement="right"
+                data-bs-container="body"
+                data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want to sign."
+              >
+                <button
+                  type="button"
+                  class="btn btn-link mb-1"
+                  tabindex="0"
+                  aria-label="How to select a document"
+                >
+                  <i class="bi bi-question-circle"></i>
+                </button></span
+              ></label
             >
             <input
               class="form-control"
@@ -375,8 +393,24 @@
           <h2 style="margin-top: 30px;">Select personal data</h2>
           <label for="attr-checks" class="form-label"
             >Select the personal data you want to sign with. A signature will
-            always contain the date and time.</label
-          >
+            always contain the date and time.
+            <span
+              class="d-inline-block"
+              data-bs-trigger="hover focus"
+              data-bs-toggle="popover"
+              data-bs-placement="right"
+              data-bs-container="body"
+              data-bs-content="A document has to be selected first. You can sign with: name (first name + last name), email and address (street, house number, zip code and city)"
+            >
+              <button
+                type="button"
+                class="btn btn-link mb-1"
+                tabindex="0"
+                aria-label="How to select personal data"
+                ><i class="bi bi-question-circle"> </i>
+              </button>
+            </span>
+          </label>
           {#if !attributeSelected && fileSelected}
             <div id="attr-checks">
               <div class="mb-3 form-check form-check-inline">
@@ -506,7 +540,17 @@
             <i class="bi bi-check-circle"></i>
             Done!
           </h2>
-          You can find the signed file in your downloads folder.
+          <p>
+            You can find the signed file in your downloads folder. <br />
+          </p>
+          <p>
+            <i class="text-primary-emphasis"
+              >Please note that IdentitySign signatures only work on <b
+                >digital</b
+              > documents! Printed documents will stay display the IdentitySign banner,
+              but no longer contain a signature (even when scanned).</i
+            >
+          </p>
         {/if}
       </div>
 

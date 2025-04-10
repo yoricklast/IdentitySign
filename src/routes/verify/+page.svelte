@@ -188,8 +188,25 @@
     </h1>
     <div class="mb-3 file-select">
       <label for="formFile" class="form-label"
-        >Select a document to verify its signature.</label
-      >
+        >Select a document to verify its signature.
+        <span
+          class="d-inline-block"
+          data-bs-trigger="hover focus"
+          data-bs-toggle="popover"
+          data-bs-placement="right"
+          data-bs-container="body"
+          data-bs-content="Click on 'Browse...' and choose a signed PDF that you received from your device to check if it contains a valid IdentitySign signature."
+        >
+          <button
+            type="button"
+            class="btn btn-link mb-1"
+            tabindex="0"
+            aria-label="How to verify a document"
+          >
+            <i class="bi bi-question-circle"></i>
+          </button>
+        </span>
+      </label>
       <input
         class="form-control"
         accept="application/pdf"
@@ -199,7 +216,7 @@
       />
     </div>
     {#if processDone}
-      {#if sigValid}
+      {#if sigValid && transitionDone}
         <h2 class="validity valid">
           <i class="bi bi-search"></i>
           <br />

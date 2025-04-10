@@ -71,8 +71,25 @@
           <div class="card-body">
             <h4 class="card-title">Document</h4>
             <label for="formFile" class="form-label"
-              >Select a document you want the other person to sign.</label
-            >
+              >Select a document you want the other person to sign.
+              <span
+                class="d-inline-block"
+                data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
+                data-bs-placement="right"
+                data-bs-container="body"
+                data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want a signature for."
+              >
+                <button
+                  type="button"
+                  class="btn btn-link mb-1"
+                  tabindex="0"
+                  aria-label="How to select a document"
+                >
+                  <i class="bi bi-question-circle"></i>
+                </button>
+              </span>
+            </label>
             <input
               class="form-control"
               accept="application/pdf"
@@ -86,8 +103,24 @@
           <div class="card-body">
             <h4 class="card-title">Personal data</h4>
             <label for="attr-checks" class="form-label"
-              >Select the personal data you want the other person to sign with.</label
-            >
+              >Select the personal data you want the other person to sign with.
+              <span
+                class="d-inline-block"
+                data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
+                data-bs-placement="right"
+                data-bs-container="body"
+                data-bs-content="Choose one or multiple personal details: name (first name + last name), email and address (street, house number, zip code and city)"
+              >
+                <button
+                  type="button"
+                  class="btn btn-link mb-1"
+                  tabindex="0"
+                  aria-label="How to select personal data"
+                  ><i class="bi bi-question-circle"> </i>
+                </button>
+              </span>
+            </label>
             <div id="attr-checks">
               <div class="mb-3 form-check form-check-inline">
                 <input
