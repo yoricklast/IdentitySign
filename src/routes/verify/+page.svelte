@@ -217,7 +217,7 @@
       <div class="progress-bar" style="width: {progress}%"></div>
     </div>
 
-    <h1 style="margin-bottom: 30px;">
+    <h1 style="margin-bottom: 35px; margin-top: 50px;">
       <i class="bi bi-file-earmark-check page-icon"></i>
       Verify a document's signature
     </h1>

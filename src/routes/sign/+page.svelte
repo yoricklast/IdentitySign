@@ -345,6 +345,7 @@
   </div>
   <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
+      <div class="spacer"></div>
       <div class="progress-label-div row">
         <div
           class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0"
@@ -358,9 +359,9 @@
         </div>
         <div
           class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end"
-          style="left: 82%;"
+          style="left: 80%;"
         >
-          <i class="bi bi-3-circle"></i> Sign file
+          <i class="bi bi-3-circle"></i> Sign
         </div>
         <div
           class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
@@ -638,7 +639,8 @@
 
 <style>
   h1 {
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
   }
   .page-image {
     margin-top: 20px;
@@ -688,5 +690,11 @@
   .yivi-web-form {
     margin-left: 10px;
     margin-right: 10px;
+  }
+  .spacer {
+    height: 25px;
+    @media screen and (max-width: 992px) {
+      height: 100px;
+    }
   }
 </style>
