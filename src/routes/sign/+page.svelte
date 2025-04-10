@@ -30,6 +30,12 @@
   let paramAddress = urlParams.get(PARAM_ADDRESS);
   let paramFile = urlParams.get(PARAM_FILE);
 
+  let isMobile =
+    /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
+    (/Macintosh/i.test(window.navigator.userAgent) &&
+      navigator.maxTouchPoints &&
+      navigator.maxTouchPoints > 2);
+
   let progress = $state(0);
 
   let files = $state<FileList>();
@@ -457,17 +463,21 @@
                 >.
               </p>
               <h3>How do I do this?</h3>
+              {#if isMobile}
+                <p>
+                  Click the "Open Yivi app" button and follow the instructions
+                  in the Yivi app to continue. <br />
+                  <b>Alternatively</b>, you can click "Show QR code" and use the
+                  Yivi app on another device to scan the QR-code.
+                </p>
+              {:else}
+                <p>Use the Yivi app on your smartphone to scan the QR-code.</p>
+              {/if}
               <p>
-                <b>If you are on a laptop or desktop</b> then use the Yivi app
-                on your smartphone to scan the QR-code. Don't have the Yivi app?
-                You can get it
+                Don't have the Yivi app? You can get it
                 <a href="https://www.yivi.app/en/download" target="_blank"
                   >here</a
                 >. Follow the instructions in the Yivi app to continue.
-              </p>
-              <p>
-                <b>If you are on a mobile device</b> then click the "open Yivi app"
-                button. Follow the instructions in the Yivi app to continue.
               </p>
             </div>
             <div class="yivi-web-form col" id="yivi-web-form"></div>
