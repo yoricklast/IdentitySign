@@ -30,6 +30,12 @@
   let paramAddress = urlParams.get(PARAM_ADDRESS);
   let paramFile = urlParams.get(PARAM_FILE);
 
+  let isMobile =
+    /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
+    (/Macintosh/i.test(window.navigator.userAgent) &&
+      navigator.maxTouchPoints &&
+      navigator.maxTouchPoints > 2);
+
   let progress = $state(0);
 
   let files = $state<FileList>();
@@ -113,6 +119,7 @@
           SIGNED_FILE_ADDITION;
         downloadPdf(signedPdfName, signedPdfBytes);
         signedDone = true;
+        progress = 100;
       });
     }
   }
@@ -121,7 +128,7 @@
     getYiviData(selectedAttributes).then((result) => {
       yiviAttributes = result;
       yiviDone = true;
-      progress = 100;
+      progress = 82;
     });
   }
 
@@ -289,64 +296,95 @@
 
 <!-- HTML / Svelte -->
 
-<div class="row" style="margin-top: 5%;">
-  <div class="col-sm-5">
+<div
+  class="row {paramsGiven() ? 'flex-wrap' : 'flex-wrap-reverse'}"
+  style="margin-top: 5%;"
+>
+  <div
+    class="col-lg-5 col-md-8 col-sm-8 {paramsGiven()
+      ? ' align-self-center flex-sm-fill'
+      : ''}"
+  >
     {#if paramsGiven()}
       <div class="card request-card">
-        <div
-          class="card-container position-relative top-50 start-50 translate-middle"
-        >
-          <div class="card-body">
-            <h2 class="card-title">You have opened a sign request!</h2>
-            <p class="card-text">You are requested to sign file:</p>
-            {#if paramFile != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-file-earmark attr-icon"></i>
-                  {paramFile}
-                </div>
+        <div class="card-body p-5">
+          <h2 class="card-title">You have opened a sign request!</h2>
+          <p class="card-text">You are requested to sign file:</p>
+          {#if paramFile != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-file-earmark attr-icon"></i>
+                {paramFile}
               </div>
-            {/if}
-            {#if paramAttributesGiven()}
-              <p class="card-text">You are requested to sign with your:</p>
-            {/if}
-            {#if paramName != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-person attr-icon"></i>
-                  Name
-                </div>
+            </div>
+          {/if}
+          {#if paramAttributesGiven()}
+            <p class="card-text">You are requested to sign with your:</p>
+          {/if}
+          {#if paramName != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-person attr-icon"></i>
+                Name
               </div>
-            {/if}
-            {#if paramMail != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-at attr-icon"></i>
-                  Email address
-                </div>
+            </div>
+          {/if}
+          {#if paramMail != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-at attr-icon"></i>
+                Email address
               </div>
-            {/if}
-            {#if paramAddress != null}
-              <div class="card card-attr">
-                <div class="card-body">
-                  <i class="bi bi-house attr-icon"></i>
-                  Address
-                </div>
+            </div>
+          {/if}
+          {#if paramAddress != null}
+            <div class="card card-attr">
+              <div class="card-body">
+                <i class="bi bi-house attr-icon"></i>
+                Address
               </div>
-            {/if}
-          </div>
+            </div>
+          {/if}
         </div>
       </div>
     {:else}
       <img
-        class="page-image"
+        class="page-image pt-3"
         src="/img/img_sign.svg"
         alt="Signing a document"
       />
     {/if}
   </div>
-  <div class="col-sm-7">
+  <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
+      <div class="spacer"></div>
+      <div class="progress-label-div row">
+        <div
+          class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0"
+        >
+          <i class="bi bi-1-circle"></i> Select file & personal data
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute start-50 text-center translate-middle-x align-self-end"
+        >
+          <i class="bi bi-2-circle"></i> Prove your identity
+        </div>
+        <div
+          class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end"
+          style="left: 80%;"
+        >
+          <i class="bi bi-3-circle"></i> Sign
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+        >
+          <i class="bi bi-4-circle"></i> Done
+        </div>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Progress">
+        <div class="progress-bar" style="width: {progress}%"></div>
+      </div>
+
       <h1>
         <i class="bi bi-pencil-square page-icon"></i>
         Sign a document
@@ -367,9 +405,27 @@
             </p>
           {/if}
           <h2>Select document</h2>
+
           <div class="mb-3 file-select">
             <label for="formFile" class="form-label"
-              >Select a document to sign.</label
+              >Select a document to sign.
+              <span
+                class="d-inline-block"
+                data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
+                data-bs-placement="right"
+                data-bs-container="body"
+                data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want to sign."
+              >
+                <button
+                  type="button"
+                  class="btn btn-link mb-1"
+                  tabindex="0"
+                  aria-label="How to select a document"
+                >
+                  <i class="bi bi-question-circle"></i>
+                </button></span
+              ></label
             >
             <input
               class="form-control"
@@ -381,8 +437,24 @@
           <h2 style="margin-top: 30px;">Select personal data</h2>
           <label for="attr-checks" class="form-label"
             >Select the personal data you want to sign with. A signature will
-            always contain the date and time.</label
-          >
+            always contain the date and time.
+            <span
+              class="d-inline-block"
+              data-bs-trigger="hover focus"
+              data-bs-toggle="popover"
+              data-bs-placement="right"
+              data-bs-container="body"
+              data-bs-content="A document has to be selected first. You can sign with: name (first name + last name), email and address (street, house number, zip code and city)"
+            >
+              <button
+                type="button"
+                class="btn btn-link mb-1"
+                tabindex="0"
+                aria-label="How to select personal data"
+                ><i class="bi bi-question-circle"> </i>
+              </button>
+            </span>
+          </label>
           {#if !attributeSelected && fileSelected}
             <div id="attr-checks">
               <div class="mb-3 form-check form-check-inline">
@@ -464,30 +536,34 @@
           {/if}
         {/if}
         {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
-          <div class="row">
-            <div class="yivi-text col">
-              <h2>Prove your identity</h2>
-              <p>
+          <h2>Prove your identity</h2>
+          <p>
                 To sign with your {join(checkedAttributes)}, you need to prove
                 that {checkedAttributes.length > 1 ? "they are" : "it is"}
                 really yours. You do this with the
                 <a href="https://www.yivi.app/en" target="_blank">Yivi</a> app.
               </p>
+          <div class="row flex-wrap-reverse flex-sm-wrap-reverse">
+            <div class="yivi-text col-md" style="min-width: 33.33%;">
               <h3>How do I do this?</h3>
+              {#if isMobile}
+                <p>
+                  Click the "Open Yivi app" button and follow the instructions
+                  in the Yivi app to continue. <br />
+                  <b>Alternatively</b>, you can click "Show QR code" and use the
+                  Yivi app on another device to scan the QR-code.
+                </p>
+              {:else}
+                <p>Use the Yivi app on your smartphone to scan the QR-code.</p>
+              {/if}
               <p>
-                <b>If you are on a laptop or desktop</b> then use the Yivi app
-                on your smartphone to scan the QR-code. Don't have the Yivi app?
-                You can get it
+                Don't have the Yivi app? You can get it
                 <a href="https://www.yivi.app/en/download" target="_blank"
                   >here</a
                 >. Follow the instructions in the Yivi app to continue.
               </p>
-              <p>
-                <b>If you are on a mobile device</b> then click the "open Yivi app"
-                button. Follow the instructions in the Yivi app to continue.
-              </p>
             </div>
-            <div class="yivi-web-form col" id="yivi-web-form"></div>
+            <div class="yivi-web-form col-xl mb-3" id="yivi-web-form"></div>
           </div>
         {/if}
         {#if !signedDone && yiviDone}
@@ -513,7 +589,17 @@
             <i class="bi bi-check-circle"></i>
             Done!
           </h2>
-          You can find the signed file in your downloads folder.
+          <p>
+            You can find the signed file in your downloads folder. <br />
+          </p>
+          <p>
+            <i class="text-primary-emphasis"
+              >Please note that IdentitySign signatures only work on <b
+                >digital</b
+              > documents! Printed documents will stay display the IdentitySign banner,
+              but no longer contain a signature (even when scanned).</i
+            >
+          </p>
         {/if}
       </div>
 
@@ -534,6 +620,11 @@
             ><i class="bi bi-arrow-right-circle btn-sign-icon"></i>Next
           </button>
         {/if}
+        {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
+          <p class="ms-2 mb-0 btn-sign align-self-center text-primary-emphasis">
+            <i class="bi bi-qr-code-scan btn-sign-icon"></i>Scan QR to continue
+          </p>
+        {/if}
         {#if fileSelected && yiviDone && !signedDone}
           <button
             class="btn btn-primary btn-sign"
@@ -544,31 +635,18 @@
         {/if}
         {#if signedDone}
           <button
-            class="btn btn-primary btn-sign"
+            class="btn btn-secondary btn-sign"
             type="button"
             onclick={btnResetClick}
             ><i class="bi bi-plus-lg btn-sign-icon"></i>Sign another file</button
           >
           <button
-            class="btn btn-primary btn-sign"
+            class="btn btn-secondary btn-sign"
             type="button"
             onclick={btnDownloadAgainClick}
             ><i class="bi bi-download btn-sign-icon"></i>Download again</button
           >
         {/if}
-      </div>
-
-      <div class="progress" role="progressbar" aria-label="Progress">
-        <div class="progress-bar" style="width: {progress}%"></div>
-      </div>
-      <div class="progress-label-div row">
-        <div class="progress-label text-wrap col text-begin">
-          Select file & personal data
-        </div>
-        <div class="progress-label text-wrap col text-center">
-          Prove your identity with Yivi
-        </div>
-        <div class="progress-label text-wrap col text-end">Sign file</div>
       </div>
     </div>
   </div>
@@ -578,7 +656,8 @@
 
 <style>
   h1 {
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
   }
   .page-image {
     margin-top: 20px;
@@ -588,14 +667,15 @@
   }
   .btn-sign-div {
     margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
   }
   .btn-sign-icon {
     margin-right: 7px;
   }
   .request-card {
-    margin-top: 2%;
     margin-right: 10%;
-    height: 100%;
+    margin-bottom: 20px;
   }
   .card-attr {
     margin-bottom: 15px;
@@ -605,16 +685,6 @@
   }
   .form-check {
     font-size: 18px;
-  }
-  .progress {
-    margin-top: 30px;
-  }
-  .progress-label-div {
-    padding-top: 10px;
-  }
-  .progress-label {
-    width: 33%;
-    font-weight: 600;
   }
   .request-note {
     font-size: 20px;
@@ -634,11 +704,14 @@
   .request-card {
     background-color: var(--bs-tertiary-bg);
   }
-  .card-container {
-    width: 90%;
-  }
   .yivi-web-form {
     margin-left: 10px;
     margin-right: 10px;
+  }
+  .spacer {
+    height: 25px;
+    @media screen and (max-width: 992px) {
+      height: 100px;
+    }
   }
 </style>

@@ -37,8 +37,8 @@
     someone else! Here's what this might look like:
   </p>
 
-  <div class="row">
-    <div class="col">
+  <div class="row gy-3">
+    <div class="col-sm">
       <div class="card unhappy">
         <div class="card-body">
           <h5 class="example-header">
@@ -63,7 +63,7 @@
         </div>
       </div>
     </div>
-    <div class="col">
+    <div class="col-sm">
       <div class="card happy">
         <div class="card-body">
           <h5 class="example-header">

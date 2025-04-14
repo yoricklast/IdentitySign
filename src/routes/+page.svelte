@@ -1,5 +1,5 @@
 <div class="row topmargin">
-  <div class="col-sm-7">
+  <div class="col-md-7">
     <h1>Welcome to IdentitySign</h1>
 
     <p class="main-text fs-4">
@@ -80,7 +80,7 @@
   </div>
   <div class="col-sm-5">
     <img
-      class="page-image-r position-relative topmargin"
+      class="page-image-r position-relative topmargin pt-3"
       src="/img/img_document.svg"
       alt="Signed document"
     />

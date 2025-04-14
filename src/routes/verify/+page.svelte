@@ -11,7 +11,11 @@
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
   PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
+  let small = $derived(window.innerWidth < 992);
+  let x = $derived(small ? "35%" : "0");
+  let y = $derived(small ? "0" : "35%");
   let files = $state<FileList>();
+
   let sigValid = $state<boolean>();
   let sigFound = $state<boolean>();
   // Prevents showing sigValid status before processing is done
@@ -46,7 +50,9 @@
       ].filter((x) => x.value !== undefined);
     }
   });
+  let trustSet = $state<string[]>([]);
 
+  let progress = $state(0);
   let options = ["Yes", "No", "Not sure"];
 
   let personTrust = $state<string>();
@@ -88,12 +94,25 @@
     }
   });
 
+  function setProgress(): void {
+    signatureAttributes?.forEach((x) => {
+      if (x.trust != undefined && !trustSet.includes(x.name)) {
+        progress += 50 / signatureAttributes.length;
+        trustSet.push(x.name);
+      }
+    });
+  }
+
   function processFile(): void {
     const signer: WalletSigner = new DummySigner();
     processDone = false;
     sigValid = false;
     sigFound = false;
-    transitionDone = false;
+    if (small) {
+      transitionDone = true;
+    } else {
+      transitionDone = false;
+    }
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
@@ -122,12 +141,14 @@
                       personTrust = undefined;
                       addressTrust = undefined;
                       emailTrust = undefined;
+                      trustSet = [];
                       console.log(`Length: ${signatureAttributes?.length}`);
                     }
                   }
                 }
               });
               processDone = true;
+              progress = 50;
 
               console.log(`Check done, sig validity: ${sigValid}`);
             });
@@ -136,6 +157,10 @@
       });
     }
   }
+
+  $effect(() => {
+    console.log("Done:" + transitionDone);
+  });
 </script>
 
 {#snippet personAnswers(label: string)}
@@ -147,6 +172,7 @@
       id={label}
       bind:group={personTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -160,6 +186,7 @@
       id={label}
       bind:group={addressTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -173,6 +200,7 @@
       id={label}
       bind:group={emailTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -180,34 +208,74 @@
 
 <div class="row" style="margin-top: 7%;">
   <div
-    class="col-sm {processDone && sigValid
+    class="col-lg {processDone && sigValid
       ? 'align-self-start'
       : 'align-self-center'}"
   >
-    <h1 style="margin-bottom: 30px;">
-      <i class="bi bi-file-earmark-check page-icon"></i>
-      Verify a document's signature
-    </h1>
-    <div class="mb-3 file-select">
-      <label for="formFile" class="form-label"
-        >Select a document to verify its signature.</label
-      >
-      <input
-        class="form-control"
-        accept="application/pdf"
-        type="file"
-        bind:files
-        onchange={processFile}
-      />
-    </div>
-    {#if processDone}
-      {#if sigValid}
-        <h2 class="validity valid">
-          <i class="bi bi-search"></i>
-          <br />
-          Signature found…
-        </h2>
-        <p class="validity-text">
+    <div class="position-relative">
+      <div class="spacer"></div>
+      <div class="progress-label-div row">
+        <div
+          class="progress-label text-wrap col position-absolute start-0 ps-0 text-start align-self-end"
+        >
+          <i class="bi bi-1-circle"></i> Select document
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute start-50 translate-middle-x text-center align-self-end"
+        >
+          <i class="bi bi-2-circle"></i> Check signature
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+        >
+          <i class="bi bi-3-circle"></i> Done
+        </div>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Progress">
+        <div class="progress-bar" style="width: {progress}%"></div>
+      </div>
+
+      <h1 style="margin-bottom: 35px; margin-top: 50px;">
+        <i class="bi bi-file-earmark-check page-icon"></i>
+        Verify a document's signature
+      </h1>
+      <div class="mb-3 file-select">
+        <label for="formFile" class="form-label"
+          >Select a document to verify its signature.
+          <span
+            class="d-inline-block"
+            data-bs-trigger="hover focus"
+            data-bs-toggle="popover"
+            data-bs-placement="right"
+            data-bs-container="body"
+            data-bs-content="Click on 'Browse...' and choose a signed PDF that you received from your device to check if it contains a valid IdentitySign signature."
+          >
+            <button
+              type="button"
+              class="btn btn-link mb-1"
+              tabindex="0"
+              aria-label="How to verify a document"
+            >
+              <i class="bi bi-question-circle"></i>
+            </button>
+          </span>
+        </label>
+        <input
+          class="form-control"
+          accept="application/pdf"
+          type="file"
+          bind:files
+          onchange={processFile}
+        />
+      </div>
+      {#if processDone}
+        {#if sigValid && transitionDone}
+          <h2 class="validity valid">
+            <i class="bi bi-search"></i>
+            <br />
+            Signature found…
+          </h2>
+          <p class="validity-text">
           Check who signed this document before trusting it.
         </p>
         <p class="validity-text">
@@ -216,30 +284,32 @@
             When should I not trust a document?
           </a>
         </p>
+        {/if}
+        {#if !sigValid && sigFound}
+          <h2 class="validity invalid">
+            <i class="bi bi-x-circle-fill"></i><br />
+            Signature invalid!
+          </h2>
+          <p class="validity-text">
+            This document contains an invalid signature. Do <b>NOT</b> trust this
+            document!
+          </p>
+        {/if}
+        {#if !sigFound}
+          <h2 class="validity notfound">
+            <i class="bi bi-exclamation-triangle-fill"></i><br />
+            No signature found!
+          </h2>
+          <p class="validity-text">
+            IdentitySign could not find a signature in this document. Verify
+            that it has indeed been signed using IdentitySign.
+          </p>
+        {/if}
       {/if}
-      {#if !sigValid && sigFound}
-        <h2 class="validity invalid">
-          <i class="bi bi-x-circle-fill"></i><br />
-          Signature invalid!
-        </h2>
-        <p class="validity-text">
-          This document contains an invalid signature. Do <b>NOT</b> trust this document!
-        </p>
-      {/if}
-      {#if !sigFound}
-        <h2 class="validity notfound">
-          <i class="bi bi-exclamation-triangle-fill"></i><br />
-          No signature found!
-        </h2>
-        <p class="validity-text">
-          IdentitySign could not find a signature in this document. Please
-          double check whether you have selected the correct document.
-        </p>
-      {/if}
-    {/if}
+    </div>
   </div>
   <div
-    class="col-sm-5 ps-5"
+    class="col-lg-5 ps-5 {processDone && sigValid ? 'fill-space' : ''} "
     style={processDone && sigValid
       ? "width: 55%; transition: width 0.5s ease;"
       : "transition: all 0s;"}
@@ -247,7 +317,7 @@
   >
     {#if imageVisible}
       <img
-        class="w-100"
+        class="w-100 pt-5 small-image"
         in:fade={{ duration: 1000, delay: 100 }}
         src="/img/img_check.svg"
         alt="Verifying a document"
@@ -256,17 +326,18 @@
     {#if processDone && sigValid && transitionDone}
       {#if sig && sig.attributes}
         <div
-          class="container"
+          class="container-xl"
           in:fly|global={{
-            y: "35%",
+            x,
+            y,
             duration: 500,
             delay: 100,
           }}
         >
           <h3 class="attribute-heading">Signed with:</h3>
           {#each sig.attributes as attribute}
-            <div class="row row-cols-2">
-              <div class="col-8">
+            <div class="row row-cols-sm-1">
+              <div class="col-xxl-6">
                 <div class="card attribute-card">
                   <div class="card-header">
                     {#if attribute.attributeType == WalletAttributeType.Name}
@@ -304,7 +375,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-xxl">
                 {#if attribute.attributeType == WalletAttributeType.Name}
                   <p class="question">
                     Was this document signed by the right entity?
@@ -312,6 +383,7 @@
                   {#each options as label}
                     {@render personAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {:else if attribute.attributeType == WalletAttributeType.Address}
                   <p class="question">
                     Is this address owned by the right person or organization?
@@ -319,6 +391,7 @@
                   {#each options as label}
                     {@render addressAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {:else if attribute.attributeType == WalletAttributeType.Email}
                   <p class="question">
                     Is this email address owned by the right person or
@@ -327,6 +400,7 @@
                   {#each options as label}
                     {@render emailAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {/if}
               </div>
             </div>
@@ -432,5 +506,17 @@
   .alert-icon {
     font-size: 20px;
     margin-right: 5px;
+  }
+  @media (max-width: 992px) {
+    .fill-space {
+      width: 99.99% !important;
+      transition: width 0s !important;
+      padding-left: 0 !important;
+    }
+  }
+  @media (max-width: 992px) {
+    .small-image {
+      width: 75% !important;
+    }
   }
 </style>
