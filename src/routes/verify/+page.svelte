@@ -58,6 +58,8 @@
   let personTrust = $state<string>();
   let addressTrust = $state<string>();
   let emailTrust = $state<string>();
+
+  // Change to alertType only, if alert message changes permanently
   let alertData = $derived.by(() => {
     if (
       signatureAttributes?.filter((x) => x.trust !== undefined).length ==
@@ -274,28 +276,14 @@
             Signature found…
           </h2>
           <p class="validity-text">
-            <b
-              >Verify the personal data used in this signature before trusting
-              this document!</b
-            >
-          </p>
-          <p class="validity-text">
-            IdentitySign found a valid signature in this document! However, you
-            should make sure that the person or organization that made this
-            signature provides enough assurance to trust this document.
-          </p>
-          <p class="validity-text text-primary-emphasis">
-            <b
-              >Use the questions next to the signature details to help you judge
-              whether or not this signature provides enough assurances!</b
-            >
-          </p>
-          <p class="validity-text mb-3">
-            <a href="/help/trust" target="_blank" class="helplink">
-              <i class="bi bi-question-circle"></i>
-              When should I not trust a document?
-            </a>
-          </p>
+          Check who signed this document before trusting it.
+        </p>
+        <p class="validity-text">
+          <a href="/help/trust" target="_blank" class="helplink">
+            <i class="bi bi-question-circle"></i>
+            When should I not trust a document?
+          </a>
+        </p>
         {/if}
         {#if !sigValid && sigFound}
           <h2 class="validity invalid">
@@ -390,8 +378,7 @@
               <div class="col-xxl">
                 {#if attribute.attributeType == WalletAttributeType.Name}
                   <p class="question">
-                    Are the assurances of this person/organization appropriate
-                    for this document?
+                    Was this document signed by the right entity?
                   </p>
                   {#each options as label}
                     {@render personAnswers(label)}
@@ -399,8 +386,7 @@
                   <div class="mb-4"></div>
                 {:else if attribute.attributeType == WalletAttributeType.Address}
                   <p class="question">
-                    Are the assurances of someone with this verified address
-                    appropriate for this document?
+                    Is this address owned by the right person or organization?
                   </p>
                   {#each options as label}
                     {@render addressAnswers(label)}
@@ -408,8 +394,8 @@
                   <div class="mb-4"></div>
                 {:else if attribute.attributeType == WalletAttributeType.Email}
                   <p class="question">
-                    Are the assurances of someone with this email address
-                    appropriate for this document?
+                    Is this email address owned by the right person or
+                    organization?
                   </p>
                   {#each options as label}
                     {@render emailAnswers(label)}
@@ -425,29 +411,42 @@
                 {#if alertData.type === "danger"}
                   <strong>
                     <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                    document was not signed by someone you trust!
+                    document should not be trusted!
                   </strong><br />
                   <hr />
-                  You marked {alertData.info} as not trusted. While this signature
-                  may be valid, it may not provide the appropriate level of assurance
-                  for this document.
+                  Do not trust this document. It might have be signed by the wrong
+                  entity, or the signer might have forgotten to include relevant
+                  data (e.g., their name or address).<br />
+                  You can use our
+                  <a href="/request" target="_blank">
+                    signature request tool
+                  </a>
+                  to request a signature that contains this data.
                 {:else if alertData.type === "warning"}
                   <strong
                     ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                    signature may not provide sufficient assurances...</strong
-                  >
+                    document was signed but you might need more information before
+                    trusting it</strong
+                  ><br />
                   <hr />
-                  IdentitySign found a valid signature, but the assurances provided
-                  by the person that made this signature may not be sufficient to
-                  trust this document.
+                  Before trusting this document, consider if you know enough about
+                  the signer.<br /> Do you know for certain who owns this email
+                  address? Do they have the authority to sign this document?
+                  Should someone else have signed the file? Do you need
+                  additional data (e.g., a name or address) to be sure? <br />
+                  If you have any doubts, use our
+                  <a href="/request" target="_blank">
+                    signature request tool
+                  </a>
+                  to do request a signature that contains the signers name <!-- or "..contains the data you need" maybe -->.
                 {:else if alertData.type === "primary"}
                   <strong
                     ><i class="bi bi-info-circle-fill alert-icon"></i> This document
-                    was signed by someone you trust!</strong
+                    can be trusted!</strong
                   > <br />
                   <hr />
-                  You indicated that the person who signed this document provides
-                  enough assurance to trust this document.
+                  This document was signed by the correct person or organization.
+                  If you trust them, you can trust the document.
                 {/if}
               </div>
             </div>
