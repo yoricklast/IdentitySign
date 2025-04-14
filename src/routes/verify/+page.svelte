@@ -11,7 +11,11 @@
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
   PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
+  let small = $derived(window.innerWidth < 992);
+  let x = $derived(small ? "35%" : "0");
+  let y = $derived(small ? "0" : "35%");
   let files = $state<FileList>();
+
   let sigValid = $state<boolean>();
   let sigFound = $state<boolean>();
   // Prevents showing sigValid status before processing is done
@@ -102,7 +106,11 @@
     processDone = false;
     sigValid = false;
     sigFound = false;
-    transitionDone = false;
+    if (small) {
+      transitionDone = true;
+    } else {
+      transitionDone = false;
+    }
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
@@ -198,109 +206,119 @@
 
 <div class="row" style="margin-top: 7%;">
   <div
-    class="col-md {processDone && sigValid
+    class="col-lg {processDone && sigValid
       ? 'align-self-start'
       : 'align-self-center'}"
   >
-    <div class="progress-label-div row">
-      <div class="progress-label text-wrap col text-begin align-self-end">
-        <i class="bi bi-1-circle"></i> Select document
-      </div>
-      <div class="progress-label text-wrap col text-center align-self-end">
-        <i class="bi bi-2-circle"></i> Check signature
-      </div>
-      <div class="progress-label text-wrap col text-end align-self-end">
-        <i class="bi bi-3-circle"></i> Done
-      </div>
-    </div>
-    <div class="progress" role="progressbar" aria-label="Progress">
-      <div class="progress-bar" style="width: {progress}%"></div>
-    </div>
-
-    <h1 style="margin-bottom: 35px; margin-top: 50px;">
-      <i class="bi bi-file-earmark-check page-icon"></i>
-      Verify a document's signature
-    </h1>
-    <div class="mb-3 file-select">
-      <label for="formFile" class="form-label"
-        >Select a document to verify its signature.
-        <span
-          class="d-inline-block"
-          data-bs-trigger="hover focus"
-          data-bs-toggle="popover"
-          data-bs-placement="right"
-          data-bs-container="body"
-          data-bs-content="Click on 'Browse...' and choose a signed PDF that you received from your device to check if it contains a valid IdentitySign signature."
+    <div class="position-relative">
+      <div class="spacer"></div>
+      <div class="progress-label-div row">
+        <div
+          class="progress-label text-wrap col position-absolute start-0 ps-0 text-start align-self-end"
         >
-          <button
-            type="button"
-            class="btn btn-link mb-1"
-            tabindex="0"
-            aria-label="How to verify a document"
+          <i class="bi bi-1-circle"></i> Select document
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute start-50 translate-middle-x text-center align-self-end"
+        >
+          <i class="bi bi-2-circle"></i> Check signature
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+        >
+          <i class="bi bi-3-circle"></i> Done
+        </div>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Progress">
+        <div class="progress-bar" style="width: {progress}%"></div>
+      </div>
+
+      <h1 style="margin-bottom: 35px; margin-top: 50px;">
+        <i class="bi bi-file-earmark-check page-icon"></i>
+        Verify a document's signature
+      </h1>
+      <div class="mb-3 file-select">
+        <label for="formFile" class="form-label"
+          >Select a document to verify its signature.
+          <span
+            class="d-inline-block"
+            data-bs-trigger="hover focus"
+            data-bs-toggle="popover"
+            data-bs-placement="right"
+            data-bs-container="body"
+            data-bs-content="Click on 'Browse...' and choose a signed PDF that you received from your device to check if it contains a valid IdentitySign signature."
           >
-            <i class="bi bi-question-circle"></i>
-          </button>
-        </span>
-      </label>
-      <input
-        class="form-control"
-        accept="application/pdf"
-        type="file"
-        bind:files
-        onchange={processFile}
-      />
+            <button
+              type="button"
+              class="btn btn-link mb-1"
+              tabindex="0"
+              aria-label="How to verify a document"
+            >
+              <i class="bi bi-question-circle"></i>
+            </button>
+          </span>
+        </label>
+        <input
+          class="form-control"
+          accept="application/pdf"
+          type="file"
+          bind:files
+          onchange={processFile}
+        />
+      </div>
+      {#if processDone}
+        {#if sigValid && transitionDone}
+          <h2 class="validity valid">
+            <i class="bi bi-search"></i>
+            <br />
+            Signature found…
+          </h2>
+          <p class="validity-text">
+            <b
+              >Verify the personal data used in this signature before trusting
+              this document!</b
+            >
+          </p>
+          <p class="validity-text">
+            IdentitySign found a valid signature in this document! However, you
+            should make sure that the person or organization that made this
+            signature provides enough assurance to trust this document.
+          </p>
+          <p class="validity-text text-primary-emphasis">
+            <b
+              >Use the questions next to the signature details to help you judge
+              whether or not this signature provides enough assurances!</b
+            >
+          </p>
+          <p class="validity-text mb-3">
+            <a href="/help/trust" target="_blank" class="helplink">
+              <i class="bi bi-question-circle"></i>
+              When should I not trust a document?
+            </a>
+          </p>
+        {/if}
+        {#if !sigValid && sigFound}
+          <h2 class="validity invalid">
+            <i class="bi bi-x-circle-fill"></i><br />
+            Signature invalid!
+          </h2>
+          <p class="validity-text">
+            This document contains an invalid signature. Do <b>NOT</b> trust this
+            document!
+          </p>
+        {/if}
+        {#if !sigFound}
+          <h2 class="validity notfound">
+            <i class="bi bi-exclamation-triangle-fill"></i><br />
+            No signature found!
+          </h2>
+          <p class="validity-text">
+            IdentitySign could not find a signature in this document. Verify
+            that it has indeed been signed using IdentitySign.
+          </p>
+        {/if}
+      {/if}
     </div>
-    {#if processDone}
-      {#if sigValid && transitionDone}
-        <h2 class="validity valid">
-          <i class="bi bi-search"></i>
-          <br />
-          Signature found…
-        </h2>
-        <p class="validity-text">
-          <b
-            >Verify the personal data used in this signature before trusting
-            this document!</b
-          >
-        </p>
-        <p class="validity-text">
-          IdentitySign found a valid signature in this document! However, you
-          should make sure that the person or organization that made this
-          signature provides enough assurance to trust this document.
-        </p>
-        <p class="validity-text text-primary-emphasis">
-          <b
-            >Use the questions next to the signature details to help you judge
-            whether or not this signature provides enough assurances!</b
-          >
-        </p>
-        <p class="validity-text mb-3">
-          <a href="/help/trust" target="_blank" class="helplink">
-            <i class="bi bi-question-circle"></i>
-            When should I not trust a document?
-          </a>
-        </p>
-      {/if}
-      {#if !sigValid && sigFound}
-        <h2 class="validity invalid">
-          <i class="bi bi-x-circle-fill"></i><br />
-          Signature invalid!
-        </h2>
-        <p class="validity-text">
-          This document contains an invalid signature. Do <b>NOT</b> trust this document!
-        </p>
-      {/if}
-      {#if !sigFound}
-        <h2 class="validity notfound">
-          <i class="bi bi-exclamation-triangle-fill"></i><br />
-          No signature found!
-        </h2>
-        <p class="validity-text">
-          IdentitySign could not find a signature in this document. Verify that
-          it has indeed been signed using IdentitySign.
-        </p>
-      {/if}
-    {/if}
   </div>
   <div
     class="col-lg-5 ps-5 {processDone && sigValid ? 'fill-space' : ''} "
@@ -320,9 +338,10 @@
     {#if processDone && sigValid && transitionDone}
       {#if sig && sig.attributes}
         <div
-          class="container"
+          class="container-xl"
           in:fly|global={{
-            y: "35%",
+            x,
+            y,
             duration: 500,
             delay: 100,
           }}
@@ -489,7 +508,7 @@
     font-size: 20px;
     margin-right: 5px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     .fill-space {
       width: 99.99% !important;
       transition: width 0s !important;
