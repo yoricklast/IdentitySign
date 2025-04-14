@@ -2,23 +2,26 @@
   <div class="col-md-7">
     <h1>Welcome to IdentitySign</h1>
 
-    <p class="main-text">
+    <p class="main-text fs-4">
       Sign documents, verify signatures and request signatures from others using
       IdentitySign!
     </p>
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-patch-check heading-icon"></i>Be sure of documents you
-        send and receive
+        <i class="bi bi-patch-check heading-icon"></i>Know who you are working
+        with
       </h2>
 
       <p class="main-text infoblock-text">
-        Using digital signatures, you can guarantee that a document is indeed
-        coming from the person who signed it and that it has not been altered.
+        Use IdentitySign to sign PDF documents with your verified name, email or
+        home address. This way, the recipient knows the document comes from you
+        and no one else. Verify signatures with IdentitySign to know for certain
+        who signed the document.
       </p>
     </div>
 
+    <!-- TODO: Less text(Images)/ more focus on verfication&request step/ Maybe move to signing page? -->
     <div class="infoblock rounded border">
       <h2>
         <i class="bi bi-pencil-square heading-icon"></i>Sign documents in three
@@ -48,6 +51,7 @@
       </div>
     </div>
 
+    <!-- TODO: Move to /about -->
     <div class="infoblock rounded border">
       <h2>
         <i class="bi bi-emoji-laughing heading-icon"></i>Available for free to

@@ -43,6 +43,18 @@
   let nameChecked = $state<boolean>();
   let mailChecked = $state<boolean>();
   let addressChecked = $state<boolean>();
+  let checkedAttributes = $derived.by(() => {
+    return [
+      nameChecked ? "name" : null,
+      mailChecked ? "email" : null,
+      addressChecked ? "address" : null,
+    ].filter((x) => x != null);
+  });
+
+  function join(attributesList: string[]) {
+    if (attributesList.length === 1) return attributesList[0];
+    return `${attributesList.slice(0, -1).join(", ")} and ${attributesList[attributesList.length - 1]}`;
+  }
 
   let selectedAttributes: WalletAttributeType[] = [];
 
@@ -345,6 +357,7 @@
   </div>
   <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
+      <div class="spacer"></div>
       <div class="progress-label-div row">
         <div
           class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0"
@@ -358,9 +371,9 @@
         </div>
         <div
           class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end"
-          style="left: 82%;"
+          style="left: 80%;"
         >
-          <i class="bi bi-3-circle"></i> Sign file
+          <i class="bi bi-3-circle"></i> Sign
         </div>
         <div
           class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
@@ -376,14 +389,14 @@
         <i class="bi bi-pencil-square page-icon"></i>
         Sign a document
       </h1>
-
-      <p>
-        Select a document and the personal data to sign with and create a
-        signature using <a href="https://www.yivi.app/en" target="_blank"
-          >Yivi</a
-        >.
-      </p>
-
+      {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
+        <p>
+          Create a signature using <a
+            href="https://www.yivi.app/en"
+            target="_blank">Yivi</a
+          >.
+        </p>
+      {/if}
       <div class="infoblock rounded border">
         {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
           {#if paramsGiven()}
@@ -451,7 +464,10 @@
                   id="checkName"
                   bind:checked={nameChecked}
                 />
-                <label class="form-check-label" for="checkName">Name</label>
+                <label class="form-check-label" for="checkName"
+                  >Name verified by your municipality</label
+                >
+                <!-- Or just "legal name" maybe? -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -484,7 +500,10 @@
                   disabled
                   bind:checked={nameChecked}
                 />
-                <label class="form-check-label" for="checkName">Name</label>
+                <label class="form-check-label" for="checkName"
+                  >Name verified by your municipality</label
+                >
+                <!-- See above -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -519,12 +538,11 @@
         {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
           <h2>Prove your identity</h2>
           <p>
-            Now that you have selected your file and personal data, you have to
-            prove these are correct using <a
-              href="https://www.yivi.app/en"
-              target="_blank">Yivi</a
-            >.
-          </p>
+                To sign with your {join(checkedAttributes)}, you need to prove
+                that {checkedAttributes.length > 1 ? "they are" : "it is"}
+                really yours. You do this with the
+                <a href="https://www.yivi.app/en" target="_blank">Yivi</a> app.
+              </p>
           <div class="row flex-wrap-reverse flex-sm-wrap-reverse">
             <div class="yivi-text col-md" style="min-width: 33.33%;">
               <h3>How do I do this?</h3>
@@ -638,7 +656,8 @@
 
 <style>
   h1 {
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
   }
   .page-image {
     margin-top: 20px;
@@ -688,5 +707,11 @@
   .yivi-web-form {
     margin-left: 10px;
     margin-right: 10px;
+  }
+  .spacer {
+    height: 25px;
+    @media screen and (max-width: 992px) {
+      height: 100px;
+    }
   }
 </style>

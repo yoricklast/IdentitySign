@@ -188,6 +188,7 @@
         <div class="mb-3 request">
           <label for="request-textarea" class="form-label">
             Please note: this request does <b>not</b> include the document itself!
+            Attach the file when sharing this request.
           </label>
           <textarea
             class="form-control"
