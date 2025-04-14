@@ -11,6 +11,9 @@
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
   PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
+  let small = $derived(window.innerWidth < 992);
+  let x = $derived(small ? "35%" : "0");
+  let y = $derived(small ? "0" : "35%");
   let files = $state<FileList>();
   let sigValid = $state<boolean>();
   let sigFound = $state<boolean>();
@@ -48,11 +51,15 @@
     }
   });
 
+  let trustSet = $state<string[]>([]);
+  let progress = $state(0);
   let options = ["Yes", "No", "Not sure"];
 
   let personTrust = $state<string>();
   let addressTrust = $state<string>();
   let emailTrust = $state<string>();
+
+  // Change to alertType only, if alert message changes permanently
   let alertData = $derived.by(() => {
     if (
       signatureAttributes?.filter((x) => x.trust !== undefined).length ==
@@ -87,14 +94,25 @@
     }
   });
 
-
+  function setProgress(): void {
+    signatureAttributes?.forEach((x) => {
+      if (x.trust != undefined && !trustSet.includes(x.name)) {
+        progress += 50 / signatureAttributes.length;
+        trustSet.push(x.name);
+      }
+    });
+  }
 
   function processFile(): void {
     const signer: WalletSigner = new PostGuardSigner();
     processDone = false;
     sigValid = false;
     sigFound = false;
-    transitionDone = false;
+    if (small) {
+      transitionDone = true;
+    } else {
+      transitionDone = false;
+    }
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
@@ -121,7 +139,9 @@
                     personTrust = undefined;
                     addressTrust = undefined;
                     emailTrust = undefined;
+                    trustSet = [];
                     processDone = true;
+                    progress = 50;
                   }
                 })
               }
@@ -131,6 +151,10 @@
       })
     }
   }
+
+  $effect(() => {
+    console.log("Done:" + transitionDone);
+  });
 </script>
 
 {#snippet personAnswers(label: string)}
@@ -142,6 +166,7 @@
       id={label}
       bind:group={personTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -155,6 +180,7 @@
       id={label}
       bind:group={addressTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
@@ -168,57 +194,83 @@
       id={label}
       bind:group={emailTrust}
       value={label}
+      onchange={setProgress}
     />
     <label class="form-check-label" for={label}> {label} </label>
   </div>
 {/snippet}
 
-
 <div class="row" style="margin-top: 7%;">
   <div
-    class="col-sm {processDone && sigValid
+    class="col-lg {processDone && sigValid
       ? 'align-self-start'
       : 'align-self-center'}"
   >
-    <h1 style="margin-bottom: 30px;">
-      <i class="bi bi-file-earmark-check page-icon"></i>
-      Verify a document's signature
-    </h1>
-    <div class="mb-3 file-select">
-      <label for="formFile" class="form-label"
-        >Select a document to verify its signature.</label
-      >
-      <input
-        class="form-control"
-        accept="application/pdf"
-        type="file"
-        bind:files
-        onchange={processFile}
-      />
-    </div>
-    {#if processDone}
-      {#if sigValid}
-        <h2 class="validity valid">
-          <i class="bi bi-search"></i>
-          <br />
-          Signature found…
-        </h2>
-        <p class="validity-text">
-          <b
-            >Verify the personal data used in this signature before trusting
-            this document!</b
+    <div class="position-relative">
+      <div class="spacer"></div>
+      <div class="progress-label-div row">
+        <div
+          class="progress-label text-wrap col position-absolute start-0 ps-0 text-start align-self-end"
+        >
+          <i class="bi bi-1-circle"></i> Select document
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute start-50 translate-middle-x text-center align-self-end"
+        >
+          <i class="bi bi-2-circle"></i> Check signature
+        </div>
+        <div
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+        >
+          <i class="bi bi-3-circle"></i> Done
+        </div>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Progress">
+        <div class="progress-bar" style="width: {progress}%"></div>
+      </div>
+
+      <h1 style="margin-bottom: 35px; margin-top: 50px;">
+        <i class="bi bi-file-earmark-check page-icon"></i>
+        Verify a document's signature
+      </h1>
+      <div class="mb-3 file-select">
+        <label for="formFile" class="form-label"
+          >Select a document to verify its signature.
+          <span
+            class="d-inline-block"
+            data-bs-trigger="hover focus"
+            data-bs-toggle="popover"
+            data-bs-placement="right"
+            data-bs-container="body"
+            data-bs-content="Click on 'Browse...' and choose a signed PDF that you received from your device to check if it contains a valid IdentitySign signature."
           >
-        </p>
-        <p class="validity-text">
-          IdentitySign found a valid signature in this document! However, you
-          should make sure that the person or organization that made this
-          signature provides enough assurance to trust this document.
-        </p>
-        <p class="validity-text text-primary-emphasis">
-          <b
-            >Use the questions next to the signature details to help you judge
-            whether or not this signature provides enough assurances!</b
-          >
+            <button
+              type="button"
+              class="btn btn-link mb-1"
+              tabindex="0"
+              aria-label="How to verify a document"
+            >
+              <i class="bi bi-question-circle"></i>
+            </button>
+          </span>
+        </label>
+        <input
+          class="form-control"
+          accept="application/pdf"
+          type="file"
+          bind:files
+          onchange={processFile}
+        />
+      </div>
+      {#if processDone}
+        {#if sigValid && transitionDone}
+          <h2 class="validity valid">
+            <i class="bi bi-search"></i>
+            <br />
+            Signature found…
+          </h2>
+          <p class="validity-text">
+          Check who signed this document before trusting it.
         </p>
         <p class="validity-text">
           <a href="/help/trust" target="_blank" class="helplink">
@@ -226,30 +278,32 @@
             When should I not trust a document?
           </a>
         </p>
+        {/if}
+        {#if !sigValid && sigFound}
+          <h2 class="validity invalid">
+            <i class="bi bi-x-circle-fill"></i><br />
+            Signature invalid!
+          </h2>
+          <p class="validity-text">
+            This document contains an invalid signature. Do <b>NOT</b> trust this
+            document!
+          </p>
+        {/if}
+        {#if !sigFound}
+          <h2 class="validity notfound">
+            <i class="bi bi-exclamation-triangle-fill"></i><br />
+            No signature found!
+          </h2>
+          <p class="validity-text">
+            IdentitySign could not find a signature in this document. Verify
+            that it has indeed been signed using IdentitySign.
+          </p>
+        {/if}
       {/if}
-      {#if !sigValid && sigFound}
-        <h2 class="validity invalid">
-          <i class="bi bi-x-circle-fill"></i><br />
-          Signature invalid!
-        </h2>
-        <p class="validity-text">
-          This document contains an invalid signature. Do <b>NOT</b> trust this document!
-        </p>
-      {/if}
-      {#if !sigFound}
-        <h2 class="validity notfound">
-          <i class="bi bi-exclamation-triangle-fill"></i><br />
-          No signature found!
-        </h2>
-        <p class="validity-text">
-          IdentitySign could not find a signature in this document. Verify that
-          it has indeed been signed using IdentitySign.
-        </p>
-      {/if}
-    {/if}
+    </div>
   </div>
   <div
-    class="col-sm-5 ps-5"
+    class="col-lg-5 ps-5 {processDone && sigValid ? 'fill-space' : ''} "
     style={processDone && sigValid
       ? "width: 55%; transition: width 0.5s ease;"
       : "transition: all 0s;"}
@@ -257,7 +311,7 @@
   >
     {#if imageVisible}
       <img
-        class="w-100"
+        class="w-100 pt-5 small-image"
         in:fade={{ duration: 1000, delay: 100 }}
         src="/img/img_check.svg"
         alt="Verifying a document"
@@ -266,17 +320,18 @@
     {#if processDone && sigValid && transitionDone}
       {#if sig && sig.attributes}
         <div
-          class="container"
+          class="container-xl"
           in:fly|global={{
-            y: "35%",
+            x,
+            y,
             duration: 500,
             delay: 100,
           }}
         >
           <h3 class="attribute-heading">Signed with:</h3>
           {#each sig.attributes as attribute}
-            <div class="row row-cols-2">
-              <div class="col-8">
+            <div class="row row-cols-sm-1">
+              <div class="col-xxl-6">
                 <div class="card attribute-card">
                   <div class="card-header">
                     {#if attribute.t === ATTRIBUTES[1]}
@@ -298,31 +353,32 @@
                   </div>
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-xxl">
                 {#if attribute.t === ATTRIBUTES[1]}
                   <p class="question">
-                    Are the assurances of this person/organization appropriate
-                    for this document?
+                    Was this document signed by the right entity?
                   </p>
                   {#each options as label}
                     {@render personAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {:else if attribute.t === ATTRIBUTES[2] }
                   <p class="question">
-                    Are the assurances of someone with this verified address
-                    appropriate for this document?
+                    Is this address owned by the right person or organization?
                   </p>
                   {#each options as label}
                     {@render addressAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {:else if attribute.t === ATTRIBUTES[0] }
                   <p class="question">
-                    Are the assurances of someone with this email address
-                    appropriate for this document?
+                    Is this email address owned by the right person or
+                    organization?
                   </p>
                   {#each options as label}
                     {@render emailAnswers(label)}
                   {/each}
+                  <div class="mb-4"></div>
                 {/if}
               </div>
             </div>
@@ -333,29 +389,42 @@
                 {#if alertData.type === "danger"}
                   <strong>
                     <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                    document was not signed by someone you trust!
+                    document should not be trusted!
                   </strong><br />
                   <hr />
-                  You marked {alertData.info} as not trusted. While this signature
-                  may be valid, it may not provide the appropriate level of assurance
-                  for this document.
+                  Do not trust this document. It might have be signed by the wrong
+                  entity, or the signer might have forgotten to include relevant
+                  data (e.g., their name or address).<br />
+                  You can use our
+                  <a href="/request" target="_blank">
+                    signature request tool
+                  </a>
+                  to request a signature that contains this data.
                 {:else if alertData.type === "warning"}
                   <strong
                     ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                    signature may not provide sufficient assurances...</strong
-                  >
+                    document was signed but you might need more information before
+                    trusting it</strong
+                  ><br />
                   <hr />
-                  IdentitySign found a valid signature, but the assurances provided
-                  by the person that made this signature may not be sufficient to
-                  trust this document.
+                  Before trusting this document, consider if you know enough about
+                  the signer.<br /> Do you know for certain who owns this email
+                  address? Do they have the authority to sign this document?
+                  Should someone else have signed the file? Do you need
+                  additional data (e.g., a name or address) to be sure? <br />
+                  If you have any doubts, use our
+                  <a href="/request" target="_blank">
+                    signature request tool
+                  </a>
+                  to do request a signature that contains the signers name <!-- or "..contains the data you need" maybe -->.
                 {:else if alertData.type === "primary"}
                   <strong
                     ><i class="bi bi-info-circle-fill alert-icon"></i> This document
-                    was signed by someone you trust!</strong
+                    can be trusted!</strong
                   > <br />
                   <hr />
-                  You indicated that the person who signed this document provides
-                  enough assurance to trust this document.
+                  This document was signed by the correct person or organization.
+                  If you trust them, you can trust the document.
                 {/if}
               </div>
             </div>
@@ -415,5 +484,17 @@
   .alert-icon {
     font-size: 20px;
     margin-right: 5px;
+  }
+  @media (max-width: 992px) {
+    .fill-space {
+      width: 99.99% !important;
+      transition: width 0s !important;
+      padding-left: 0 !important;
+    }
+  }
+  @media (max-width: 992px) {
+    .small-image {
+      width: 75% !important;
+    }
   }
 </style>

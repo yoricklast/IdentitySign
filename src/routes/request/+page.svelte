@@ -1,10 +1,11 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
+
   let files = $state<FileList>();
 
   let name = $state(false);
   let mail = $state(false);
   let address = $state(false);
-
   let request = $state("");
   let link = "";
 
@@ -49,15 +50,15 @@
   }
 </script>
 
-<div class="row" style="margin-top: 5%;">
-  <div class="col-sm-5">
+<div class="row flex-wrap-reverse" style="margin-top: 5%;">
+  <div class="col-lg-5 col-md-8 col-sm-8">
     <img
-      class="page-image position-relative top-50 start-0 translate-middle-y"
+      class="page-image position-relative top-0 start-0 pt-5"
       src="/img/img_request.svg"
       alt="Verifying a document"
     />
   </div>
-  <div class="col-sm-7">
+  <div class="col-lg-7">
     <div class="position-relative top-50 end-0 translate-middle-y">
       <h1>
         <i class="bi bi-envelope-check page-icon"></i>
@@ -71,8 +72,25 @@
           <div class="card-body">
             <h4 class="card-title">Document</h4>
             <label for="formFile" class="form-label"
-              >Select a document you want the other person to sign.</label
-            >
+              >Select a document you want the other person to sign.
+              <span
+                class="d-inline-block"
+                data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
+                data-bs-placement="right"
+                data-bs-container="body"
+                data-bs-content="Click on 'Browse...' and choose a PDF document from your device that you want a signature for."
+              >
+                <button
+                  type="button"
+                  class="btn btn-link mb-1"
+                  tabindex="0"
+                  aria-label="How to select a document"
+                >
+                  <i class="bi bi-question-circle"></i>
+                </button>
+              </span>
+            </label>
             <input
               class="form-control"
               accept="application/pdf"
@@ -86,8 +104,24 @@
           <div class="card-body">
             <h4 class="card-title">Personal data</h4>
             <label for="attr-checks" class="form-label"
-              >Select the personal data you want the other person to sign with.</label
-            >
+              >Select the personal data you want the other person to sign with.
+              <span
+                class="d-inline-block"
+                data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
+                data-bs-placement="right"
+                data-bs-container="body"
+                data-bs-content="Choose one or multiple personal details: name (first name + last name), email and address (street, house number, zip code and city)"
+              >
+                <button
+                  type="button"
+                  class="btn btn-link mb-1"
+                  tabindex="0"
+                  aria-label="How to select personal data"
+                  ><i class="bi bi-question-circle"> </i>
+                </button>
+              </span>
+            </label>
             <div id="attr-checks">
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -133,11 +167,19 @@
             disabled>Generate request</button
           >
         {:else}
-          <button
-            type="submit"
-            class="btn btn-primary btn-generate"
-            onclick={btnGenerateClick}>Generate request</button
-          >
+          <div class="d-flex gap-4">
+            <button
+              type="submit"
+              class="btn btn-primary btn-generate"
+              onclick={btnGenerateClick}>Generate request</button
+            >
+            {#if request != ""}
+              <p class="btn-generate mb-0 align-self-center" in:fade>
+                <span class="bi bi-arrow-down-circle-fill me-2"></span>See
+                request below
+              </p>
+            {/if}
+          </div>
         {/if}
       </div>
 
@@ -145,6 +187,7 @@
         <div class="mb-3 request">
           <label for="request-textarea" class="form-label">
             Please note: this request does <b>not</b> include the document itself!
+            Attach the file when sharing this request.
           </label>
           <textarea
             class="form-control"
@@ -153,20 +196,23 @@
             bind:value={request}
             disabled
           ></textarea>
-          <div style="margin-top: 10px;">
-            <button type="button" class="btn btn-light" onclick={btnCopyClick}
+          <div style="margin-top: 5px;">
+            <button
+              type="button"
+              class="btn btn-light mt-2"
+              onclick={btnCopyClick}
               ><i class="bi bi-clipboard btn-icon"></i>Copy to clipboard</button
             >
             <button
               type="button"
-              class="btn btn-light"
+              class="btn btn-light mt-2"
+              style="margin-right: 5px;"
               onclick={btnCopyLinkClick}
               ><i class="bi bi-link-45deg btn-icon"></i>Copy link only</button
             >
             <button
               type="button"
-              class="btn btn-primary"
-              style="margin-left: 5px;"
+              class="btn btn-primary mt-2"
               onclick={btnClearClick}
               ><i class="bi bi-plus-lg btn-icon"></i>New request</button
             >

@@ -89,131 +89,167 @@
       <a href="https://www.uni-paderborn.de/impressum" target="_blank"
         >Impressum</a
       >
-    </div>
-  </body>
+  </div>
+</body>
 
-  <footer>
-    <nav class="navbar fixed-bottom nav-bottom">
-      <div class="container-fluid">
-        <a class="navbar-text nav-bottom-text" href="/about">
-          Please note: this is a prototype application, it does
-          <b>not</b> create actual signatures!
-        </a>
-      </div>
-    </nav>
-  </footer>
+<script>
+  if (localStorage.getItem("devMode") != "true") {
+    document.getElementById("setupNavItem").style.display = "none";
+  }
+  try {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-bs-theme", "dark");
+    }
+  } catch {
+    console.warn("Could not detect or set dark/light mode.");
+  }
+</script>
 
-  <script>
-    if (localStorage.getItem("devMode") != "true") {
-      document.getElementById("setupNavItem").style.display = "none";
-    }
-    try {
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        document.documentElement.setAttribute("data-bs-theme", "dark");
-      }
-    } catch {
-      console.warn("Could not detect or set dark/light mode.");
-    }
-  </script>
 </html>
 
 <style>
   @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
   @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap");
+
   body {
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
     padding-bottom: 75px;
   }
+
   h1 {
     font-size: 35px;
     font-weight: 650;
     margin-bottom: 15px;
   }
+
   h2 {
     font-size: 28px;
     font-weight: 500;
   }
+
   h3 {
     font-size: 22px;
     font-weight: 700;
   }
+
   .logo {
     height: 30px;
   }
+
   .main-div {
     padding-left: 12%;
     padding-right: 12%;
   }
+
   .main-text {
     font-size: 20px;
     margin-bottom: 15px;
   }
+
   .main-nav {
     font-size: 18px;
     font-weight: 550;
   }
+
   .icon-nav {
     width: 1em;
     margin-right: 2px;
   }
+
   .main-navbar {
     background-color: var(--bs-primary-bg-subtle);
   }
+
   .logo-text {
     font-weight: 500;
   }
+
   .page-icon {
     display: inline-block;
     margin-bottom: 5px;
     font-size: 40px;
     margin-right: 10px;
   }
+
   .page-image {
     width: 100%;
     padding-right: 50px;
   }
+
   .page-image-r {
     width: 100%;
     padding-left: 30px;
   }
+
   .nav-bottom {
     background-color: var(--bs-body-bg);
   }
+
   .nav-bottom-text {
     width: 100%;
     text-decoration: none;
     text-align: center;
     color: var(--bs-danger);
   }
+
   .setupNavLink {
     color: var(--bs-secondary);
   }
+
   .narrower {
     max-width: 800px;
   }
+
   .infoblock {
     padding: 25px;
     background-color: var(--bs-tertiary-bg);
     margin-bottom: 20px;
   }
+
   .infoblock-text {
     margin-bottom: 0px;
   }
+
   .attribute-heading {
     margin-bottom: 15px;
   }
+
   .attribute-card {
     margin-bottom: 15px;
   }
+
   .card-icon {
     margin-right: 10px;
     color: var(--bs-primary);
   }
+
   .impressum {
     width: 100%;
     margin-top: 20px;
     font-size: 11pt;
     text-align: center;
+  }
+
+  .progress {
+    margin-bottom: 30px;
+  }
+
+  .progress-label-div {
+    padding-bottom: 10px;
+  }
+
+  .progress-label {
+    width: 18%;
+    min-width: 15vw;
+    font-weight: 600;
+  }
+
+  .spacer {
+    height: 25px;
+
+    @media screen and (max-width: 768px) {
+      height: 90px;
+    }
   }
 </style>
