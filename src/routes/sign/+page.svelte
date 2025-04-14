@@ -2,19 +2,14 @@
 
 <script lang="ts">
   import { PDFDocument } from "pdf-lib";
-  import { DummySigner } from "../../scripts/dummy-signer";
+  import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
   import {
     WalletAttributeType,
-    type WalletAttribute,
   } from "../../scripts/wallet-attribute";
-  import type { WalletSigner } from "../../scripts/wallet-signer";
+  import type { AttributeCon } from "@e4a/pg-wasm";
+  import { tick } from 'svelte';
 
-  import {
-    DISCLOSE_ADDRESS,
-    DISCLOSE_EMAIL,
-    DISCLOSE_FULL_NAME,
-    disclose,
-  } from "../../scripts/yivi-disclose";
+  const signer: PostGuardSigner = new PostGuardSigner();
 
   const PARAM_NAME = "name";
   const PARAM_MAIL = "mail";
@@ -29,13 +24,13 @@
   let paramMail = urlParams.get(PARAM_MAIL);
   let paramAddress = urlParams.get(PARAM_ADDRESS);
   let paramFile = urlParams.get(PARAM_FILE);
-
+  
   let isMobile =
     /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
     (/Macintosh/i.test(window.navigator.userAgent) &&
       navigator.maxTouchPoints &&
       navigator.maxTouchPoints > 2);
-
+  
   let progress = $state(0);
 
   let files = $state<FileList>();
@@ -43,6 +38,7 @@
   let nameChecked = $state<boolean>();
   let mailChecked = $state<boolean>();
   let addressChecked = $state<boolean>();
+  
   let checkedAttributes = $derived.by(() => {
     return [
       nameChecked ? "name" : null,
@@ -58,7 +54,7 @@
 
   let selectedAttributes: WalletAttributeType[] = [];
 
-  let yiviAttributes: WalletAttribute[] | null = $state(null);
+  let yiviAttributes: AttributeCon | null = $state(null);
 
   let fileSelected = $state(false);
   let attributeSelected = $state(false);
@@ -110,9 +106,7 @@
       const existingPdfBytes = await inputFile.arrayBuffer();
       const pdfDocument = await PDFDocument.load(existingPdfBytes);
 
-      const signer: WalletSigner = new DummySigner();
-
-      signer.sign(pdfDocument, yiviAttributes).then((pdfBytes) => {
+      signer.sign(pdfDocument, selectedAttributes).then((pdfBytes) => {
         signedPdfBytes = pdfBytes;
         signedPdfName =
           inputFile.name.substring(0, inputFile.name.lastIndexOf(".")) +
@@ -123,79 +117,7 @@
       });
     }
   }
-
-  async function runYivi() {
-    getYiviData(selectedAttributes).then((result) => {
-      yiviAttributes = result;
-      yiviDone = true;
-      progress = 82;
-    });
-  }
-
-  /**
-   * Obtain attribute data from Yivi.
-   * @param inputAttributes Attributes to obtain.
-   */
-  async function getYiviData(
-    inputAttributes: WalletAttributeType[],
-  ): Promise<WalletAttribute[]> {
-    // Build string for disclosure
-    let attributesToDisclose = Array<string>();
-    for (const x of inputAttributes) {
-      switch (x) {
-        case WalletAttributeType.Name: {
-          attributesToDisclose =
-            attributesToDisclose.concat(DISCLOSE_FULL_NAME);
-          break;
-        }
-        case WalletAttributeType.Email: {
-          attributesToDisclose = attributesToDisclose.concat(DISCLOSE_EMAIL);
-          break;
-        }
-        case WalletAttributeType.Address: {
-          attributesToDisclose = attributesToDisclose.concat(DISCLOSE_ADDRESS);
-          break;
-        }
-      }
-    }
-
-    // Disclose attributes
-    let attributes = Array<WalletAttribute>();
-    await disclose(attributesToDisclose).then((result) => {
-      let address = null;
-      for (const x of result) {
-        if (DISCLOSE_FULL_NAME.includes(x.id)) {
-          const y: WalletAttribute = {
-            attributeType: WalletAttributeType.Name,
-            value: x.rawvalue,
-          };
-          attributes.push(y);
-        } else if (DISCLOSE_EMAIL.includes(x.id)) {
-          const y: WalletAttribute = {
-            attributeType: WalletAttributeType.Email,
-            value: x.rawvalue,
-          };
-          attributes.push(y);
-        } else if (DISCLOSE_ADDRESS.includes(x.id)) {
-          if (address == null) {
-            address = x.rawvalue;
-          } else {
-            address = address + " " + x.rawvalue;
-          }
-        }
-      }
-      if (address != null) {
-        const y: WalletAttribute = {
-          attributeType: WalletAttributeType.Address,
-          value: address,
-        };
-        attributes.push(y);
-      }
-    });
-
-    return attributes;
-  }
-
+  
   /**
    * Download a file.
    * @param fileName Name of the file.
@@ -225,11 +147,33 @@
   /**
    * Logic for the "Next" button
    */
-  async function btnNext() {
+  async function btnProveIdentity() {
     selectAttributes();
     if (fileSelected && attributeSelected) {
       yiviActive = true;
-      runYivi();
+      await tick();
+
+      // Build string for disclosure
+      const attributesToDisclose: { t: string }[] = [];
+      for (const x of selectedAttributes) {
+        switch (x) {
+          case WalletAttributeType.Name: {
+            attributesToDisclose.push({ t: ATTRIBUTES[1] });
+            break;
+          }
+          case WalletAttributeType.Email: {
+            attributesToDisclose.push({ t: ATTRIBUTES[0] });
+            break;
+          }
+          case WalletAttributeType.Address: {
+            attributesToDisclose.push({ t: ATTRIBUTES[2] });
+            break;
+          }
+        }
+      }
+      yiviAttributes = await signer.obtainSignKeys(attributesToDisclose)
+      yiviDone = true;
+      progress = 82;
     }
   }
 
@@ -250,6 +194,7 @@
     if (selectedAttributes.length > 0) {
       attributeSelected = true;
       progress = 50;
+      console.log(selectedAttributes);
     } else {
       alert("Please select one or more personal data to sign with!");
     }
@@ -574,11 +519,11 @@
               <div class="card attribute-card">
                 <div class="card-header">
                   <i class="bi bi-patch-check card-icon"></i><b
-                    >{WalletAttributeType[attribute.attributeType]}</b
+                    >{attribute.t}</b
                   >
                 </div>
                 <div class="card-body">
-                  <p>{attribute.value.toString()}</p>
+                  <p>{attribute.v?.toString()}</p>
                 </div>
               </div>
             {/each}
@@ -616,7 +561,7 @@
           <button
             class="btn btn-primary btn-sign"
             type="button"
-            onclick={btnNext}
+            onclick={btnProveIdentity}
             ><i class="bi bi-arrow-right-circle btn-sign-icon"></i>Next
           </button>
         {/if}

@@ -2,10 +2,10 @@
   // Use PDF.js for reading PDF files
   import * as PDFjs from "pdfjs-dist";
   import type { WalletSigner } from "../../scripts/wallet-signer";
-  import { DUMMY_SIG_PREFIX, DummySigner } from "../../scripts/dummy-signer";
+  import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
   import type { Signature } from "../../scripts/signature";
-  import { WalletAttributeType } from "../../scripts/wallet-attribute";
   import { fade, fly } from "svelte/transition";
+  import { POSTGUARD_FILE } from "../../scripts/Constants";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -15,7 +15,6 @@
   let x = $derived(small ? "35%" : "0");
   let y = $derived(small ? "0" : "35%");
   let files = $state<FileList>();
-
   let sigValid = $state<boolean>();
   let sigFound = $state<boolean>();
   // Prevents showing sigValid status before processing is done
@@ -23,35 +22,36 @@
   let sig = $state<Signature>();
   let transitionDone = $state(false);
   let imageVisible = $derived(!sigValid);
+
   let signatureAttributes = $derived.by(() => {
     if (sig && sig.attributes) {
       return [
         {
           name: "name",
           value: sig.attributes.find(
-            (x) => x.attributeType == WalletAttributeType.Name,
-          )?.value,
+            (x) => x.t == ATTRIBUTES[1]
+          )?.v,
           trust: personTrust,
         },
         {
           name: "address",
           value: sig.attributes.find(
-            (x) => x.attributeType == WalletAttributeType.Address,
-          )?.value,
+            (x) => x.t == ATTRIBUTES[2],
+          )?.v,
           trust: addressTrust,
         },
         {
           name: "email",
           value: sig.attributes.find(
-            (x) => x.attributeType == WalletAttributeType.Email,
-          )?.value,
+            (x) => x.t== ATTRIBUTES[0],
+          )?.v,
           trust: emailTrust,
         },
       ].filter((x) => x.value !== undefined);
     }
   });
-  let trustSet = $state<string[]>([]);
 
+  let trustSet = $state<string[]>([]);
   let progress = $state(0);
   let options = ["Yes", "No", "Not sure"];
 
@@ -104,7 +104,7 @@
   }
 
   function processFile(): void {
-    const signer: WalletSigner = new DummySigner();
+    const signer: WalletSigner = new PostGuardSigner();
     processDone = false;
     sigValid = false;
     sigFound = false;
@@ -126,35 +126,29 @@
       );
       file.arrayBuffer().then((value) => {
         PDFjs.getDocument(value).promise.then((document) => {
-          document.getPage(document.numPages).then((page) => {
-            page.getTextContent().then((text) => {
-              text.items.forEach((x) => {
-                let itemValue = Object.values(x)[0];
-                if (typeof itemValue == "string" && itemValue !== "") {
-                  // Prevent unnecessary checking when sig prefix is not present (change when no longer using dummy signatures!)
-                  if (itemValue.includes(DUMMY_SIG_PREFIX)) {
-                    sigFound = true;
-                    if (signer.check(itemValue)) {
-                      sig = signer.decode(itemValue);
-                      sigValid = true;
-                      // Reset trust values
-                      personTrust = undefined;
-                      addressTrust = undefined;
-                      emailTrust = undefined;
-                      trustSet = [];
-                      console.log(`Length: ${signatureAttributes?.length}`);
-                    }
+          document.getAttachments().then((attachments) => {
+            for (const [name, attachment] of Object.entries(attachments)) {
+              if (name === POSTGUARD_FILE) {
+                const content = attachment.content;
+                sigFound = true;
+                signer.check(content).then((hasSignature) => {
+                  if (hasSignature) {
+                    sig = signer.decode("not needed")
+                    sigValid = true;
+                    // Reset trust values
+                    personTrust = undefined;
+                    addressTrust = undefined;
+                    emailTrust = undefined;
+                    trustSet = [];
+                    processDone = true;
+                    progress = 50;
                   }
-                }
-              });
-              processDone = true;
-              progress = 50;
-
-              console.log(`Check done, sig validity: ${sigValid}`);
-            });
-          });
-        });
-      });
+                })
+              }
+            }
+          })
+        })
+      })
     }
   }
 
@@ -340,43 +334,27 @@
               <div class="col-xxl-6">
                 <div class="card attribute-card">
                   <div class="card-header">
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <i class="bi bi-person card-icon"></i><b>Name</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                    {#if attribute.t === ATTRIBUTES[1]}
+                      <i class="bi bi-person card-icon"></i><b>Fullname</b>
+                    {:else if attribute.t === ATTRIBUTES[2] }
+                      <i class="bi bi-mailbox card-icon"></i><b>Street</b>
+                    {:else if attribute.t === ATTRIBUTES[0] }
                       <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
                     {/if}
                   </div>
                   <div class="card-body">
                     <p class="attribute-value">
-                      {attribute.value.toString()}
+                      {attribute.v?.toString()}
                     </p>
                     <h6>
                       <i class="bi bi-question-circle"></i>
                       What does this mean?
                     </h6>
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <p class="explainer">
-                        The document was signed by a person or organization with
-                        this name.
-                      </p>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <p class="explainer">
-                        The document was signed by a person or organization
-                        registered at this address.
-                      </p>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <p class="explainer">
-                        The document was signed by a person or organization that
-                        owns this email address.
-                      </p>
-                    {/if}
                   </div>
                 </div>
               </div>
               <div class="col-xxl">
-                {#if attribute.attributeType == WalletAttributeType.Name}
+                {#if attribute.t === ATTRIBUTES[1]}
                   <p class="question">
                     Was this document signed by the right entity?
                   </p>
@@ -384,7 +362,7 @@
                     {@render personAnswers(label)}
                   {/each}
                   <div class="mb-4"></div>
-                {:else if attribute.attributeType == WalletAttributeType.Address}
+                {:else if attribute.t === ATTRIBUTES[2] }
                   <p class="question">
                     Is this address owned by the right person or organization?
                   </p>
@@ -392,7 +370,7 @@
                     {@render addressAnswers(label)}
                   {/each}
                   <div class="mb-4"></div>
-                {:else if attribute.attributeType == WalletAttributeType.Email}
+                {:else if attribute.t === ATTRIBUTES[0] }
                   <p class="question">
                     Is this email address owned by the right person or
                     organization?

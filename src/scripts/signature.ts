@@ -1,7 +1,7 @@
-import type { WalletAttribute } from "./wallet-attribute";
+import type { AttributeCon } from "@e4a/pg-wasm";
 
 export type Signature = {
   signature: string;
-  attributes: WalletAttribute[];
+  attributes: AttributeCon;
   date: string;
 };

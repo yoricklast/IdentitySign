@@ -6,7 +6,6 @@
   let name = $state(false);
   let mail = $state(false);
   let address = $state(false);
-
   let request = $state("");
   let link = "";
 
