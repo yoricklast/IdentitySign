@@ -3,11 +3,9 @@
 <script lang="ts">
   import { PDFDocument } from "pdf-lib";
   import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
-  import {
-    WalletAttributeType,
-  } from "../../scripts/wallet-attribute";
+  import { WalletAttributeType } from "../../scripts/wallet-attribute";
   import type { AttributeCon } from "@e4a/pg-wasm";
-  import { tick } from 'svelte';
+  import { tick } from "svelte";
 
   const signer: PostGuardSigner = new PostGuardSigner();
 
@@ -24,13 +22,13 @@
   let paramMail = urlParams.get(PARAM_MAIL);
   let paramAddress = urlParams.get(PARAM_ADDRESS);
   let paramFile = urlParams.get(PARAM_FILE);
-  
+
   let isMobile =
     /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
     (/Macintosh/i.test(window.navigator.userAgent) &&
       navigator.maxTouchPoints &&
       navigator.maxTouchPoints > 2);
-  
+
   let progress = $state(0);
 
   let files = $state<FileList>();
@@ -38,7 +36,7 @@
   let nameChecked = $state<boolean>();
   let mailChecked = $state<boolean>();
   let addressChecked = $state<boolean>();
-  
+
   let checkedAttributes = $derived.by(() => {
     return [
       nameChecked ? "name" : null,
@@ -117,7 +115,7 @@
       });
     }
   }
-  
+
   /**
    * Download a file.
    * @param fileName Name of the file.
@@ -171,9 +169,9 @@
           }
         }
       }
-      yiviAttributes = await signer.obtainSignKeys(attributesToDisclose)
+      yiviAttributes = await signer.obtainSignKeys(attributesToDisclose);
       yiviDone = true;
-      progress = 82;
+      progress = 80;
     }
   }
 
@@ -483,11 +481,13 @@
         {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
           <h2>Prove your identity</h2>
           <p>
-                To sign with your {join(checkedAttributes)}, you need to prove
-                that {checkedAttributes.length > 1 ? "they are" : "it is"}
-                really yours. You do this with the
-                <a href="https://www.yivi.app/en" target="_blank">Yivi</a> app.
-              </p>
+            To sign with your {join(checkedAttributes)}, you need to prove that {checkedAttributes.length >
+            1
+              ? "they are"
+              : "it is"}
+            really yours. You do this with the
+            <a href="https://www.yivi.app/en" target="_blank">Yivi</a> app.
+          </p>
           <div class="row flex-wrap-reverse flex-sm-wrap-reverse">
             <div class="yivi-text col-md" style="min-width: 33.33%;">
               <h3>How do I do this?</h3>
@@ -518,8 +518,7 @@
             {#each yiviAttributes as attribute}
               <div class="card attribute-card">
                 <div class="card-header">
-                  <i class="bi bi-patch-check card-icon"></i><b
-                    >{attribute.t}</b
+                  <i class="bi bi-patch-check card-icon"></i><b>{attribute.t}</b
                   >
                 </div>
                 <div class="card-body">
