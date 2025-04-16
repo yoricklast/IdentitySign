@@ -8,7 +8,12 @@ import type { Signature } from "./signature";
 export const DUMMY_SIG_PREFIX = "$SIG";
 const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
 
-import { type AttributeCon, type ISealOptions, type ISigningKey, StreamUnsealer } from "@e4a/pg-wasm";
+import {
+  type AttributeCon,
+  type ISealOptions,
+  type ISigningKey,
+  StreamUnsealer,
+} from "@e4a/pg-wasm";
 
 import { METRICS_HEADER, PKG_URL, POSTGUARD_FILE } from "./Constants";
 
@@ -43,8 +48,10 @@ async function getParameters(): Promise<string> {
   return params.publicKey;
 }
 
-async function applyEncryption(pubSignKey: ISigningKey, file: PDFDocument): Promise<PDFDocument>
-{
+async function applyEncryption(
+  pubSignKey: ISigningKey,
+  file: PDFDocument,
+): Promise<PDFDocument> {
   const mpk = await getParameters();
   const { sealStream } = await import("@e4a/pg-wasm");
 
@@ -56,14 +63,14 @@ async function applyEncryption(pubSignKey: ISigningKey, file: PDFDocument): Prom
   const chunks: Uint8Array[] = [];
   const writable = new WritableStream({
     write(chunk: Uint8Array) {
-      chunks.push(chunk)
+      chunks.push(chunk);
     },
     close() {
-      console.log('Stream is closed.')
-    }
-  })
+      console.log("Stream is closed.");
+    },
+  });
 
-  const pdfAsUint8Arr = await file.save()
+  const pdfAsUint8Arr = await file.save();
   const readable = new ReadableStream({
     start(controller) {
       controller.enqueue(pdfAsUint8Arr);
@@ -73,13 +80,13 @@ async function applyEncryption(pubSignKey: ISigningKey, file: PDFDocument): Prom
 
   // Seal PDFDocument
   try {
-    await sealStream(mpk, options, readable, writable)
+    await sealStream(mpk, options, readable, writable);
   } catch (e) {
-    console.log('error during sealing: ', e)
+    console.log("error during sealing: ", e);
   }
 
   // Convert sealed document to a base64string so we can attach it to the existing PDF as a new page
-  const arrayBuffer: ArrayBuffer = await new Blob(chunks).arrayBuffer()
+  const arrayBuffer: ArrayBuffer = await new Blob(chunks).arrayBuffer();
   //const base64String = arrayBufferToBase64(arrayBuffer);
 
   console.log("Base 64 encrypted string: ", arrayBuffer);
@@ -87,11 +94,11 @@ async function applyEncryption(pubSignKey: ISigningKey, file: PDFDocument): Prom
   const currentDate = new Date();
 
   await file.attach(arrayBuffer, POSTGUARD_FILE, {
-    mimeType: 'image/jpeg',
-    description: '️PostGuard encrypted PDF file',
+    mimeType: "image/jpeg",
+    description: "️PostGuard encrypted PDF file",
     creationDate: currentDate,
     modificationDate: currentDate,
-  })
+  });
 
   //const page = file.addPage();
   //page.setFontSize(1)
@@ -101,18 +108,15 @@ async function applyEncryption(pubSignKey: ISigningKey, file: PDFDocument): Prom
   return file;
 }
 
-
 /**
  * Implementation of a wallet signer.
  */
 export class PostGuardSigner implements WalletSigner {
-
   set signKeys(value: SigningKeys) {
     this._signKeys = value;
   }
 
   public async obtainSignKeys(pub: AttributeCon): Promise<AttributeCon> {
-
     const session = {
       url: PKG_URL,
       start: {
@@ -120,7 +124,7 @@ export class PostGuardSigner implements WalletSigner {
         url: (o) => `${o.url}/v2/request/start`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ con: [...pub ] }),
+        body: JSON.stringify({ con: [...pub] }),
       },
       result: {
         // @ts-ignore
@@ -249,8 +253,7 @@ export class PostGuardSigner implements WalletSigner {
     })
       .then((r) => r.json())
       .then((json) => {
-        if (json.status !== "DONE")
-          throw new Error("not done");
+        if (json.status !== "DONE") throw new Error("not done");
         return json.key;
       })
       .catch((e: Error) => console.log("error: ", e));
@@ -278,7 +281,7 @@ export class PostGuardSigner implements WalletSigner {
         signature: "Signature",
         attributes: pol.public.con,
         date: new Date(pol.public.ts).toISOString(),
-      }
+      };
       return true;
     } catch (e) {
       console.log("error: ", e);

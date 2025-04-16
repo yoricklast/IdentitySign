@@ -89,22 +89,21 @@
       <a href="https://www.uni-paderborn.de/impressum" target="_blank"
         >Impressum</a
       >
-  </div>
-</body>
+    </div>
+  </body>
 
-<script>
-  if (localStorage.getItem("devMode") != "true") {
-    document.getElementById("setupNavItem").style.display = "none";
-  }
-  try {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.setAttribute("data-bs-theme", "dark");
+  <script>
+    if (localStorage.getItem("devMode") != "true") {
+      document.getElementById("setupNavItem").style.display = "none";
     }
-  } catch {
-    console.warn("Could not detect or set dark/light mode.");
-  }
-</script>
-
+    try {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.setAttribute("data-bs-theme", "dark");
+      }
+    } catch {
+      console.warn("Could not detect or set dark/light mode.");
+    }
+  </script>
 </html>
 
 <style>

@@ -12,8 +12,10 @@ export interface WalletSigner {
    * @param attributeTypes Wallet attribute types chosen in UI.
    * @returns The signed PDF document in bytes.
    */
-  sign(input: PDFDocument, attributeTypes: WalletAttributeType[]): Promise<Uint8Array>;
-
+  sign(
+    input: PDFDocument,
+    attributeTypes: WalletAttributeType[],
+  ): Promise<Uint8Array>;
 
   /**
    * Check the validity of a PDF document.

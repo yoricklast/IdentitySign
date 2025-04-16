@@ -28,23 +28,17 @@
       return [
         {
           name: "name",
-          value: sig.attributes.find(
-            (x) => x.t == ATTRIBUTES[1]
-          )?.v,
+          value: sig.attributes.find((x) => x.t == ATTRIBUTES[1])?.v,
           trust: personTrust,
         },
         {
           name: "address",
-          value: sig.attributes.find(
-            (x) => x.t == ATTRIBUTES[2],
-          )?.v,
+          value: sig.attributes.find((x) => x.t == ATTRIBUTES[2])?.v,
           trust: addressTrust,
         },
         {
           name: "email",
-          value: sig.attributes.find(
-            (x) => x.t== ATTRIBUTES[0],
-          )?.v,
+          value: sig.attributes.find((x) => x.t == ATTRIBUTES[0])?.v,
           trust: emailTrust,
         },
       ].filter((x) => x.value !== undefined);
@@ -133,7 +127,7 @@
                 sigFound = true;
                 signer.check(content).then((hasSignature) => {
                   if (hasSignature) {
-                    sig = signer.decode("not needed")
+                    sig = signer.decode("not needed");
                     sigValid = true;
                     // Reset trust values
                     personTrust = undefined;
@@ -143,12 +137,12 @@
                     processDone = true;
                     progress = 50;
                   }
-                })
+                });
               }
             }
-          })
-        })
-      })
+          });
+        });
+      });
     }
   }
 
@@ -270,14 +264,14 @@
             Signature found…
           </h2>
           <p class="validity-text">
-          Check who signed this document before trusting it.
-        </p>
-        <p class="validity-text">
-          <a href="/help/trust" target="_blank" class="helplink">
-            <i class="bi bi-question-circle"></i>
-            When should I not trust a document?
-          </a>
-        </p>
+            Check who signed this document before trusting it.
+          </p>
+          <p class="validity-text">
+            <a href="/help/trust" target="_blank" class="helplink">
+              <i class="bi bi-question-circle"></i>
+              When should I not trust a document?
+            </a>
+          </p>
         {/if}
         {#if !sigValid && sigFound}
           <h2 class="validity invalid">
@@ -336,9 +330,9 @@
                   <div class="card-header">
                     {#if attribute.t === ATTRIBUTES[1]}
                       <i class="bi bi-person card-icon"></i><b>Fullname</b>
-                    {:else if attribute.t === ATTRIBUTES[2] }
+                    {:else if attribute.t === ATTRIBUTES[2]}
                       <i class="bi bi-mailbox card-icon"></i><b>Street</b>
-                    {:else if attribute.t === ATTRIBUTES[0] }
+                    {:else if attribute.t === ATTRIBUTES[0]}
                       <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
                     {/if}
                   </div>
@@ -362,7 +356,7 @@
                     {@render personAnswers(label)}
                   {/each}
                   <div class="mb-4"></div>
-                {:else if attribute.t === ATTRIBUTES[2] }
+                {:else if attribute.t === ATTRIBUTES[2]}
                   <p class="question">
                     Is this address owned by the right person or organization?
                   </p>
@@ -370,7 +364,7 @@
                     {@render addressAnswers(label)}
                   {/each}
                   <div class="mb-4"></div>
-                {:else if attribute.t === ATTRIBUTES[0] }
+                {:else if attribute.t === ATTRIBUTES[0]}
                   <p class="question">
                     Is this email address owned by the right person or
                     organization?

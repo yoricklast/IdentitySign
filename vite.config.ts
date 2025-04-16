@@ -4,8 +4,8 @@ import { defineConfig } from "vite";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import wasm from 'vite-plugin-wasm';
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import wasm from "vite-plugin-wasm";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 const path = fileURLToPath(new URL("package.json", import.meta.url));
 const pkg = JSON.parse(readFileSync(path, "utf8"));
