@@ -408,9 +408,8 @@
                   bind:checked={nameChecked}
                 />
                 <label class="form-check-label" for="checkName"
-                  >Name verified by your municipality</label
+                  >Legal name</label
                 >
-                <!-- Or just "legal name" maybe? -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -444,9 +443,8 @@
                   bind:checked={nameChecked}
                 />
                 <label class="form-check-label" for="checkName"
-                  >Name verified by your municipality</label
+                  >Legal name</label
                 >
-                <!-- See above -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input

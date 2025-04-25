@@ -35,4 +35,9 @@ export default ts.config(
       "@typescript-eslint": ts.plugin,
     },
   },
+  {
+    rules: {
+      "@typescript-eslint/ban-ts-comment": "off"
+    }
+  }
 );

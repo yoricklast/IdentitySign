@@ -27,12 +27,12 @@ import YiviClient from "@privacybydesign/yivi-client";
 type AttType =
   | "pbdf.sidn-pbdf.email.email"
   | "pbdf.gemeente.personalData.fullname"
-  | "pbdf.nijmegen.address.street";
+  | "pbdf.gemeente.address.street";
 
 export const ATTRIBUTES: Array<AttType> = [
   "pbdf.sidn-pbdf.email.email",
   "pbdf.gemeente.personalData.fullname",
-  "pbdf.nijmegen.address.street",
+  "pbdf.gemeente.address.street",
 ];
 
 export type SigningKeys = {
@@ -196,11 +196,14 @@ export class PostGuardSigner implements WalletSigner {
     return signKeys.pubSignKey.policy.con;
   }
 
+  // @ts-ignore
   private _signature: Signature;
+  // @ts-ignore
   private _signKeys: SigningKeys;
 
   public async sign(
     input: PDFDocument,
+    // eslint-disable-next-line
     attributeTypes: WalletAttributeType[],
   ): Promise<Uint8Array> {
     const pubSignKey: ISigningKey = this._signKeys.pubSignKey;
@@ -289,6 +292,7 @@ export class PostGuardSigner implements WalletSigner {
     }
   }
 
+  // eslint-disable-next-line
   public decode(input: string): Signature {
     return this._signature;
   }

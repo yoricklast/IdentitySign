@@ -350,7 +350,8 @@
               <div class="col-xxl">
                 {#if attribute.t === ATTRIBUTES[1]}
                   <p class="question">
-                    Was this document signed by the right entity?
+                    Was this document signed by the right person or
+                    organization?
                   </p>
                   {#each options as label}
                     {@render personAnswers(label)}
@@ -358,7 +359,8 @@
                   <div class="mb-4"></div>
                 {:else if attribute.t === ATTRIBUTES[2]}
                   <p class="question">
-                    Is this address owned by the right person or organization?
+                    Is the person or organization who signed the document
+                    located at this address?
                   </p>
                   {#each options as label}
                     {@render addressAnswers(label)}
@@ -366,8 +368,8 @@
                   <div class="mb-4"></div>
                 {:else if attribute.t === ATTRIBUTES[0]}
                   <p class="question">
-                    Is this email address owned by the right person or
-                    organization?
+                    Is this the correct email address for the person or
+                    organization who signed the document?
                   </p>
                   {#each options as label}
                     {@render emailAnswers(label)}
@@ -386,9 +388,9 @@
                     document should not be trusted!
                   </strong><br />
                   <hr />
-                  Do not trust this document. It might have be signed by the wrong
-                  entity, or the signer might have forgotten to include relevant
-                  data (e.g., their name or address).<br />
+                  Do not trust this document. It may have be signed by the wrong
+                  person or organization, or the signer might have forgotten to include
+                  relevant data (e.g., their name or address).<br />
                   You can use our
                   <a href="/request" target="_blank">
                     signature request tool
@@ -397,8 +399,8 @@
                 {:else if alertData.type === "warning"}
                   <strong
                     ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                    document was signed but you might need more information before
-                    trusting it</strong
+                    document has a valid signature, but you might need more information
+                    before trusting it</strong
                   ><br />
                   <hr />
                   Before trusting this document, consider if you know enough about
@@ -410,11 +412,12 @@
                   <a href="/request" target="_blank">
                     signature request tool
                   </a>
-                  to do request a signature that contains the signers name <!-- or "..contains the data you need" maybe -->.
+                  to request a signature that contains the contains the data you
+                  need.
                 {:else if alertData.type === "primary"}
                   <strong
                     ><i class="bi bi-info-circle-fill alert-icon"></i> This document
-                    can be trusted!</strong
+                    can likely be trusted!</strong
                   > <br />
                   <hr />
                   This document was signed by the correct person or organization.
