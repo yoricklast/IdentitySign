@@ -388,40 +388,57 @@
                     document should not be trusted!
                   </strong><br />
                   <hr />
-                  Do not trust this document. It may have be signed by the wrong
-                  person or organization, or the signer might have forgotten to include
-                  relevant data (e.g., their name or address).<br />
-                  You can use our
-                  <a href="/request" target="_blank">
-                    signature request tool
-                  </a>
-                  to request a signature that contains this data.
+                  <p>
+                    You indicated that the document may have been signed by the
+                    wrong person or organization, or the signer may have
+                    forgotten to include relevant information (such as their
+                    name or address).
+                  </p>
+                  <p>
+                    You can use our
+                    <a href="/request" target="_blank">
+                      signature request tool
+                    </a>
+                    to request a signature that contains this information.
+                  </p>
                 {:else if alertData.type === "warning"}
                   <strong
-                    ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                    document has a valid signature, but you might need more information
-                    before trusting it</strong
+                    ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You
+                    may need more information before trusting this document</strong
                   ><br />
                   <hr />
-                  Before trusting this document, consider if you know enough about
-                  the signer.<br /> Do you know for certain who owns this email
-                  address? Do they have the authority to sign this document?
-                  Should someone else have signed the file? Do you need
-                  additional data (e.g., a name or address) to be sure? <br />
-                  If you have any doubts, use our
-                  <a href="/request" target="_blank">
-                    signature request tool
-                  </a>
-                  to request a signature that contains the contains the data you
-                  need.
+                  <p>
+                    Before trusting this document, consider if you know enough
+                    about the signer. For example:
+                  </p>
+                  <ul>
+                    <li>Do you know who owns this email address?</li>
+                    <li>
+                      Does this person/organization have the authority to sign
+                      this document?
+                    </li>
+                    <li>Should someone else have signed the file?</li>
+                    <li>
+                      Do you need additional information (such as a name or
+                      address) to be sure?
+                    </li>
+                  </ul>
+                  <p>
+                    If you have any doubts, use our
+                    <a href="/request" target="_blank">
+                      signature request tool
+                    </a>
+                    to request a signature that contains the contains the information
+                    you need.
+                  </p>
                 {:else if alertData.type === "primary"}
                   <strong
                     ><i class="bi bi-info-circle-fill alert-icon"></i> This document
-                    can likely be trusted!</strong
+                    can most likely be trusted!</strong
                   > <br />
                   <hr />
-                  This document was signed by the correct person or organization.
-                  If you trust them, you can trust the document.
+                  You indicated that this document was signed by the correct person
+                  or organization.
                 {/if}
               </div>
             </div>
