@@ -33,6 +33,24 @@ export function getDefaultYiviUrl() {
   });
 }
 
+export function getProductionVersion() {
+  return new Promise((resolve) => {
+    fetch("../default-settings.json").then((response) => {
+      response.json().then((jsonData) => {
+        if (
+          jsonData &&
+          Object.hasOwn(jsonData, "prod") &&
+          jsonData.prod != null
+        ) {
+          resolve(jsonData.prod);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  });
+}
+
 /**
  * Log to console if in developer mode.
  * @param {*} message Message to log.

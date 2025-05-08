@@ -1,6 +1,6 @@
 import type { PDFDocument } from "pdf-lib";
-import { WalletAttributeType } from "./wallet-attribute";
-import type { Signature } from "./signature";
+import type { WalletAttributeType } from "./wallet-attribute";
+import type { SignatureCrypto } from "./signature";
 
 /**
  * Interface for identity wallet implementations.
@@ -28,5 +28,5 @@ export interface WalletSigner {
    * Decode the signature from a string to a signature object.
    * @param input The string containing a signature.
    */
-  decode(input: string): Signature;
+  decode(input: string): SignatureCrypto;
 }

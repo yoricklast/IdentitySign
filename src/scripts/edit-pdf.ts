@@ -1,5 +1,6 @@
 import { StandardFonts, type PDFDocument, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
+//If needed succes code
 
 /**
  * Adds a signature and banner to a PDF.

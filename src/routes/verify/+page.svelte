@@ -1,9 +1,12 @@
 <script lang="ts">
   // Use PDF.js for reading PDF files
   import * as PDFjs from "pdfjs-dist";
-  import type { WalletSigner } from "../../scripts/wallet-signer";
+  import type { WalletSigner } from "../../scripts/crypto-wallet-signer";
   import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
-  import type { Signature } from "../../scripts/signature";
+  import type {
+    SignatureDummy,
+    SignatureCrypto,
+  } from "../../scripts/signature";
   import { fade, fly } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/Constants";
 
@@ -19,7 +22,7 @@
   let sigFound = $state<boolean>();
   // Prevents showing sigValid status before processing is done
   let processDone = $state(false);
-  let sig = $state<Signature>();
+  let sig = $state<SignatureCrypto>();
   let transitionDone = $state(false);
   let imageVisible = $derived(!sigValid);
 

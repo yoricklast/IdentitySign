@@ -5,7 +5,7 @@
     DISCLOSE_FULL_NAME,
     disclosePopup,
   } from "../../scripts/yivi-disclose";
-  import { getDefaultYiviUrl } from "../../scripts/util";
+  import { getDefaultYiviUrl, getProductionVersion } from "../../scripts/util";
   import { issuePopup } from "../../scripts/yivi-issue";
   import { DEFAULT_BASE_CODE, getDefaultBaseCode } from "../../scripts/ts-util";
   import { onMount } from "svelte";
@@ -32,9 +32,11 @@
 
   let devMode = $state(localStorage.getItem("devMode"));
   let yiviUrl = $state(localStorage.getItem("yiviUrl"));
+  let prodVersion = $state(localStorage.getItem("prodVersion"));
   let baseCode: string | null = $state(null);
   let loadedYiviUrlFromDefaults = $state(false);
   let loadedBaseCodeFromDefaults = $state(false);
+  let loadedProdVersionFromDefaults = $state(false);
 
   onMount(() => {
     if (yiviUrl == null) {
@@ -55,6 +57,14 @@
         }
       });
     }
+    if (prodVersion == null) {
+      getProductionVersion().then((result) => {
+        if (result != null) {
+          prodVersion = `${result}`;
+          loadedProdVersionFromDefaults = true;
+        }
+      });
+    }
   });
 
   let link = $state(genLink());
@@ -71,6 +81,20 @@
   function setDevMode(value: boolean) {
     localStorage.setItem("devMode", value.toString());
     devMode = localStorage.getItem("devMode");
+    reloadPage();
+  }
+
+  function setVersion1() {
+    setProdVersion("0");
+  }
+
+  function setVersion2() {
+    setProdVersion("1");
+  }
+
+  function setProdVersion(value: string) {
+    localStorage.setItem("prodVersion", value);
+    prodVersion = localStorage.getItem("prodVersion");
     reloadPage();
   }
 
@@ -136,6 +160,32 @@
     >localStorage</a
   >.
 </p>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Production Version</h5>
+    <p>
+      Version 1 uses dummy signatures for 3 personal attributes (name, email,
+      address). <br />
+      Version 2 uses cryptographic signatures for 2 personal attributes (name, email).
+    </p>
+    <p>
+      You are currently using {#if prodVersion == "0"}<b
+          style="color: var(--bs-primary);">Version 1</b
+        >{:else if prodVersion == "1"}<b style="color: var(--bs-warning);"
+          >Version 2</b
+        >{/if}.
+    </p>
+    <div class="d-grid gap-2 d-md-block">
+      <button class="btn btn-primary" onclick={setVersion1}
+        >Version 1 (dummy)</button
+      >
+      <button class="btn btn-secondary" onclick={setVersion2}
+        >Version 2 (cryptographic)</button
+      >
+    </div>
+  </div>
+</div>
 
 <div class="card">
   <div class="card-body">

@@ -1,6 +1,6 @@
 import System from "svelte-system-info";
 
-export const PKG_URL = `http://localhost:8087`;
+export const PKG_URL = `http://yivi.cs.upb.de:8087`;
 
 export const POSTGUARD_FILE = "postguard.enc";
 

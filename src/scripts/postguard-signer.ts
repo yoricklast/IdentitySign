@@ -1,9 +1,9 @@
 import type { PDFDocument } from "pdf-lib";
 
-import type { WalletSigner } from "./wallet-signer";
-import { WalletAttributeType } from "./wallet-attribute";
+import type { WalletSigner } from "./crypto-wallet-signer";
+import type { WalletAttributeType } from "./wallet-attribute";
 import { editPdf } from "./edit-pdf";
-import type { Signature } from "./signature";
+import type { SignatureCrypto } from "./signature";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
 const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
@@ -222,7 +222,7 @@ export class PostGuardSigner implements WalletSigner {
    * @returns A dummy signature.
    */
   private generateVisibleSignature(input: AttributeCon): string {
-    const resultSignature: Signature = {
+    const resultSignature: SignatureCrypto = {
       signature: DUMMY_SIG_PREFIX + DUMMY_SIG,
       attributes: input,
       date: new Date().toISOString(),
@@ -293,7 +293,7 @@ export class PostGuardSigner implements WalletSigner {
   }
 
   // eslint-disable-next-line
-  public decode(input: string): Signature {
+  public decode(input: string): SignatureCrypto {
     return this._signature;
   }
 }
