@@ -3,11 +3,26 @@
 <script lang="ts">
   import { PDFDocument } from "pdf-lib";
   import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
-  import { WalletAttributeType } from "../../scripts/wallet-attribute";
+  import { DummySigner } from "../../scripts/dummy-signer";
+  import { type WalletSignerDummy } from "../../scripts/dummy-wallet-signer";
+  import {
+    WalletAttributeType,
+    type WalletAttribute,
+  } from "../../scripts/wallet-attribute";
   import type { AttributeCon } from "@e4a/pg-wasm";
   import { tick } from "svelte";
 
-  const signer: PostGuardSigner = new PostGuardSigner();
+  import {
+    DISCLOSE_ADDRESS,
+    DISCLOSE_EMAIL,
+    DISCLOSE_FULL_NAME,
+    disclose,
+  } from "../../scripts/yivi-disclose";
+
+  const version = localStorage.getItem("prodVersion");
+
+  const signerCrypto: PostGuardSigner = new PostGuardSigner();
+  const signerDummy: WalletSignerDummy = new DummySigner();
 
   const PARAM_NAME = "name";
   const PARAM_MAIL = "mail";
@@ -52,7 +67,8 @@
 
   let selectedAttributes: WalletAttributeType[] = [];
 
-  let yiviAttributes: AttributeCon | null = $state(null);
+  let yiviAttributesCrypto: AttributeCon | null = $state(null);
+  let yiviAttributesDummy: WalletAttribute[] | null = $state(null);
 
   let fileSelected = $state(false);
   let attributeSelected = $state(false);
@@ -99,12 +115,11 @@
     }
   }
 
-  async function signPdf(inputFile: File) {
-    if (yiviAttributes != null) {
+  async function signPdfDummy(inputFile: File) {
+    if (yiviAttributesDummy != null) {
       const existingPdfBytes = await inputFile.arrayBuffer();
       const pdfDocument = await PDFDocument.load(existingPdfBytes);
-
-      signer.sign(pdfDocument, selectedAttributes).then((pdfBytes) => {
+      signerDummy.sign(pdfDocument, yiviAttributesDummy).then((pdfBytes) => {
         signedPdfBytes = pdfBytes;
         signedPdfName =
           inputFile.name.substring(0, inputFile.name.lastIndexOf(".")) +
@@ -114,6 +129,94 @@
         progress = 100;
       });
     }
+  }
+
+  async function signPdfCrypto(inputFile: File) {
+    if (yiviAttributesCrypto != null) {
+      const existingPdfBytes = await inputFile.arrayBuffer();
+      const pdfDocument = await PDFDocument.load(existingPdfBytes);
+      signerCrypto.sign(pdfDocument, selectedAttributes).then((pdfBytes) => {
+        signedPdfBytes = pdfBytes;
+        signedPdfName =
+          inputFile.name.substring(0, inputFile.name.lastIndexOf(".")) +
+          SIGNED_FILE_ADDITION;
+        downloadPdf(signedPdfName, signedPdfBytes);
+        signedDone = true;
+        progress = 100;
+      });
+    }
+  }
+
+  /* For signing with dummy signatures */
+  async function runYivi() {
+    getYiviData(selectedAttributes).then((result) => {
+      yiviAttributesDummy = result;
+      yiviDone = true;
+      progress = 82;
+    });
+  }
+
+  /**
+   * Obtain attribute data from Yivi. Used for dummy signing.
+   * @param inputAttributes Attributes to obtain.
+   */
+  async function getYiviData(
+    inputAttributes: WalletAttributeType[],
+  ): Promise<WalletAttribute[]> {
+    // Build string for disclosure
+    let attributesToDisclose = Array<string>();
+    for (const x of inputAttributes) {
+      switch (x) {
+        case WalletAttributeType.Name: {
+          attributesToDisclose =
+            attributesToDisclose.concat(DISCLOSE_FULL_NAME);
+          break;
+        }
+        case WalletAttributeType.Email: {
+          attributesToDisclose = attributesToDisclose.concat(DISCLOSE_EMAIL);
+          break;
+        }
+        case WalletAttributeType.Address: {
+          attributesToDisclose = attributesToDisclose.concat(DISCLOSE_ADDRESS);
+          break;
+        }
+      }
+    }
+    // Disclose attributes
+    let attributes = Array<WalletAttribute>();
+    await disclose(attributesToDisclose).then((result) => {
+      let address = null;
+      for (const x of result) {
+        if (DISCLOSE_FULL_NAME.includes(x.id)) {
+          const y: WalletAttribute = {
+            attributeType: WalletAttributeType.Name,
+            value: x.rawvalue,
+          };
+          attributes.push(y);
+        } else if (DISCLOSE_EMAIL.includes(x.id)) {
+          const y: WalletAttribute = {
+            attributeType: WalletAttributeType.Email,
+            value: x.rawvalue,
+          };
+          attributes.push(y);
+        } else if (DISCLOSE_ADDRESS.includes(x.id)) {
+          if (address == null) {
+            address = x.rawvalue;
+          } else {
+            address = address + " " + x.rawvalue;
+          }
+        }
+      }
+      if (address != null) {
+        const y: WalletAttribute = {
+          attributeType: WalletAttributeType.Address,
+          value: address,
+        };
+        attributes.push(y);
+      }
+    });
+
+    return attributes;
   }
 
   /**
@@ -134,7 +237,13 @@
    */
   async function btnSignClick() {
     if (files && fileSelected && attributeSelected && yiviDone) {
-      await signPdf(files[0]);
+      if (version == "0") {
+        await signPdfDummy(files[0]);
+      } else if (version == "1") {
+        await signPdfCrypto(files[0]);
+      } else {
+        alert("Select a supported production version in the settings first!");
+      }
     } else {
       alert(
         "Please select a file and attributes and authenticate using Yivi first!",
@@ -169,9 +278,26 @@
           }
         }
       }
-      yiviAttributes = await signer.obtainSignKeys(attributesToDisclose);
+      yiviAttributesCrypto =
+        await signerCrypto.obtainSignKeys(attributesToDisclose);
       yiviDone = true;
       progress = 80;
+    }
+  }
+
+  function btnNext() {
+    if (version == "0") {
+      // Dummy signer
+      selectAttributes();
+      if (fileSelected && attributeSelected) {
+        yiviActive = true;
+        runYivi();
+      }
+    } else if (version == "1") {
+      // Crypto signer
+      btnProveIdentity();
+    } else {
+      alert("Select a supported production version in the settings first!");
     }
   }
 
@@ -512,8 +638,21 @@
         {#if !signedDone && yiviDone}
           <h2>Ready to sign!</h2>
           <p>Your document will be signed using the following personal data:</p>
-          {#if yiviAttributes != null}
-            {#each yiviAttributes as attribute}
+          {#if version == "0" && yiviAttributesDummy != null}
+            {#each yiviAttributesDummy as attribute}
+              <div class="card attribute-card">
+                <div class="card-header">
+                  <i class="bi bi-patch-check card-icon"></i><b
+                    >{WalletAttributeType[attribute.attributeType]}</b
+                  >
+                </div>
+                <div class="card-body">
+                  <p>{attribute.value.toString()}</p>
+                </div>
+              </div>
+            {/each}
+          {:else if version == "1" && yiviAttributesCrypto != null}
+            {#each yiviAttributesCrypto as attribute}
               <div class="card attribute-card">
                 <div class="card-header">
                   <i class="bi bi-patch-check card-icon"></i><b>{attribute.t}</b
@@ -558,7 +697,7 @@
           <button
             class="btn btn-primary btn-sign"
             type="button"
-            onclick={btnProveIdentity}
+            onclick={btnNext}
             ><i class="bi bi-arrow-right-circle btn-sign-icon"></i>Next
           </button>
         {/if}

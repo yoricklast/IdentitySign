@@ -1,6 +1,6 @@
 import type { PDFDocument } from "pdf-lib";
 
-import type { WalletSigner } from "./dummy-wallet-signer";
+import type { WalletSignerDummy } from "./dummy-wallet-signer";
 import { WalletAttributeType, type WalletAttribute } from "./wallet-attribute";
 import { editPdf } from "./edit-pdf";
 import type { SignatureDummy } from "./signature";
@@ -19,7 +19,7 @@ const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
  * Dummy implementation of a wallet signer.
  * WARNING, THIS CLASS DOES NOT CREATE REAL CRYPTOGRAPHIC SIGNATURES!
  */
-export class DummySigner implements WalletSigner {
+export class DummySigner implements WalletSignerDummy {
     public async sign(
         input: PDFDocument,
         attributes: WalletAttribute[],
@@ -28,7 +28,7 @@ export class DummySigner implements WalletSigner {
             await editPdf(
                 input,
                 generateDummySignature(attributes),
-                await generateSuccessCode(attributes),
+                //await generateSuccessCode(attributes),
             )
         ).save();
     }

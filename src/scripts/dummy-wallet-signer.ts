@@ -5,7 +5,7 @@ import type { SignatureDummy } from "./signature";
 /**
  * Interface for identity wallet implementations.
  */
-export interface WalletSigner {
+export interface WalletSignerDummy {
     /**
      * Sign a PDF document.
      * @param input Document to sign.

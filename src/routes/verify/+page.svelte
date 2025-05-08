@@ -1,8 +1,11 @@
 <script lang="ts">
   // Use PDF.js for reading PDF files
   import * as PDFjs from "pdfjs-dist";
-  import type { WalletSigner } from "../../scripts/crypto-wallet-signer";
+  import type { WalletSignerCrypto } from "../../scripts/crypto-wallet-signer";
+  import type { WalletSignerDummy } from "../../scripts/dummy-wallet-signer";
   import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
+  import { DUMMY_SIG_PREFIX, DummySigner } from "../../scripts/dummy-signer";
+  import { WalletAttributeType } from "../../scripts/wallet-attribute";
   import type {
     SignatureDummy,
     SignatureCrypto,
@@ -101,7 +104,7 @@
   }
 
   function processFile(): void {
-    const signer: WalletSigner = new PostGuardSigner();
+    const signer: WalletSignerCrypto = new PostGuardSigner();
     processDone = false;
     sigValid = false;
     sigFound = false;

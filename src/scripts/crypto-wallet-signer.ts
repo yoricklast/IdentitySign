@@ -5,7 +5,7 @@ import type { SignatureCrypto } from "./signature";
 /**
  * Interface for identity wallet implementations.
  */
-export interface WalletSigner {
+export interface WalletSignerCrypto {
   /**
    * Sign a PDF document.
    * @param input Document to sign.

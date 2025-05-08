@@ -1,6 +1,6 @@
 import type { PDFDocument } from "pdf-lib";
 
-import type { WalletSigner } from "./crypto-wallet-signer";
+import type { WalletSignerCrypto } from "./crypto-wallet-signer";
 import type { WalletAttributeType } from "./wallet-attribute";
 import { editPdf } from "./edit-pdf";
 import type { SignatureCrypto } from "./signature";
@@ -111,7 +111,7 @@ async function applyEncryption(
 /**
  * Implementation of a wallet signer.
  */
-export class PostGuardSigner implements WalletSigner {
+export class PostGuardSigner implements WalletSignerCrypto {
   set signKeys(value: SigningKeys) {
     this._signKeys = value;
   }
