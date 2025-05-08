@@ -41,17 +41,19 @@ export class DummySigner implements WalletSignerDummy {
         return false;
     }
 
-    public decode(input: string): SignatureDummy {
+    public decode(input: string): [SignatureDummy, boolean] {
         let result = <SignatureDummy>{};
+        let valid = false;
         try {
             result = JSON.parse(input);
             for (const ATTRIBUTE of result.attributes) {
                 ATTRIBUTE.value = atob(ATTRIBUTE.value.toString());
             }
+            valid = true;
         } catch {
             console.error("Could not parse signature!");
         }
-        return result;
+        return [result, valid];
     }
 }
 

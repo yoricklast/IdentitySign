@@ -17,37 +17,77 @@
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
   PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
+  const version = localStorage.getItem("prodVersion");
+
   let small = $derived(window.innerWidth < 992);
   let x = $derived(small ? "35%" : "0");
   let y = $derived(small ? "0" : "35%");
   let files = $state<FileList>();
   let sigValid = $state<boolean>();
   let sigFound = $state<boolean>();
+
   // Prevents showing sigValid status before processing is done
   let processDone = $state(false);
-  let sig = $state<SignatureCrypto>();
+  let sigCrypto = $state<SignatureCrypto>();
+  let sigDummy = $state<SignatureDummy>();
   let transitionDone = $state(false);
   let imageVisible = $derived(!sigValid);
 
-  let signatureAttributes = $derived.by(() => {
-    if (sig && sig.attributes) {
+  /* For cryptographic signatures */
+  let signatureAttributesCrypto = $derived.by(() => {
+    if (sigCrypto && sigCrypto.attributes) {
       return [
         {
           name: "name",
-          value: sig.attributes.find((x) => x.t == ATTRIBUTES[1])?.v,
+          value: sigCrypto.attributes.find((x) => x.t == ATTRIBUTES[1])?.v,
           trust: personTrust,
         },
         {
           name: "address",
-          value: sig.attributes.find((x) => x.t == ATTRIBUTES[2])?.v,
+          value: sigCrypto.attributes.find((x) => x.t == ATTRIBUTES[2])?.v,
           trust: addressTrust,
         },
         {
           name: "email",
-          value: sig.attributes.find((x) => x.t == ATTRIBUTES[0])?.v,
+          value: sigCrypto.attributes.find((x) => x.t == ATTRIBUTES[0])?.v,
           trust: emailTrust,
         },
       ].filter((x) => x.value !== undefined);
+    }
+  });
+  /* For dummy signatures */
+  let signatureAttributesDummy = $derived.by(() => {
+    if (sigDummy && sigDummy.attributes) {
+      return [
+        {
+          name: "name",
+          value: sigDummy.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Name,
+          )?.value,
+          trust: personTrust,
+        },
+        {
+          name: "address",
+          value: sigDummy.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Address,
+          )?.value,
+          trust: addressTrust,
+        },
+        {
+          name: "email",
+          value: sigDummy.attributes.find(
+            (x) => x.attributeType == WalletAttributeType.Email,
+          )?.value,
+          trust: emailTrust,
+        },
+      ].filter((x) => x.value !== undefined);
+    }
+  });
+  let signatureAttributes = $derived.by(() => {
+    if (version == "0") {
+      return signatureAttributesDummy;
+    } else if (version == "1") {
+      return signatureAttributesCrypto;
     }
   });
 
@@ -59,7 +99,6 @@
   let addressTrust = $state<string>();
   let emailTrust = $state<string>();
 
-  // Change to alertType only, if alert message changes permanently
   let alertData = $derived.by(() => {
     if (
       signatureAttributes?.filter((x) => x.trust !== undefined).length ==
@@ -70,26 +109,15 @@
         addressTrust === "No" ||
         emailTrust === "No"
       ) {
-        const noAttributes = signatureAttributes
-          ?.filter((x) => x.trust === "No")
-          .map((x) => x.name)
-          .join(", ");
-        return { type: "danger", info: noAttributes };
+        return "danger";
       } else if (
         personTrust === "Not sure" ||
         addressTrust === "Not sure" ||
         emailTrust === "Not sure"
       ) {
-        const notSureAttributes = signatureAttributes
-          ?.filter((x) => x.trust === "Not sure")
-          .map((x) => x.name)
-          .join(", ");
-        return { type: "warning", info: notSureAttributes };
+        return "warning";
       } else {
-        const allAttributes = signatureAttributes
-          ?.map((x) => x.name)
-          .join(", ");
-        return { type: "primary", info: allAttributes };
+        return "primary";
       }
     }
   });
@@ -104,6 +132,68 @@
   }
 
   function processFile(): void {
+    if (version == "0") {
+      processFileDummy();
+    } else if (version == "1") {
+      processFileCrypto();
+    }
+  }
+
+  function processFileDummy(): void {
+    const signer: WalletSignerDummy = new DummySigner();
+    processDone = false;
+    sigValid = false;
+    sigFound = false;
+    if (small) {
+      transitionDone = true;
+    } else {
+      transitionDone = false;
+    }
+    if (!files || files.length === 0) {
+      alert("No file selected!");
+      return;
+    }
+    const file = files[0];
+    if (file.type != "application/pdf") {
+      alert("The selected file is not a PDF!");
+    } else {
+      console.log(
+        `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
+      );
+      file.arrayBuffer().then((value) => {
+        PDFjs.getDocument(value).promise.then((document) => {
+          document.getPage(document.numPages).then((page) => {
+            page.getTextContent().then((text) => {
+              text.items.forEach((x) => {
+                let itemValue = Object.values(x)[0];
+                if (typeof itemValue == "string" && itemValue !== "") {
+                  // Prevent unnecessary checking when sig prefix is not present (change when no longer using dummy signatures!)
+                  if (itemValue.includes(DUMMY_SIG_PREFIX)) {
+                    sigFound = true;
+                    if (signer.check(itemValue)) {
+                      [sigDummy, sigValid] = signer.decode(itemValue);
+                      // Reset trust values
+                      personTrust = undefined;
+                      addressTrust = undefined;
+                      emailTrust = undefined;
+                      trustSet = [];
+                      console.log(`Length: ${signatureAttributes?.length}`);
+                    }
+                  }
+                }
+              });
+              processDone = true;
+              progress = 50;
+
+              console.log(`Check done, sig validity: ${sigValid}`);
+            });
+          });
+        });
+      });
+    }
+  }
+
+  function processFileCrypto(): void {
     const signer: WalletSignerCrypto = new PostGuardSigner();
     processDone = false;
     sigValid = false;
@@ -133,7 +223,7 @@
                 sigFound = true;
                 signer.check(content).then((hasSignature) => {
                   if (hasSignature) {
-                    sig = signer.decode("not needed");
+                    sigCrypto = signer.decode("not needed");
                     sigValid = true;
                     // Reset trust values
                     personTrust = undefined;
@@ -151,10 +241,6 @@
       });
     }
   }
-
-  $effect(() => {
-    console.log("Done:" + transitionDone);
-  });
 </script>
 
 {#snippet personAnswers(label: string)}
@@ -318,7 +404,7 @@
       />
     {/if}
     {#if processDone && sigValid && transitionDone}
-      {#if sig && sig.attributes}
+      {#if version == "0" && sigDummy && sigDummy.attributes}
         <div
           class="container-xl"
           in:fly|global={{
@@ -329,7 +415,89 @@
           }}
         >
           <h3 class="attribute-heading">Signed with:</h3>
-          {#each sig.attributes as attribute}
+          {#each sigDummy.attributes as attribute}
+            <div class="row row-cols-sm-1">
+              <div class="col-xxl-6">
+                <div class="card attribute-card">
+                  <div class="card-header">
+                    {#if attribute.attributeType == WalletAttributeType.Name}
+                      <i class="bi bi-person card-icon"></i><b>Name</b>
+                    {:else if attribute.attributeType == WalletAttributeType.Address}
+                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
+                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                      <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
+                    {/if}
+                  </div>
+                  <div class="card-body">
+                    <p class="attribute-value">
+                      {attribute.value.toString()}
+                    </p>
+                    <h6>
+                      <i class="bi bi-question-circle"></i>
+                      What does this mean?
+                    </h6>
+                    {#if attribute.attributeType == WalletAttributeType.Name}
+                      <p class="explainer">
+                        The document was signed by a person or organization with
+                        this name.
+                      </p>
+                    {:else if attribute.attributeType == WalletAttributeType.Address}
+                      <p class="explainer">
+                        The document was signed by a person or organization
+                        registered at this address.
+                      </p>
+                    {:else if attribute.attributeType == WalletAttributeType.Email}
+                      <p class="explainer">
+                        The document was signed by a person or organization that
+                        owns this email address.
+                      </p>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+              <div class="col-xxl">
+                {#if attribute.attributeType == WalletAttributeType.Name}
+                  <p class="question">
+                    Was this document signed by the right entity?
+                  </p>
+                  {#each options as label}
+                    {@render personAnswers(label)}
+                  {/each}
+                  <div class="mb-4"></div>
+                {:else if attribute.attributeType == WalletAttributeType.Address}
+                  <p class="question">
+                    Is this address owned by the right person or organization?
+                  </p>
+                  {#each options as label}
+                    {@render addressAnswers(label)}
+                  {/each}
+                  <div class="mb-4"></div>
+                {:else if attribute.attributeType == WalletAttributeType.Email}
+                  <p class="question">
+                    Is this email address owned by the right person or
+                    organization?
+                  </p>
+                  {#each options as label}
+                    {@render emailAnswers(label)}
+                  {/each}
+                  <div class="mb-4"></div>
+                {/if}
+              </div>
+            </div>
+          {/each}
+        </div>
+      {:else if version == "1" && sigCrypto && sigCrypto.attributes}
+        <div
+          class="container-xl"
+          in:fly|global={{
+            x,
+            y,
+            duration: 500,
+            delay: 100,
+          }}
+        >
+          <h3 class="attribute-heading">Signed with:</h3>
+          {#each sigCrypto.attributes as attribute}
             <div class="row row-cols-sm-1">
               <div class="col-xxl-6">
                 <div class="card attribute-card">
@@ -385,70 +553,65 @@
               </div>
             </div>
           {/each}
-          {#if alertData}
-            <div class="row justify-content-center">
-              <div class="alert alert-{alertData.type}" role="alert">
-                {#if alertData.type === "danger"}
-                  <strong>
-                    <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                    document should not be trusted!
-                  </strong><br />
-                  <hr />
-                  <p>
-                    You indicated that the document may have been signed by the
-                    wrong person or organization, or the signer may have
-                    forgotten to include relevant information (such as their
-                    name or address).
-                  </p>
-                  <p>
-                    You can use our
-                    <a href="/request" target="_blank">
-                      signature request tool
-                    </a>
-                    to request a signature that contains this information.
-                  </p>
-                {:else if alertData.type === "warning"}
-                  <strong
-                    ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You
-                    may need more information before trusting this document</strong
-                  ><br />
-                  <hr />
-                  <p>
-                    Before trusting this document, consider if you know enough
-                    about the signer. For example:
-                  </p>
-                  <ul>
-                    <li>Do you know who owns this email address?</li>
-                    <li>
-                      Does this person/organization have the authority to sign
-                      this document?
-                    </li>
-                    <li>Should someone else have signed the file?</li>
-                    <li>
-                      Do you need additional information (such as a name or
-                      address) to be sure?
-                    </li>
-                  </ul>
-                  <p>
-                    If you have any doubts, use our
-                    <a href="/request" target="_blank">
-                      signature request tool
-                    </a>
-                    to request a signature that contains the contains the information
-                    you need.
-                  </p>
-                {:else if alertData.type === "primary"}
-                  <strong
-                    ><i class="bi bi-info-circle-fill alert-icon"></i> This document
-                    can most likely be trusted!</strong
-                  > <br />
-                  <hr />
-                  You indicated that this document was signed by the correct person
-                  or organization.
-                {/if}
-              </div>
-            </div>
-          {/if}
+        </div>
+      {/if}
+      {#if alertData}
+        <div class="row justify-content-center">
+          <div class="alert alert-{alertData}" role="alert">
+            {#if alertData === "danger"}
+              <strong>
+                <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This document
+                should not be trusted!
+              </strong><br />
+              <hr />
+              <p>
+                You indicated that the document may have been signed by the
+                wrong person or organization, or the signer may have forgotten
+                to include relevant information (such as their name or address).
+              </p>
+              <p>
+                You can use our
+                <a href="/request" target="_blank"> signature request tool </a>
+                to request a signature that contains this information.
+              </p>
+            {:else if alertData === "warning"}
+              <strong
+                ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You may
+                need more information before trusting this document</strong
+              ><br />
+              <hr />
+              <p>
+                Before trusting this document, consider if you know enough about
+                the signer. For example:
+              </p>
+              <ul>
+                <li>Do you know who owns this email address?</li>
+                <li>
+                  Does this person/organization have the authority to sign this
+                  document?
+                </li>
+                <li>Should someone else have signed the file?</li>
+                <li>
+                  Do you need additional information (such as a name or address)
+                  to be sure?
+                </li>
+              </ul>
+              <p>
+                If you have any doubts, use our
+                <a href="/request" target="_blank"> signature request tool </a>
+                to request a signature that contains the contains the information
+                you need.
+              </p>
+            {:else if alertData === "primary"}
+              <strong
+                ><i class="bi bi-info-circle-fill alert-icon"></i> This document
+                can most likely be trusted!</strong
+              > <br />
+              <hr />
+              You indicated that this document was signed by the correct person or
+              organization.
+            {/if}
+          </div>
         </div>
       {/if}
     {/if}

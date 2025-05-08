@@ -24,5 +24,5 @@ export interface WalletSignerDummy {
      * Decode the signature from a string to a signature object.
      * @param input The string containing a signature.
      */
-    decode(input: string): SignatureDummy;
+    decode(input: string): [SignatureDummy, boolean];
 }
