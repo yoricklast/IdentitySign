@@ -196,8 +196,8 @@
   function processFileCrypto(): void {
     const signer: WalletSignerCrypto = new PostGuardSigner();
     processDone = false;
-    sigValid = false;
     sigFound = false;
+    sigValid = false;
     if (small) {
       transitionDone = true;
     } else {
@@ -216,27 +216,33 @@
       );
       file.arrayBuffer().then((value) => {
         PDFjs.getDocument(value).promise.then((document) => {
-          document.getAttachments().then((attachments) => {
-            for (const [name, attachment] of Object.entries(attachments)) {
-              if (name === POSTGUARD_FILE) {
-                const content = attachment.content;
-                sigFound = true;
-                signer.check(content).then((hasSignature) => {
-                  if (hasSignature) {
-                    sigCrypto = signer.decode("not needed");
-                    sigValid = true;
-                    // Reset trust values
-                    personTrust = undefined;
-                    addressTrust = undefined;
-                    emailTrust = undefined;
-                    trustSet = [];
-                    processDone = true;
-                    progress = 50;
+          document
+            .getAttachments()
+            .then(async (attachments) => {
+              if (attachments !== null) {
+                for (const [name, attachment] of Object.entries(attachments)) {
+                  if (name === POSTGUARD_FILE) {
+                    const content = attachment.content;
+                    await signer.check(content).then((hasSignature) => {
+                      if (hasSignature) {
+                        sigCrypto = signer.decode("not needed");
+                        sigValid = true;
+                        // Reset trust values
+                        personTrust = undefined;
+                        addressTrust = undefined;
+                        emailTrust = undefined;
+                        trustSet = [];
+                      }
+                    });
                   }
-                });
+                }
+                sigFound = true;
               }
-            }
-          });
+            })
+            .then(() => {
+              processDone = true;
+              progress = 50;
+            });
         });
       });
     }

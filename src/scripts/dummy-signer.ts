@@ -24,6 +24,14 @@ export class DummySigner implements WalletSignerDummy {
         input: PDFDocument,
         attributes: WalletAttribute[],
     ): Promise<Uint8Array> {
+        const currentDate = new Date();
+
+        await input.attach(btoa("DummyAttachment"), DUMMY_SIG, {
+            mimeType: "image/jpeg",
+            description: "️Dummy signed PDF file",
+            creationDate: currentDate,
+            modificationDate: currentDate,
+        });
         return (
             await editPdf(
                 input,
