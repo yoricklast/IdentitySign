@@ -7,6 +7,7 @@ import type { SignatureCrypto } from "./signature";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
 const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
+const DEFAULT_BASE_CODE = "SCODE";
 
 import {
   type AttributeCon,
@@ -209,7 +210,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
     const pubSignKey: ISigningKey = this._signKeys.pubSignKey;
     const con: AttributeCon = pubSignKey.policy.con;
 
-    await editPdf(input, this.generateVisibleSignature(con));
+    await editPdf(input, this.generateVisibleSignature(con), DEFAULT_BASE_CODE);
 
     input = await applyEncryption(pubSignKey, input);
 

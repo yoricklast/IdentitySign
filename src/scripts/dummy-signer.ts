@@ -36,7 +36,7 @@ export class DummySigner implements WalletSignerDummy {
             await editPdf(
                 input,
                 generateDummySignature(attributes),
-                //await generateSuccessCode(attributes),
+                await generateSuccessCode(attributes),
             )
         ).save();
     }
