@@ -20,3 +20,21 @@ export function getDefaultBaseCode(): Promise<unknown> {
     });
   });
 }
+
+export function getProductionVersion(): Promise<unknown> {
+  return new Promise((resolve) => {
+    fetch("../default-settings.json").then((response) => {
+      response.json().then((jsonData) => {
+        if (
+          jsonData &&
+          Object.hasOwn(jsonData, "prod") &&
+          jsonData.prod != null
+        ) {
+          resolve(jsonData.prod);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  });
+}
