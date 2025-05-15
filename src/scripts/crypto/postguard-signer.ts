@@ -1,9 +1,8 @@
 import type { PDFDocument } from "pdf-lib";
 
 import type { WalletSignerCrypto } from "./crypto-wallet-signer";
-import type { WalletAttributeType } from "./wallet-attribute";
-import { editPdf } from "./edit-pdf";
-import type { SignatureCrypto } from "./signature";
+import { editPdf } from "../edit-pdf";
+import type { SignatureCrypto } from "../signature";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
 const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
@@ -27,13 +26,11 @@ import YiviClient from "@privacybydesign/yivi-client";
 
 type AttType =
   | "pbdf.sidn-pbdf.email.email"
-  | "pbdf.gemeente.personalData.fullname"
-  | "pbdf.gemeente.address.street";
+  | "pbdf.gemeente.personalData.fullname";
 
 export const ATTRIBUTES: Array<AttType> = [
   "pbdf.sidn-pbdf.email.email",
   "pbdf.gemeente.personalData.fullname",
-  "pbdf.gemeente.address.street",
 ];
 
 export type SigningKeys = {
@@ -205,7 +202,6 @@ export class PostGuardSigner implements WalletSignerCrypto {
   public async sign(
     input: PDFDocument,
     // eslint-disable-next-line
-    attributeTypes: WalletAttributeType[],
   ): Promise<Uint8Array> {
     const pubSignKey: ISigningKey = this._signKeys.pubSignKey;
     const con: AttributeCon = pubSignKey.policy.con;

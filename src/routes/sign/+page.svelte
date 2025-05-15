@@ -2,9 +2,12 @@
 
 <script lang="ts">
   import { PDFDocument } from "pdf-lib";
-  import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
-  import { DummySigner } from "../../scripts/dummy-signer";
-  import { type WalletSignerDummy } from "../../scripts/dummy-wallet-signer";
+  import {
+    ATTRIBUTES,
+    PostGuardSigner,
+  } from "../../scripts/crypto/postguard-signer";
+  import { DummySigner } from "../../scripts/dummy/dummy-signer";
+  import { type WalletSignerDummy } from "../../scripts/dummy/dummy-wallet-signer";
   import {
     WalletAttributeType,
     type WalletAttribute,
@@ -135,7 +138,7 @@
     if (yiviAttributesCrypto != null) {
       const existingPdfBytes = await inputFile.arrayBuffer();
       const pdfDocument = await PDFDocument.load(existingPdfBytes);
-      signerCrypto.sign(pdfDocument, selectedAttributes).then((pdfBytes) => {
+      signerCrypto.sign(pdfDocument).then((pdfBytes) => {
         signedPdfBytes = pdfBytes;
         signedPdfName =
           inputFile.name.substring(0, inputFile.name.lastIndexOf(".")) +
@@ -270,10 +273,6 @@
           }
           case WalletAttributeType.Email: {
             attributesToDisclose.push({ t: ATTRIBUTES[0] });
-            break;
-          }
-          case WalletAttributeType.Address: {
-            attributesToDisclose.push({ t: ATTRIBUTES[2] });
             break;
           }
         }
@@ -546,17 +545,19 @@
                 />
                 <label class="form-check-label" for="checkMail">Email</label>
               </div>
-              <div class="mb-3 form-check form-check-inline">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="checkAddress"
-                  bind:checked={addressChecked}
-                />
-                <label class="form-check-label" for="checkAddress"
-                  >Address</label
-                >
-              </div>
+              {#if version == "0"}
+                <div class="mb-3 form-check form-check-inline">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="checkAddress"
+                    bind:checked={addressChecked}
+                  />
+                  <label class="form-check-label" for="checkAddress"
+                    >Address</label
+                  >
+                </div>
+              {/if}
             </div>
           {:else}
             <div id="attr-checks">
@@ -582,18 +583,20 @@
                 />
                 <label class="form-check-label" for="checkMail">Email</label>
               </div>
-              <div class="mb-3 form-check form-check-inline">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="checkAddress"
-                  disabled
-                  bind:checked={addressChecked}
-                />
-                <label class="form-check-label" for="checkAddress"
-                  >Address</label
-                >
-              </div>
+              {#if version == "0"}
+                <div class="mb-3 form-check form-check-inline">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="checkAddress"
+                    disabled
+                    bind:checked={addressChecked}
+                  />
+                  <label class="form-check-label" for="checkAddress"
+                    >Address</label
+                  >
+                </div>
+              {/if}
             </div>
             <div class="form-text">
               The document's signature will be based on the personal data you

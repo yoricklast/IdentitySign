@@ -5,9 +5,13 @@
     DISCLOSE_FULL_NAME,
     disclosePopup,
   } from "../../scripts/yivi-disclose";
-  import { getDefaultYiviUrl, getProductionVersion } from "../../scripts/util";
+  import { getDefaultYiviUrl } from "../../scripts/util";
   import { issuePopup } from "../../scripts/yivi-issue";
-  import { DEFAULT_BASE_CODE, getDefaultBaseCode } from "../../scripts/ts-util";
+  import {
+    DEFAULT_BASE_CODE,
+    getDefaultBaseCode,
+    getProductionVersion,
+  } from "../../scripts/ts-util";
   import { onMount } from "svelte";
 
   const URL_PARAMS = new URLSearchParams(window.location.search);
@@ -61,7 +65,9 @@
       getProductionVersion().then((result) => {
         if (result != null) {
           prodVersion = `${result}`;
+          localStorage.setItem("prodVersion", prodVersion);
           loadedProdVersionFromDefaults = true;
+          reloadPage();
         }
       });
     }
@@ -115,6 +121,7 @@
 
   function reloadPage() {
     window.location.href = "/setup";
+    console.log("Reloading page...");
   }
 
   function btnCopyClick() {

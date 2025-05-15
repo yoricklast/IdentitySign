@@ -1,17 +1,23 @@
 <script lang="ts">
   // Use PDF.js for reading PDF files
   import * as PDFjs from "pdfjs-dist";
-  import type { WalletSignerCrypto } from "../../scripts/crypto-wallet-signer";
-  import type { WalletSignerDummy } from "../../scripts/dummy-wallet-signer";
-  import { ATTRIBUTES, PostGuardSigner } from "../../scripts/postguard-signer";
-  import { DUMMY_SIG_PREFIX, DummySigner } from "../../scripts/dummy-signer";
+  import type { WalletSignerCrypto } from "../../scripts/crypto/crypto-wallet-signer";
+  import type { WalletSignerDummy } from "../../scripts/dummy/dummy-wallet-signer";
+  import {
+    ATTRIBUTES,
+    PostGuardSigner,
+  } from "../../scripts/crypto/postguard-signer";
+  import {
+    DUMMY_SIG_PREFIX,
+    DummySigner,
+  } from "../../scripts/dummy/dummy-signer";
   import { WalletAttributeType } from "../../scripts/wallet-attribute";
   import type {
     SignatureDummy,
     SignatureCrypto,
   } from "../../scripts/signature";
   import { fade, fly } from "svelte/transition";
-  import { POSTGUARD_FILE } from "../../scripts/Constants";
+  import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -41,11 +47,6 @@
           name: "name",
           value: sigCrypto.attributes.find((x) => x.t == ATTRIBUTES[1])?.v,
           trust: personTrust,
-        },
-        {
-          name: "address",
-          value: sigCrypto.attributes.find((x) => x.t == ATTRIBUTES[2])?.v,
-          trust: addressTrust,
         },
         {
           name: "email",
@@ -510,8 +511,6 @@
                   <div class="card-header">
                     {#if attribute.t === ATTRIBUTES[1]}
                       <i class="bi bi-person card-icon"></i><b>Fullname</b>
-                    {:else if attribute.t === ATTRIBUTES[2]}
-                      <i class="bi bi-mailbox card-icon"></i><b>Street</b>
                     {:else if attribute.t === ATTRIBUTES[0]}
                       <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
                     {/if}
@@ -535,15 +534,6 @@
                   </p>
                   {#each options as label}
                     {@render personAnswers(label)}
-                  {/each}
-                  <div class="mb-4"></div>
-                {:else if attribute.t === ATTRIBUTES[2]}
-                  <p class="question">
-                    Is the person or organization who signed the document
-                    located at this address?
-                  </p>
-                  {#each options as label}
-                    {@render addressAnswers(label)}
                   {/each}
                   <div class="mb-4"></div>
                 {:else if attribute.t === ATTRIBUTES[0]}
@@ -573,7 +563,7 @@
               <p>
                 You indicated that the document may have been signed by the
                 wrong person or organization, or the signer may have forgotten
-                to include relevant information (such as their name or address).
+                to include relevant information (such as their name or email).
               </p>
               <p>
                 You can use our
@@ -598,8 +588,10 @@
                 </li>
                 <li>Should someone else have signed the file?</li>
                 <li>
-                  Do you need additional information (such as a name or address)
-                  to be sure?
+                  Do you need additional information (such as a name{version ==
+                  "0"
+                    ? "or address"
+                    : ""}) to be sure?
                 </li>
               </ul>
               <p>

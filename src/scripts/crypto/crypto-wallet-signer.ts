@@ -1,6 +1,5 @@
 import type { PDFDocument } from "pdf-lib";
-import type { WalletAttributeType } from "./wallet-attribute";
-import type { SignatureCrypto } from "./signature";
+import type { SignatureCrypto } from "../signature";
 
 /**
  * Interface for identity wallet implementations.
@@ -14,7 +13,6 @@ export interface WalletSignerCrypto {
    */
   sign(
     input: PDFDocument,
-    attributeTypes: WalletAttributeType[],
   ): Promise<Uint8Array>;
 
   /**

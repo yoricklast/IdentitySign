@@ -1,6 +1,8 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
+  const version = localStorage.getItem("prodVersion");
+
   let files = $state<FileList>();
 
   let name = $state(false);
@@ -111,7 +113,10 @@
                 data-bs-toggle="popover"
                 data-bs-placement="right"
                 data-bs-container="body"
-                data-bs-content="Choose one or multiple personal details: name (first name + last name), email and address (street, house number, zip code and city)"
+                data-bs-content="Choose one or multiple personal details: name (first name + last name){version ==
+                '0'
+                  ? ', email and address (street, house number, zip code and city)'
+                  : ' and email'}."
               >
                 <button
                   type="button"
@@ -141,17 +146,19 @@
                 />
                 <label class="form-check-label" for="checkMail">Email</label>
               </div>
-              <div class="mb-3 form-check form-check-inline">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="checkAddress"
-                  bind:checked={address}
-                />
-                <label class="form-check-label" for="checkAddress"
-                  >Address</label
-                >
-              </div>
+              {#if version == "0"}
+                <div class="mb-3 form-check form-check-inline">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="checkAddress"
+                    bind:checked={address}
+                  />
+                  <label class="form-check-label" for="checkAddress"
+                    >Address</label
+                  >
+                </div>
+              {/if}
               <div class="form-text">
                 Signatures will always contain the date and time of signing.
               </div>

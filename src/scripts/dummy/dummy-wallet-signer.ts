@@ -1,6 +1,6 @@
 import type { PDFDocument } from "pdf-lib";
-import type { WalletAttribute } from "./wallet-attribute";
-import type { SignatureDummy } from "./signature";
+import type { WalletAttribute } from "../wallet-attribute";
+import type { SignatureDummy } from "../signature";
 
 /**
  * Interface for identity wallet implementations.

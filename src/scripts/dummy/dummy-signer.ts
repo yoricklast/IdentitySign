@@ -1,16 +1,16 @@
 import type { PDFDocument } from "pdf-lib";
 
 import type { WalletSignerDummy } from "./dummy-wallet-signer";
-import { WalletAttributeType, type WalletAttribute } from "./wallet-attribute";
-import { editPdf } from "./edit-pdf";
-import type { SignatureDummy } from "./signature";
+import { WalletAttributeType, type WalletAttribute } from "../wallet-attribute";
+import { editPdf } from "../edit-pdf";
+import type { SignatureDummy } from "../signature";
 import {
     ADDRESS_CODE,
     DEFAULT_BASE_CODE,
     EMAIL_CODE,
     NAME_CODE,
     getDefaultBaseCode,
-} from "./ts-util";
+} from "../ts-util";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
 const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
