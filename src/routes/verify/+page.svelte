@@ -590,7 +590,7 @@
                 <li>
                   Do you need additional information (such as a name{version ==
                   "0"
-                    ? "or address"
+                    ? " or address"
                     : ""}) to be sure?
                 </li>
               </ul>

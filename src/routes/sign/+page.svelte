@@ -31,6 +31,7 @@
   const PARAM_MAIL = "mail";
   const PARAM_ADDRESS = "address";
   const PARAM_FILE = "filename";
+  const PARAM_VERSION = "prod";
 
   const SIGNED_FILE_ADDITION = "_signed.pdf";
 
@@ -40,6 +41,7 @@
   let paramMail = urlParams.get(PARAM_MAIL);
   let paramAddress = urlParams.get(PARAM_ADDRESS);
   let paramFile = urlParams.get(PARAM_FILE);
+  let paramVersion = urlParams.get(PARAM_VERSION);
 
   let isMobile =
     /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
@@ -115,6 +117,17 @@
     if (paramAddress) {
       selectedAttributes.push(WalletAttributeType.Address);
       addressChecked = true;
+    }
+  }
+  if (paramVersion) {
+    if (paramVersion !== version) {
+      if (paramVersion == "0") {
+        localStorage.setItem("prodVersion", "0");
+        location.reload();
+      } else if (paramVersion == "1") {
+        localStorage.setItem("prodVersion", "1");
+        location.reload();
+      }
     }
   }
 

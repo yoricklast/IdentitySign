@@ -35,6 +35,7 @@
       if (file.name != null) {
         link = link + `&filename=${file.name}`;
       }
+      link = link + `&prod=${version}`;
       request = request_message + link + request_end;
     }
   }
