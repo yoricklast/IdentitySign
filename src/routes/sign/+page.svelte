@@ -84,25 +84,6 @@
   let signedPdfName: string | null = null;
   let signedPdfBytes: Uint8Array | null = null;
 
-  // avoid use of effect if possible, needs to be changed in future work
-  $effect(() => {
-    if (files) {
-      if (files[0].type != "application/pdf") {
-        alert("The selected file is not a PDF!");
-        progress = 0;
-      } else if (paramFile && files[0].name != paramFile) {
-        alert("The selected file is not the one requested!");
-        progress = 0;
-      } else {
-        fileSelected = true;
-        progress = 0;
-        if (attributeSelected) {
-          progress = 50;
-        }
-      }
-    }
-  });
-
   if (paramAttributesGiven()) {
     attributeSelected = true;
     selectedAttributes = [];
@@ -127,6 +108,21 @@
       } else if (paramVersion == "1") {
         localStorage.setItem("prodVersion", "1");
         location.reload();
+      }
+    }
+  }
+
+  function processFile() {
+    if (files) {
+      if (files[0].type != "application/pdf") {
+        alert("The selected file is not a PDF!");
+        progress = 0;
+      } else if (paramFile && files[0].name != paramFile) {
+        alert("The selected file is not the one requested!");
+        progress = 0;
+      } else {
+        fileSelected = true;
+        progress = 0;
       }
     }
   }
@@ -513,6 +509,7 @@
               accept="application/pdf"
               type="file"
               bind:files
+              onchange={processFile}
             />
           </div>
           <h2 style="margin-top: 30px;">Select personal data</h2>
