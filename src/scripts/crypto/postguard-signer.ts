@@ -242,40 +242,41 @@ export class PostGuardSigner implements WalletSignerCrypto {
       },
     });
 
-    const unsealer = await StreamUnsealer.new(readable, vk);
-    const recipients = unsealer.inspect_header();
-    console.log("header contains the following recipients", recipients);
-
-    const usk = await fetch(`${PKG_URL}/v2/request/key-default/0`, {
-      headers: {
-        ...METRICS_HEADER,
-      },
-    })
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.status !== "DONE") throw new Error("not done");
-        return json.key;
-      })
-      .catch((e: Error) => console.log("error: ", e));
-
-    const chunks: Uint8Array[] = []; // Store incoming chunks
-    const writable = new WritableStream({
-      write: (chunk) => {
-        if (chunk instanceof Uint8Array) {
-          chunks.push(chunk);
-        } else {
-          throw new Error("Expected Uint8Array chunk");
-        }
-      },
-      close: () => {
-        console.log("WritableStream closed.");
-      },
-      abort: (err) => {
-        console.error("WritableStream aborted:", err);
-      },
-    });
-
     try {
+      const unsealer = await StreamUnsealer.new(readable, vk);
+      const recipients = unsealer.inspect_header();
+      console.log("header contains the following recipients", recipients);
+
+      const usk = await fetch(`${PKG_URL}/v2/request/key-default/0`, {
+        headers: {
+          ...METRICS_HEADER,
+        },
+      })
+        .then((r) => r.json())
+        .then((json) => {
+          if (json.status !== "DONE") throw new Error("not done");
+          return json.key;
+        })
+        .catch((e: Error) => console.log("error: ", e));
+
+      const chunks: Uint8Array[] = []; // Store incoming chunks
+      const writable = new WritableStream({
+        write: (chunk) => {
+          if (chunk instanceof Uint8Array) {
+            chunks.push(chunk);
+          } else {
+            throw new Error("Expected Uint8Array chunk");
+          }
+        },
+        close: () => {
+          console.log("WritableStream closed.");
+        },
+        abort: (err) => {
+          console.error("WritableStream aborted:", err);
+        },
+      });
+
+
       const pol = await unsealer.unseal("Default", usk, writable);
       this._signature = {
         signature: "Signature",
