@@ -256,12 +256,12 @@
       class="form-check-input"
       type="radio"
       name="flexRadioName"
-      id={label}
+      id="{label}Person"
       bind:group={personTrust}
       value={label}
       onchange={setProgress}
     />
-    <label class="form-check-label" for={label}> {label} </label>
+    <label class="form-check-label" for="{label}Person"> {label} </label>
   </div>
 {/snippet}
 {#snippet addressAnswers(label: string)}
@@ -270,12 +270,12 @@
       class="form-check-input"
       type="radio"
       name="flexRadioAddress"
-      id={label}
+      id="{label}Address"
       bind:group={addressTrust}
       value={label}
       onchange={setProgress}
     />
-    <label class="form-check-label" for={label}> {label} </label>
+    <label class="form-check-label" for="{label}Address"> {label} </label>
   </div>
 {/snippet}
 {#snippet emailAnswers(label: string)}
@@ -284,12 +284,12 @@
       class="form-check-input"
       type="radio"
       name="flexRadioEmail"
-      id={label}
+      id="{label}Email"
       bind:group={emailTrust}
       value={label}
       onchange={setProgress}
     />
-    <label class="form-check-label" for={label}> {label} </label>
+    <label class="form-check-label" for="{label}Email"> {label} </label>
   </div>
 {/snippet}
 
