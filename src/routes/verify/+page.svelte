@@ -18,6 +18,7 @@
   } from "../../scripts/signature";
   import { fade, fly } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
+  import { onMount } from "svelte";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -129,6 +130,11 @@
         progress += 50 / signatureAttributes.length;
         trustSet.push(x.name);
       }
+      const element = document.getElementById("alert-div");
+      element?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     });
   }
 
@@ -293,7 +299,7 @@
   </div>
 {/snippet}
 
-<div class="row" style="margin-top: 7%;">
+<div class="row" style="margin-top: 3%;">
   <div
     class="col-lg {processDone && sigValid
       ? 'align-self-start'
@@ -552,7 +558,7 @@
         </div>
       {/if}
       {#if alertData}
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" id="alert-div">
           <div class="alert alert-{alertData}" role="alert">
             {#if alertData === "danger"}
               <strong>
