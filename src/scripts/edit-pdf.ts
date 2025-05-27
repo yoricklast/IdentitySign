@@ -1,5 +1,6 @@
 import { StandardFonts, type PDFDocument, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
+//If needed succes code
 
 /**
  * Adds a signature and banner to a PDF.
@@ -100,7 +101,6 @@ export async function editPdf(
     color: rgb(0, 0, 0),
     maxWidth: 10,
   });
-
   lastPage.drawText(`Your success-code is: ${successCode}`, {
     x: 30,
     y: height - 12 * DEFAULT_FONT_SIZE,

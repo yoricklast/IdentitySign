@@ -1,7 +1,23 @@
 <script lang="ts">
   import { afterNavigate, beforeNavigate } from "$app/navigation";
+  import { onMount } from "svelte";
+  import { getProductionVersion } from "../scripts/ts-util";
 
   let { children } = $props();
+
+  let productionVersion = $state(localStorage.getItem("productionVersion"));
+
+  onMount(() => {
+    if (productionVersion == null) {
+      getProductionVersion().then((result) => {
+        if (result != null) {
+          productionVersion = `${result}`;
+          localStorage.setItem("productionVersion", productionVersion);
+          window.location.reload();
+        }
+      });
+    }
+  });
 
   afterNavigate(() => {
     const popoverTriggerList = document.querySelectorAll(

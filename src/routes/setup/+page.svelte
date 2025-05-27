@@ -7,7 +7,11 @@
   } from "../../scripts/yivi-disclose";
   import { getDefaultYiviUrl } from "../../scripts/util";
   import { issuePopup } from "../../scripts/yivi-issue";
-  import { DEFAULT_BASE_CODE, getDefaultBaseCode } from "../../scripts/ts-util";
+  import {
+    DEFAULT_BASE_CODE,
+    getDefaultBaseCode,
+    getProductionVersion,
+  } from "../../scripts/ts-util";
   import { onMount } from "svelte";
 
   const URL_PARAMS = new URLSearchParams(window.location.search);
@@ -32,6 +36,7 @@
 
   let devMode = $state(localStorage.getItem("devMode"));
   let yiviUrl = $state(localStorage.getItem("yiviUrl"));
+  let productionVersion = $state(localStorage.getItem("productionVersion"));
   let baseCode: string | null = $state(null);
   let loadedYiviUrlFromDefaults = $state(false);
   let loadedBaseCodeFromDefaults = $state(false);
@@ -55,6 +60,15 @@
         }
       });
     }
+    if (productionVersion == null) {
+      getProductionVersion().then((result) => {
+        if (result != null) {
+          productionVersion = `${result}`;
+          localStorage.setItem("productionVersion", productionVersion);
+          reloadPage();
+        }
+      });
+    }
   });
 
   let link = $state(genLink());
@@ -71,6 +85,20 @@
   function setDevMode(value: boolean) {
     localStorage.setItem("devMode", value.toString());
     devMode = localStorage.getItem("devMode");
+    reloadPage();
+  }
+
+  function setVersion1() {
+    setProdVersion("0");
+  }
+
+  function setVersion2() {
+    setProdVersion("1");
+  }
+
+  function setProdVersion(value: string) {
+    localStorage.setItem("productionVersion", value);
+    productionVersion = localStorage.getItem("productionVersion");
     reloadPage();
   }
 
@@ -91,6 +119,7 @@
 
   function reloadPage() {
     window.location.href = "/setup";
+    console.log("Reloading page...");
   }
 
   function btnCopyClick() {
@@ -136,6 +165,32 @@
     >localStorage</a
   >.
 </p>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Production Version</h5>
+    <p>
+      Version 1 uses dummy signatures for 3 personal attributes (name, email,
+      address). <br />
+      Version 2 uses cryptographic signatures for 2 personal attributes (name, email).
+    </p>
+    <p>
+      You are currently using {#if productionVersion == "0"}<b
+          style="color: var(--bs-primary);">Version 1</b
+        >{:else if productionVersion == "1"}<b style="color: var(--bs-warning);"
+          >Version 2</b
+        >{/if}.
+    </p>
+    <div class="d-grid gap-2 d-md-block">
+      <button class="btn btn-primary" onclick={setVersion1}
+        >Version 1 (dummy)</button
+      >
+      <button class="btn btn-secondary" onclick={setVersion2}
+        >Version 2 (cryptographic)</button
+      >
+    </div>
+  </div>
+</div>
 
 <div class="card">
   <div class="card-body">

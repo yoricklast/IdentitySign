@@ -2,12 +2,19 @@
 
 <script lang="ts">
   import { PDFDocument } from "pdf-lib";
-  import { DummySigner } from "../../scripts/dummy-signer";
+  import {
+    ATTRIBUTES,
+    PostGuardSigner,
+  } from "../../scripts/crypto/postguard-signer";
+  import { DummySigner } from "../../scripts/dummy/dummy-signer";
+  import { type WalletSignerDummy } from "../../scripts/dummy/dummy-wallet-signer";
   import {
     WalletAttributeType,
     type WalletAttribute,
   } from "../../scripts/wallet-attribute";
-  import type { WalletSigner } from "../../scripts/wallet-signer";
+  import type { AttributeCon } from "@e4a/pg-wasm";
+  import { tick } from "svelte";
+  import { getFriendlyAttributeName } from "../../scripts/ts-util";
 
   import {
     DISCLOSE_ADDRESS,
@@ -16,10 +23,16 @@
     disclose,
   } from "../../scripts/yivi-disclose";
 
+  const version = localStorage.getItem("productionVersion");
+
+  const signerCrypto: PostGuardSigner = new PostGuardSigner();
+  const signerDummy: WalletSignerDummy = new DummySigner();
+
   const PARAM_NAME = "name";
   const PARAM_MAIL = "mail";
   const PARAM_ADDRESS = "address";
   const PARAM_FILE = "filename";
+  const PARAM_VERSION = "production";
 
   const SIGNED_FILE_ADDITION = "_signed.pdf";
 
@@ -29,6 +42,7 @@
   let paramMail = urlParams.get(PARAM_MAIL);
   let paramAddress = urlParams.get(PARAM_ADDRESS);
   let paramFile = urlParams.get(PARAM_FILE);
+  let paramVersion = urlParams.get(PARAM_VERSION);
 
   let isMobile =
     /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
@@ -43,6 +57,7 @@
   let nameChecked = $state<boolean>();
   let mailChecked = $state<boolean>();
   let addressChecked = $state<boolean>();
+
   let checkedAttributes = $derived.by(() => {
     return [
       nameChecked ? "name" : null,
@@ -58,7 +73,8 @@
 
   let selectedAttributes: WalletAttributeType[] = [];
 
-  let yiviAttributes: WalletAttribute[] | null = $state(null);
+  let yiviAttributesCrypto: AttributeCon | null = $state(null);
+  let yiviAttributesDummy: WalletAttribute[] | null = $state(null);
 
   let fileSelected = $state(false);
   let attributeSelected = $state(false);
@@ -68,25 +84,6 @@
 
   let signedPdfName: string | null = null;
   let signedPdfBytes: Uint8Array | null = null;
-
-  // avoid use of effect if possible, needs to be changed in future work
-  $effect(() => {
-    if (files) {
-      if (files[0].type != "application/pdf") {
-        alert("The selected file is not a PDF!");
-        progress = 0;
-      } else if (paramFile && files[0].name != paramFile) {
-        alert("The selected file is not the one requested!");
-        progress = 0;
-      } else {
-        fileSelected = true;
-        progress = 0;
-        if (attributeSelected) {
-          progress = 50;
-        }
-      }
-    }
-  });
 
   if (paramAttributesGiven()) {
     attributeSelected = true;
@@ -104,15 +101,38 @@
       addressChecked = true;
     }
   }
+  if (paramVersion) {
+    if (paramVersion !== version) {
+      if (paramVersion == "0") {
+        localStorage.setItem("productionVersion", "0");
+        location.reload();
+      } else if (paramVersion == "1") {
+        localStorage.setItem("productionVersion", "1");
+        location.reload();
+      }
+    }
+  }
 
-  async function signPdf(inputFile: File) {
-    if (yiviAttributes != null) {
+  function processFile() {
+    if (files) {
+      if (files[0].type != "application/pdf") {
+        alert("The selected file is not a PDF!");
+        progress = 0;
+      } else if (paramFile && files[0].name != paramFile) {
+        alert("The selected file is not the one requested!");
+        progress = 0;
+      } else {
+        fileSelected = true;
+        progress = 0;
+      }
+    }
+  }
+
+  async function signPdfDummy(inputFile: File) {
+    if (yiviAttributesDummy != null) {
       const existingPdfBytes = await inputFile.arrayBuffer();
       const pdfDocument = await PDFDocument.load(existingPdfBytes);
-
-      const signer: WalletSigner = new DummySigner();
-
-      signer.sign(pdfDocument, yiviAttributes).then((pdfBytes) => {
+      signerDummy.sign(pdfDocument, yiviAttributesDummy).then((pdfBytes) => {
         signedPdfBytes = pdfBytes;
         signedPdfName =
           inputFile.name.substring(0, inputFile.name.lastIndexOf(".")) +
@@ -124,16 +144,33 @@
     }
   }
 
+  async function signPdfCrypto(inputFile: File) {
+    if (yiviAttributesCrypto != null) {
+      const existingPdfBytes = await inputFile.arrayBuffer();
+      const pdfDocument = await PDFDocument.load(existingPdfBytes);
+      signerCrypto.sign(pdfDocument).then((pdfBytes) => {
+        signedPdfBytes = pdfBytes;
+        signedPdfName =
+          inputFile.name.substring(0, inputFile.name.lastIndexOf(".")) +
+          SIGNED_FILE_ADDITION;
+        downloadPdf(signedPdfName, signedPdfBytes);
+        signedDone = true;
+        progress = 100;
+      });
+    }
+  }
+
+  /* For signing with dummy signatures */
   async function runYivi() {
     getYiviData(selectedAttributes).then((result) => {
-      yiviAttributes = result;
+      yiviAttributesDummy = result;
       yiviDone = true;
       progress = 82;
     });
   }
 
   /**
-   * Obtain attribute data from Yivi.
+   * Obtain attribute data from Yivi. Used for dummy signing.
    * @param inputAttributes Attributes to obtain.
    */
   async function getYiviData(
@@ -158,7 +195,6 @@
         }
       }
     }
-
     // Disclose attributes
     let attributes = Array<WalletAttribute>();
     await disclose(attributesToDisclose).then((result) => {
@@ -214,7 +250,13 @@
    */
   async function btnSignClick() {
     if (files && fileSelected && attributeSelected && yiviDone) {
-      await signPdf(files[0]);
+      if (version == "0") {
+        await signPdfDummy(files[0]);
+      } else if (version == "1") {
+        await signPdfCrypto(files[0]);
+      } else {
+        alert("Select a supported production version in the settings first!");
+      }
     } else {
       alert(
         "Please select a file and attributes and authenticate using Yivi first!",
@@ -225,11 +267,46 @@
   /**
    * Logic for the "Next" button
    */
-  async function btnNext() {
+  async function btnProveIdentity() {
     selectAttributes();
     if (fileSelected && attributeSelected) {
       yiviActive = true;
-      runYivi();
+      await tick();
+
+      // Build string for disclosure
+      const attributesToDisclose: { t: string }[] = [];
+      for (const x of selectedAttributes) {
+        switch (x) {
+          case WalletAttributeType.Name: {
+            attributesToDisclose.push({ t: ATTRIBUTES[1] });
+            break;
+          }
+          case WalletAttributeType.Email: {
+            attributesToDisclose.push({ t: ATTRIBUTES[0] });
+            break;
+          }
+        }
+      }
+      yiviAttributesCrypto =
+        await signerCrypto.obtainSignKeys(attributesToDisclose);
+      yiviDone = true;
+      progress = 80;
+    }
+  }
+
+  function btnNext() {
+    if (version == "0") {
+      // Dummy signer
+      selectAttributes();
+      if (fileSelected && attributeSelected) {
+        yiviActive = true;
+        runYivi();
+      }
+    } else if (version == "1") {
+      // Crypto signer
+      btnProveIdentity();
+    } else {
+      alert("Select a supported production version in the settings first!");
     }
   }
 
@@ -250,6 +327,7 @@
     if (selectedAttributes.length > 0) {
       attributeSelected = true;
       progress = 50;
+      console.log(selectedAttributes);
     } else {
       alert("Please select one or more personal data to sign with!");
     }
@@ -432,6 +510,7 @@
               accept="application/pdf"
               type="file"
               bind:files
+              onchange={processFile}
             />
           </div>
           <h2 style="margin-top: 30px;">Select personal data</h2>
@@ -465,9 +544,8 @@
                   bind:checked={nameChecked}
                 />
                 <label class="form-check-label" for="checkName"
-                  >Name verified by your municipality</label
+                  >Legal name</label
                 >
-                <!-- Or just "legal name" maybe? -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -478,17 +556,19 @@
                 />
                 <label class="form-check-label" for="checkMail">Email</label>
               </div>
-              <div class="mb-3 form-check form-check-inline">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="checkAddress"
-                  bind:checked={addressChecked}
-                />
-                <label class="form-check-label" for="checkAddress"
-                  >Address</label
-                >
-              </div>
+              {#if version == "0"}
+                <div class="mb-3 form-check form-check-inline">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="checkAddress"
+                    bind:checked={addressChecked}
+                  />
+                  <label class="form-check-label" for="checkAddress"
+                    >Address</label
+                  >
+                </div>
+              {/if}
             </div>
           {:else}
             <div id="attr-checks">
@@ -501,9 +581,8 @@
                   bind:checked={nameChecked}
                 />
                 <label class="form-check-label" for="checkName"
-                  >Name verified by your municipality</label
+                  >Legal name</label
                 >
-                <!-- See above -->
               </div>
               <div class="mb-3 form-check form-check-inline">
                 <input
@@ -515,18 +594,20 @@
                 />
                 <label class="form-check-label" for="checkMail">Email</label>
               </div>
-              <div class="mb-3 form-check form-check-inline">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="checkAddress"
-                  disabled
-                  bind:checked={addressChecked}
-                />
-                <label class="form-check-label" for="checkAddress"
-                  >Address</label
-                >
-              </div>
+              {#if version == "0"}
+                <div class="mb-3 form-check form-check-inline">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="checkAddress"
+                    disabled
+                    bind:checked={addressChecked}
+                  />
+                  <label class="form-check-label" for="checkAddress"
+                    >Address</label
+                  >
+                </div>
+              {/if}
             </div>
             <div class="form-text">
               The document's signature will be based on the personal data you
@@ -538,11 +619,13 @@
         {#if !signedDone && fileSelected && attributeSelected && yiviActive && !yiviDone}
           <h2>Prove your identity</h2>
           <p>
-                To sign with your {join(checkedAttributes)}, you need to prove
-                that {checkedAttributes.length > 1 ? "they are" : "it is"}
-                really yours. You do this with the
-                <a href="https://www.yivi.app/en" target="_blank">Yivi</a> app.
-              </p>
+            To sign with your {join(checkedAttributes)}, you need to prove that {checkedAttributes.length >
+            1
+              ? "they are"
+              : "it is"}
+            really yours. You do this with the
+            <a href="https://www.yivi.app/en" target="_blank">Yivi</a> app.
+          </p>
           <div class="row flex-wrap-reverse flex-sm-wrap-reverse">
             <div class="yivi-text col-md" style="min-width: 33.33%;">
               <h3>How do I do this?</h3>
@@ -569,8 +652,8 @@
         {#if !signedDone && yiviDone}
           <h2>Ready to sign!</h2>
           <p>Your document will be signed using the following personal data:</p>
-          {#if yiviAttributes != null}
-            {#each yiviAttributes as attribute}
+          {#if version == "0" && yiviAttributesDummy != null}
+            {#each yiviAttributesDummy as attribute}
               <div class="card attribute-card">
                 <div class="card-header">
                   <i class="bi bi-patch-check card-icon"></i><b
@@ -579,6 +662,19 @@
                 </div>
                 <div class="card-body">
                   <p>{attribute.value.toString()}</p>
+                </div>
+              </div>
+            {/each}
+          {:else if version == "1" && yiviAttributesCrypto != null}
+            {#each yiviAttributesCrypto as attribute}
+              <div class="card attribute-card">
+                <div class="card-header">
+                  <i class="bi bi-patch-check card-icon"></i><b
+                    >{getFriendlyAttributeName(attribute.t)}</b
+                  >
+                </div>
+                <div class="card-body">
+                  <p>{attribute.v?.toString()}</p>
                 </div>
               </div>
             {/each}

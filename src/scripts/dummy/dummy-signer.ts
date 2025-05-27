@@ -1,16 +1,16 @@
 import type { PDFDocument } from "pdf-lib";
 
-import type { WalletSigner } from "./wallet-signer";
-import { WalletAttributeType, type WalletAttribute } from "./wallet-attribute";
-import { editPdf } from "./edit-pdf";
-import type { Signature } from "./signature";
+import type { WalletSignerDummy } from "./dummy-wallet-signer";
+import { WalletAttributeType, type WalletAttribute } from "../wallet-attribute";
+import { editPdf } from "../edit-pdf";
+import type { SignatureDummy } from "../signature";
 import {
   ADDRESS_CODE,
   DEFAULT_BASE_CODE,
   EMAIL_CODE,
   NAME_CODE,
   getDefaultBaseCode,
-} from "./ts-util";
+} from "../ts-util";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
 const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
@@ -19,11 +19,19 @@ const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
  * Dummy implementation of a wallet signer.
  * WARNING, THIS CLASS DOES NOT CREATE REAL CRYPTOGRAPHIC SIGNATURES!
  */
-export class DummySigner implements WalletSigner {
+export class DummySigner implements WalletSignerDummy {
   public async sign(
     input: PDFDocument,
     attributes: WalletAttribute[],
   ): Promise<Uint8Array> {
+    const currentDate = new Date();
+
+    await input.attach(btoa("DummyAttachment"), DUMMY_SIG, {
+      mimeType: "image/jpeg",
+      description: "️Dummy signed PDF file",
+      creationDate: currentDate,
+      modificationDate: currentDate,
+    });
     return (
       await editPdf(
         input,
@@ -41,17 +49,19 @@ export class DummySigner implements WalletSigner {
     return false;
   }
 
-  public decode(input: string): Signature {
-    let result = <Signature>{};
+  public decode(input: string): [SignatureDummy, boolean] {
+    let result = <SignatureDummy>{};
+    let valid = false;
     try {
       result = JSON.parse(input);
       for (const ATTRIBUTE of result.attributes) {
         ATTRIBUTE.value = atob(ATTRIBUTE.value.toString());
       }
+      valid = true;
     } catch {
       console.error("Could not parse signature!");
     }
-    return result;
+    return [result, valid];
   }
 }
 
@@ -65,7 +75,7 @@ function generateDummySignature(input: WalletAttribute[]): string {
     attribute.value = btoa(attribute.value.toString());
   }
 
-  const resultSignature: Signature = {
+  const resultSignature: SignatureDummy = {
     signature: DUMMY_SIG_PREFIX + DUMMY_SIG,
     attributes: input,
     date: new Date().toISOString(),
