@@ -14,6 +14,7 @@
   } from "../../scripts/wallet-attribute";
   import type { AttributeCon } from "@e4a/pg-wasm";
   import { tick } from "svelte";
+  import { getFriendlyAttributeName } from "../../scripts/ts-util";
 
   import {
     DISCLOSE_ADDRESS,
@@ -668,7 +669,8 @@
             {#each yiviAttributesCrypto as attribute}
               <div class="card attribute-card">
                 <div class="card-header">
-                  <i class="bi bi-patch-check card-icon"></i><b>{attribute.t}</b
+                  <i class="bi bi-patch-check card-icon"></i><b
+                    >{getFriendlyAttributeName(attribute.t)}</b
                   >
                 </div>
                 <div class="card-body">

@@ -18,6 +18,7 @@
   } from "../../scripts/signature";
   import { fade, fly } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
+  import { getFriendlyAttributeName } from "../../scripts/ts-util";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -515,9 +516,13 @@
                 <div class="card attribute-card">
                   <div class="card-header">
                     {#if attribute.t === ATTRIBUTES[1]}
-                      <i class="bi bi-person card-icon"></i><b>Fullname</b>
+                      <i class="bi bi-person card-icon"></i><b
+                        >{getFriendlyAttributeName(attribute.t)}</b
+                      >
                     {:else if attribute.t === ATTRIBUTES[0]}
-                      <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
+                      <i class="bi bi-envelope-at card-icon"></i><b
+                        >{getFriendlyAttributeName(attribute.t)}</b
+                      >
                     {/if}
                   </div>
                   <div class="card-body">

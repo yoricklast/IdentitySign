@@ -199,9 +199,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
   // @ts-ignore
   private _signKeys: SigningKeys;
 
-  public async sign(
-    input: PDFDocument,
-  ): Promise<Uint8Array> {
+  public async sign(input: PDFDocument): Promise<Uint8Array> {
     const pubSignKey: ISigningKey = this._signKeys.pubSignKey;
     const con: AttributeCon = pubSignKey.policy.con;
 
