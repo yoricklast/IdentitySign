@@ -5,14 +5,14 @@
 
   let { children } = $props();
 
-  let prodVersion = $state(localStorage.getItem("prodVersion"));
+  let productionVersion = $state(localStorage.getItem("productionVersion"));
 
   onMount(() => {
-    if (prodVersion == null) {
+    if (productionVersion == null) {
       getProductionVersion().then((result) => {
         if (result != null) {
-          prodVersion = `${result}`;
-          localStorage.setItem("prodVersion", prodVersion);
+          productionVersion = `${result}`;
+          localStorage.setItem("productionVersion", productionVersion);
           window.location.reload();
         }
       });

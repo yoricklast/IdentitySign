@@ -201,7 +201,6 @@ export class PostGuardSigner implements WalletSignerCrypto {
 
   public async sign(
     input: PDFDocument,
-    // eslint-disable-next-line
   ): Promise<Uint8Array> {
     const pubSignKey: ISigningKey = this._signKeys.pubSignKey;
     const con: AttributeCon = pubSignKey.policy.con;
@@ -275,7 +274,6 @@ export class PostGuardSigner implements WalletSignerCrypto {
           console.error("WritableStream aborted:", err);
         },
       });
-
 
       const pol = await unsealer.unseal("Default", usk, writable);
       this._signature = {

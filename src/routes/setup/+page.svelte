@@ -36,11 +36,10 @@
 
   let devMode = $state(localStorage.getItem("devMode"));
   let yiviUrl = $state(localStorage.getItem("yiviUrl"));
-  let prodVersion = $state(localStorage.getItem("prodVersion"));
+  let productionVersion = $state(localStorage.getItem("productionVersion"));
   let baseCode: string | null = $state(null);
   let loadedYiviUrlFromDefaults = $state(false);
   let loadedBaseCodeFromDefaults = $state(false);
-  let loadedProdVersionFromDefaults = $state(false);
 
   onMount(() => {
     if (yiviUrl == null) {
@@ -61,12 +60,11 @@
         }
       });
     }
-    if (prodVersion == null) {
+    if (productionVersion == null) {
       getProductionVersion().then((result) => {
         if (result != null) {
-          prodVersion = `${result}`;
-          localStorage.setItem("prodVersion", prodVersion);
-          loadedProdVersionFromDefaults = true;
+          productionVersion = `${result}`;
+          localStorage.setItem("productionVersion", productionVersion);
           reloadPage();
         }
       });
@@ -99,8 +97,8 @@
   }
 
   function setProdVersion(value: string) {
-    localStorage.setItem("prodVersion", value);
-    prodVersion = localStorage.getItem("prodVersion");
+    localStorage.setItem("productionVersion", value);
+    productionVersion = localStorage.getItem("productionVersion");
     reloadPage();
   }
 
@@ -177,9 +175,9 @@
       Version 2 uses cryptographic signatures for 2 personal attributes (name, email).
     </p>
     <p>
-      You are currently using {#if prodVersion == "0"}<b
+      You are currently using {#if productionVersion == "0"}<b
           style="color: var(--bs-primary);">Version 1</b
-        >{:else if prodVersion == "1"}<b style="color: var(--bs-warning);"
+        >{:else if productionVersion == "1"}<b style="color: var(--bs-warning);"
           >Version 2</b
         >{/if}.
     </p>

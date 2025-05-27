@@ -18,13 +18,12 @@
   } from "../../scripts/signature";
   import { fade, fly } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
-  import { onMount } from "svelte";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
   PDFjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFjs.version}/build/pdf.worker.mjs`;
 
-  const version = localStorage.getItem("prodVersion");
+  const version = localStorage.getItem("productionVersion");
 
   let small = $derived(window.innerWidth < 992);
   let x = $derived(small ? "35%" : "0");

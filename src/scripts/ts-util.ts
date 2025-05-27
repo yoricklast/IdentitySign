@@ -27,10 +27,10 @@ export function getProductionVersion(): Promise<unknown> {
       response.json().then((jsonData) => {
         if (
           jsonData &&
-          Object.hasOwn(jsonData, "prod") &&
-          jsonData.prod != null
+          Object.hasOwn(jsonData, "productionVersion") &&
+          jsonData.productionVersion != null
         ) {
-          resolve(jsonData.prod);
+          resolve(jsonData.productionVersion);
         } else {
           resolve(null);
         }

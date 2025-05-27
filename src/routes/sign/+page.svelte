@@ -22,7 +22,7 @@
     disclose,
   } from "../../scripts/yivi-disclose";
 
-  const version = localStorage.getItem("prodVersion");
+  const version = localStorage.getItem("productionVersion");
 
   const signerCrypto: PostGuardSigner = new PostGuardSigner();
   const signerDummy: WalletSignerDummy = new DummySigner();
@@ -31,7 +31,7 @@
   const PARAM_MAIL = "mail";
   const PARAM_ADDRESS = "address";
   const PARAM_FILE = "filename";
-  const PARAM_VERSION = "prod";
+  const PARAM_VERSION = "production";
 
   const SIGNED_FILE_ADDITION = "_signed.pdf";
 
@@ -103,10 +103,10 @@
   if (paramVersion) {
     if (paramVersion !== version) {
       if (paramVersion == "0") {
-        localStorage.setItem("prodVersion", "0");
+        localStorage.setItem("productionVersion", "0");
         location.reload();
       } else if (paramVersion == "1") {
-        localStorage.setItem("prodVersion", "1");
+        localStorage.setItem("productionVersion", "1");
         location.reload();
       }
     }
