@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
-  const version = localStorage.getItem("prodVersion");
+  const version = localStorage.getItem("productionVersion");
 
   let files = $state<FileList>();
 
