@@ -23,37 +23,37 @@
 
   <ul class="nav nav-pills">
     <li class="nav-item main-nav">
-      <a href="/" class="nav-link" aria-current="page">
-        <i class="bi bi-house icon-nav"></i>
+      <a id="/" href="/" class="nav-link" aria-current="page">
+        <i class=" bi bi-house icon-nav"></i>
         Home
       </a>
     </li>
     <li class="nav-item main-nav">
-      <a href="/sign" class="nav-link">
+      <a id="/sign" href="/sign/" class="nav-link">
         <i class="bi bi-pencil-square icon-nav"></i>
         Sign a document
       </a>
     </li>
     <li class="nav-item main-nav">
-      <a href="/verify" class="nav-link">
+      <a id="/verify" href="/verify/" class="nav-link">
         <i class="bi bi-file-earmark-check icon-nav" style="margin-right: 1px"></i>
         Verify a signature
       </a>
     </li>
     <li class="nav-item main-nav">
-      <a href="/request" class="nav-link">
+      <a id="/request" href="/request/" class="nav-link">
         <i class="bi bi-envelope-check icon-nav" style="margin-right: 1px"></i>
         Request a signature
       </a>
     </li>
     <li class="nav-item main-nav">
-      <a href="/about" class="nav-link">
+      <a id="/about" href="/about/" class="nav-link">
         <i class="bi bi-info-circle icon-nav"></i>
         About
       </a>
     </li>
     <li class="nav-item main-nav" id="setupNavItem">
-      <a href="/setup" class="nav-link setupNavLink">
+      <a id="/setup" href="/setup/" class="nav-link setupNavLink">
         <i class="bi bi-gear-wide-connected icon-nav" style="margin-right: 1px"></i>
         Setup
       </a>
@@ -95,6 +95,22 @@
   } catch {
     console.warn("Could not detect or set dark/light mode.");
   }
+
+  const navbar = document.querySelector(".nav");
+  navbar.addEventListener("click", (event) => {
+    const activePage = navbar.querySelector(".active");
+    activePage.classList.remove("active");
+    event.target.classList.add("active");
+  });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const currentPath = window.location.pathname;
+    const currentPage = document.querySelector(`.nav-link[href="${currentPath}"]`) ||
+      document.querySelector(`.nav-link[href="${currentPath}"]`);
+    if (currentPage) {
+      currentPage.classList.add("active");
+    }
+  });
 </script>
 
 </html>

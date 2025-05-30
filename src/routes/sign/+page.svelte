@@ -425,12 +425,6 @@
           {/if}
         </div>
       </div>
-    {:else}
-      <img
-        class="page-image pt-3"
-        src="/img/img_sign.svg"
-        alt="Signing a document"
-      />
     {/if}
   </div>
   <div class="col-lg-7">
@@ -754,9 +748,6 @@
   h1 {
     margin-top: 50px;
     margin-bottom: 40px;
-  }
-  .page-image {
-    margin-top: 20px;
   }
   .btn-sign {
     margin-right: 10px;
