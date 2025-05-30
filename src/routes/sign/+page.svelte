@@ -375,12 +375,12 @@
 <!-- HTML / Svelte -->
 
 <div
-  class="row {paramsGiven() ? 'flex-wrap' : 'flex-wrap-reverse'}"
+  class={paramsGiven() ? "row flex-wrap" : "mx-auto w-75"}
   style="margin-top: 5%;"
 >
   <div
-    class="col-lg-5 col-md-8 col-sm-8 {paramsGiven()
-      ? ' align-self-center flex-sm-fill'
+    class=" {paramsGiven()
+      ? 'col-lg-5 col-md-8 col-sm-8 align-self-center flex-sm-fill'
       : ''}"
   >
     {#if paramsGiven()}
@@ -427,28 +427,32 @@
       </div>
     {/if}
   </div>
-  <div class="col-lg-7">
-    <div class="position-relative top-50 end-0 translate-middle-y">
+  <div class="{paramsGiven() ? 'col-lg-7' : ''} ">
+    <div
+      class="position-relative {paramsGiven()
+        ? 'end-0 translate-middle-y top-50'
+        : ''}"
+    >
       <div class="spacer"></div>
       <div class="progress-label-div row">
         <div
-          class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0"
+          class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0 overflow-hidden"
         >
           <i class="bi bi-1-circle"></i> Select file & personal data
         </div>
         <div
-          class="progress-label text-wrap col position-absolute start-50 text-center translate-middle-x align-self-end"
+          class="progress-label text-wrap col position-absolute start-50 text-center translate-middle-x align-self-end overflow-hidden"
         >
           <i class="bi bi-2-circle"></i> Prove your identity
         </div>
         <div
-          class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end"
+          class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end overflow-hidden"
           style="left: 80%;"
         >
           <i class="bi bi-3-circle"></i> Sign
         </div>
         <div
-          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0 overflow-hidden"
         >
           <i class="bi bi-4-circle"></i> Done
         </div>

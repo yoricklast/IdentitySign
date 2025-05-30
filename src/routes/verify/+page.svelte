@@ -16,7 +16,7 @@
     SignatureDummy,
     SignatureCrypto,
   } from "../../scripts/signature";
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
   import { getFriendlyAttributeName } from "../../scripts/ts-util";
 
@@ -26,9 +26,14 @@
 
   const version = localStorage.getItem("productionVersion");
 
-  let small = $derived(window.innerWidth < 992);
-  let x = $derived(small ? "35%" : "0");
-  let y = $derived(small ? "0" : "35%");
+  let small = $state<boolean>(false);
+  window.addEventListener("resize", () => {
+    if (window.innerWidth < 992) {
+      small = true;
+    } else {
+      small = false;
+    }
+  });
   let files = $state<FileList>();
   let sigValid = $state<boolean>();
   let sigFound = $state<boolean>();
@@ -298,27 +303,30 @@
   </div>
 {/snippet}
 
-<div class="row" style="margin-top: 3%;">
-  <div
+<div class="mx-auto" style="">
+  <!--   <div
     class="col-lg {processDone && sigValid
       ? 'align-self-start'
       : 'align-self-center'}"
-  >
-    <div class="position-relative">
+  > -->
+  <div class="sticky-top card border-invisible" style="z-index: 1000;">
+    <div class="position-relative card-body w-75 mx-auto">
       <div class="spacer"></div>
       <div class="progress-label-div row">
         <div
-          class="progress-label text-wrap col position-absolute start-0 ps-0 text-start align-self-end"
+          class="progress-label text-wrap col position-absolute start-0 ps-0 text-start align-self-end overflow-hidden"
         >
-          <i class="bi bi-1-circle"></i> Select document
+          <i class="bi bi-1-circle"></i>
+          Select document
         </div>
         <div
-          class="progress-label text-wrap col position-absolute start-50 translate-middle-x text-center align-self-end"
+          class="progress-label text-wrap col position-absolute start-50 translate-middle-x text-center align-self-end overflow-hidden"
         >
-          <i class="bi bi-2-circle"></i> Check signature
+          <i class="bi bi-2-circle"></i>
+          Check signature
         </div>
         <div
-          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0"
+          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0 overflow-hidden"
         >
           <i class="bi bi-3-circle"></i> Done
         </div>
@@ -326,294 +334,299 @@
       <div class="progress" role="progressbar" aria-label="Progress">
         <div class="progress-bar" style="width: {progress}%"></div>
       </div>
+    </div>
+  </div>
 
-      <h1 style="margin-bottom: 35px; margin-top: 50px;">
-        <i class="bi bi-file-earmark-check page-icon"></i>
-        Verify a document's signature
-      </h1>
-      <div class="mb-3 file-select">
-        <label for="formFile" class="form-label"
-          >Select a document to verify its signature.
-          <span
-            class="d-inline-block"
-            data-bs-trigger="hover focus"
-            data-bs-toggle="popover"
-            data-bs-placement="right"
-            data-bs-container="body"
-            data-bs-content="Click on 'Browse...' and choose a signed PDF that you received from your device to check if it contains a valid IdentitySign signature."
+  <div class="mx-auto w-75">
+    <h1 style="margin-bottom: 35px;">
+      <i class="bi bi-file-earmark-check page-icon"></i>
+      Verify a document's signature
+    </h1>
+    <div class="mb-3 file-select">
+      <label for="formFile" class="form-label"
+        >Select a document to verify its signature.
+        <span
+          class="d-inline-block"
+          data-bs-trigger="hover focus"
+          data-bs-toggle="popover"
+          data-bs-placement="right"
+          data-bs-container="body"
+          data-bs-content="Click on 'Browse...' and choose a signed PDF that you received from your device to check if it contains a valid IdentitySign signature."
+        >
+          <button
+            type="button"
+            class="btn btn-link mb-1"
+            tabindex="0"
+            aria-label="How to verify a document"
           >
-            <button
-              type="button"
-              class="btn btn-link mb-1"
-              tabindex="0"
-              aria-label="How to verify a document"
-            >
-              <i class="bi bi-question-circle"></i>
-            </button>
-          </span>
-        </label>
-        <input
-          class="form-control"
-          accept="application/pdf"
-          type="file"
-          bind:files
-          onchange={processFile}
-        />
-      </div>
-      {#if processDone}
-        {#if sigValid && transitionDone}
-          <h2 class="validity valid">
-            <i class="bi bi-search"></i>
-            <br />
-            Signature found…
-          </h2>
-          <p class="validity-text">
-            Check who signed this document before trusting it.
-          </p>
-          <p class="validity-text">
-            <a href="/help/trust" target="_blank" class="helplink">
-              <i class="bi bi-question-circle"></i>
-              When should I not trust a document?
-            </a>
-          </p>
+            <i class="bi bi-question-circle"></i>
+          </button>
+        </span>
+      </label>
+      <input
+        class="form-control"
+        accept="application/pdf"
+        type="file"
+        bind:files
+        onchange={processFile}
+      />
+    </div>
+    {#if processDone}
+      {#if sigValid && transitionDone}
+        <h2 class="validity valid">
+          <i class="bi bi-search"></i>
+          <br />
+          Signature found…
+        </h2>
+        <p class="validity-text">
+          Check who signed this document before trusting it.
+        </p>
+        <p class="validity-text">
+          <a href="/help/trust" target="_blank" class="helplink">
+            <i class="bi bi-question-circle"></i>
+            When should I not trust a document?
+          </a>
+        </p>
+      {/if}
+      {#if !sigValid && sigFound}
+        <h2 class="validity invalid">
+          <i class="bi bi-x-circle-fill"></i><br />
+          Signature invalid!
+        </h2>
+        <p class="validity-text">
+          This document contains an invalid signature. Do <b>NOT</b> trust this document!
+        </p>
+      {/if}
+      {#if !sigFound}
+        <h2 class="validity notfound">
+          <i class="bi bi-exclamation-triangle-fill"></i><br />
+          No signature found!
+        </h2>
+        <p class="validity-text">
+          IdentitySign could not find a signature in this document. Verify that
+          it has indeed been signed using IdentitySign.
+        </p>
+      {/if}
+    {/if}
+    <div
+      class="col-lg-5 {processDone && sigValid ? 'fill-space' : ''} "
+      style={processDone && sigValid
+        ? "width: 75%; transition: width 0.5s ease;"
+        : "transition: all 0s;"}
+      ontransitionend={() => (transitionDone = true)}
+    >
+      {#if processDone && sigValid && transitionDone}
+        {#if version == "0" && sigDummy && sigDummy.attributes}
+          <div
+            class="container-xl"
+            in:fly|global={{
+              x: "35%",
+              y: "0",
+              duration: 500,
+              delay: 100,
+            }}
+          >
+            <h3 class="attribute-heading">Signed with:</h3>
+            {#each sigDummy.attributes as attribute}
+              <div class="row row-cols-sm-1">
+                <div class="col-xxl-6">
+                  <div class="card attribute-card">
+                    <div class="card-header">
+                      {#if attribute.attributeType == WalletAttributeType.Name}
+                        <i class="bi bi-person card-icon"></i><b>Name</b>
+                      {:else if attribute.attributeType == WalletAttributeType.Address}
+                        <i class="bi bi-mailbox card-icon"></i><b>Address</b>
+                      {:else if attribute.attributeType == WalletAttributeType.Email}
+                        <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
+                      {/if}
+                    </div>
+                    <div class="card-body">
+                      <p class="attribute-value">
+                        {attribute.value.toString()}
+                      </p>
+                      <h6>
+                        <i class="bi bi-question-circle"></i>
+                        What does this mean?
+                      </h6>
+                      {#if attribute.attributeType == WalletAttributeType.Name}
+                        <p class="explainer">
+                          The document was signed by a person or organization
+                          with this name.
+                        </p>
+                      {:else if attribute.attributeType == WalletAttributeType.Address}
+                        <p class="explainer">
+                          The document was signed by a person or organization
+                          registered at this address.
+                        </p>
+                      {:else if attribute.attributeType == WalletAttributeType.Email}
+                        <p class="explainer">
+                          The document was signed by a person or organization
+                          that owns this email address.
+                        </p>
+                      {/if}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xxl">
+                  {#if attribute.attributeType == WalletAttributeType.Name}
+                    <p class="question">
+                      Was this document signed by the right entity?
+                    </p>
+                    {#each options as label}
+                      {@render personAnswers(label)}
+                    {/each}
+                    <div class="mb-4"></div>
+                  {:else if attribute.attributeType == WalletAttributeType.Address}
+                    <p class="question">
+                      Is this address owned by the right person or organization?
+                    </p>
+                    {#each options as label}
+                      {@render addressAnswers(label)}
+                    {/each}
+                    <div class="mb-4"></div>
+                  {:else if attribute.attributeType == WalletAttributeType.Email}
+                    <p class="question">
+                      Is this email address owned by the right person or
+                      organization?
+                    </p>
+                    {#each options as label}
+                      {@render emailAnswers(label)}
+                    {/each}
+                    <div class="mb-4"></div>
+                  {/if}
+                </div>
+              </div>
+            {/each}
+          </div>
+        {:else if version == "1" && sigCrypto && sigCrypto.attributes}
+          <div
+            class="container-xl"
+            in:fly|global={{
+              x: "35%",
+              y: "0",
+              duration: 500,
+              delay: 100,
+            }}
+          >
+            <h3 class="attribute-heading">Signed with:</h3>
+            {#each sigCrypto.attributes as attribute}
+              <div class="row row-cols-sm-1">
+                <div class="col-xxl-6">
+                  <div class="card attribute-card">
+                    <div class="card-header">
+                      {#if attribute.t === ATTRIBUTES[1]}
+                        <i class="bi bi-person card-icon"></i><b
+                          >{getFriendlyAttributeName(attribute.t)}</b
+                        >
+                      {:else if attribute.t === ATTRIBUTES[0]}
+                        <i class="bi bi-envelope-at card-icon"></i><b
+                          >{getFriendlyAttributeName(attribute.t)}</b
+                        >
+                      {/if}
+                    </div>
+                    <div class="card-body">
+                      <p class="attribute-value">
+                        {attribute.v?.toString()}
+                      </p>
+                      <h6>
+                        <i class="bi bi-question-circle"></i>
+                        What does this mean?
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xxl">
+                  {#if attribute.t === ATTRIBUTES[1]}
+                    <p class="question">
+                      Was this document signed by the right person or
+                      organization?
+                    </p>
+                    {#each options as label}
+                      {@render personAnswers(label)}
+                    {/each}
+                    <div class="mb-4"></div>
+                  {:else if attribute.t === ATTRIBUTES[0]}
+                    <p class="question">
+                      Is this the correct email address for the person or
+                      organization who signed the document?
+                    </p>
+                    {#each options as label}
+                      {@render emailAnswers(label)}
+                    {/each}
+                    <div class="mb-4"></div>
+                  {/if}
+                </div>
+              </div>
+            {/each}
+          </div>
         {/if}
-        {#if !sigValid && sigFound}
-          <h2 class="validity invalid">
-            <i class="bi bi-x-circle-fill"></i><br />
-            Signature invalid!
-          </h2>
-          <p class="validity-text">
-            This document contains an invalid signature. Do <b>NOT</b> trust this
-            document!
-          </p>
-        {/if}
-        {#if !sigFound}
-          <h2 class="validity notfound">
-            <i class="bi bi-exclamation-triangle-fill"></i><br />
-            No signature found!
-          </h2>
-          <p class="validity-text">
-            IdentitySign could not find a signature in this document. Verify
-            that it has indeed been signed using IdentitySign.
-          </p>
+        {#if alertData}
+          <div class="row justify-content-center" id="alert-div">
+            <div class="alert alert-{alertData}" role="alert">
+              {#if alertData === "danger"}
+                <strong>
+                  <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
+                  document should not be trusted!
+                </strong><br />
+                <hr />
+                <p>
+                  You indicated that the document may have been signed by the
+                  wrong person or organization, or the signer may have forgotten
+                  to include relevant information (such as their name or email).
+                </p>
+                <p>
+                  You can use our
+                  <a href="/request" target="_blank">
+                    signature request tool
+                  </a>
+                  to request a signature that contains this information.
+                </p>
+              {:else if alertData === "warning"}
+                <strong
+                  ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You
+                  may need more information before trusting this document</strong
+                ><br />
+                <hr />
+                <p>
+                  Before trusting this document, consider if you know enough
+                  about the signer. For example:
+                </p>
+                <ul>
+                  <li>Do you know who owns this email address?</li>
+                  <li>
+                    Does this person/organization have the authority to sign
+                    this document?
+                  </li>
+                  <li>Should someone else have signed the file?</li>
+                  <li>
+                    Do you need additional information (such as a name{version ==
+                    "0"
+                      ? " or address"
+                      : ""}) to be sure?
+                  </li>
+                </ul>
+                <p>
+                  If you have any doubts, use our
+                  <a href="/request" target="_blank">
+                    signature request tool
+                  </a>
+                  to request a signature that contains the contains the information
+                  you need.
+                </p>
+              {:else if alertData === "primary"}
+                <strong
+                  ><i class="bi bi-info-circle-fill alert-icon"></i> This document
+                  can most likely be trusted!</strong
+                > <br />
+                <hr />
+                You indicated that this document was signed by the correct person
+                or organization.
+              {/if}
+            </div>
+          </div>
         {/if}
       {/if}
     </div>
-  </div>
-  <div
-    class="col-lg-5 ps-5 {processDone && sigValid ? 'fill-space' : ''} "
-    style={processDone && sigValid
-      ? "width: 55%; transition: width 0.5s ease;"
-      : "transition: all 0s;"}
-    ontransitionend={() => (transitionDone = true)}
-  >
-    {#if processDone && sigValid && transitionDone}
-      {#if version == "0" && sigDummy && sigDummy.attributes}
-        <div
-          class="container-xl"
-          in:fly|global={{
-            x,
-            y,
-            duration: 500,
-            delay: 100,
-          }}
-        >
-          <h3 class="attribute-heading">Signed with:</h3>
-          {#each sigDummy.attributes as attribute}
-            <div class="row row-cols-sm-1">
-              <div class="col-xxl-6">
-                <div class="card attribute-card">
-                  <div class="card-header">
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <i class="bi bi-person card-icon"></i><b>Name</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <i class="bi bi-mailbox card-icon"></i><b>Address</b>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <i class="bi bi-envelope-at card-icon"></i><b>Email</b>
-                    {/if}
-                  </div>
-                  <div class="card-body">
-                    <p class="attribute-value">
-                      {attribute.value.toString()}
-                    </p>
-                    <h6>
-                      <i class="bi bi-question-circle"></i>
-                      What does this mean?
-                    </h6>
-                    {#if attribute.attributeType == WalletAttributeType.Name}
-                      <p class="explainer">
-                        The document was signed by a person or organization with
-                        this name.
-                      </p>
-                    {:else if attribute.attributeType == WalletAttributeType.Address}
-                      <p class="explainer">
-                        The document was signed by a person or organization
-                        registered at this address.
-                      </p>
-                    {:else if attribute.attributeType == WalletAttributeType.Email}
-                      <p class="explainer">
-                        The document was signed by a person or organization that
-                        owns this email address.
-                      </p>
-                    {/if}
-                  </div>
-                </div>
-              </div>
-              <div class="col-xxl">
-                {#if attribute.attributeType == WalletAttributeType.Name}
-                  <p class="question">
-                    Was this document signed by the right entity?
-                  </p>
-                  {#each options as label}
-                    {@render personAnswers(label)}
-                  {/each}
-                  <div class="mb-4"></div>
-                {:else if attribute.attributeType == WalletAttributeType.Address}
-                  <p class="question">
-                    Is this address owned by the right person or organization?
-                  </p>
-                  {#each options as label}
-                    {@render addressAnswers(label)}
-                  {/each}
-                  <div class="mb-4"></div>
-                {:else if attribute.attributeType == WalletAttributeType.Email}
-                  <p class="question">
-                    Is this email address owned by the right person or
-                    organization?
-                  </p>
-                  {#each options as label}
-                    {@render emailAnswers(label)}
-                  {/each}
-                  <div class="mb-4"></div>
-                {/if}
-              </div>
-            </div>
-          {/each}
-        </div>
-      {:else if version == "1" && sigCrypto && sigCrypto.attributes}
-        <div
-          class="container-xl"
-          in:fly|global={{
-            x,
-            y,
-            duration: 500,
-            delay: 100,
-          }}
-        >
-          <h3 class="attribute-heading">Signed with:</h3>
-          {#each sigCrypto.attributes as attribute}
-            <div class="row row-cols-sm-1">
-              <div class="col-xxl-6">
-                <div class="card attribute-card">
-                  <div class="card-header">
-                    {#if attribute.t === ATTRIBUTES[1]}
-                      <i class="bi bi-person card-icon"></i><b
-                        >{getFriendlyAttributeName(attribute.t)}</b
-                      >
-                    {:else if attribute.t === ATTRIBUTES[0]}
-                      <i class="bi bi-envelope-at card-icon"></i><b
-                        >{getFriendlyAttributeName(attribute.t)}</b
-                      >
-                    {/if}
-                  </div>
-                  <div class="card-body">
-                    <p class="attribute-value">
-                      {attribute.v?.toString()}
-                    </p>
-                    <h6>
-                      <i class="bi bi-question-circle"></i>
-                      What does this mean?
-                    </h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xxl">
-                {#if attribute.t === ATTRIBUTES[1]}
-                  <p class="question">
-                    Was this document signed by the right person or
-                    organization?
-                  </p>
-                  {#each options as label}
-                    {@render personAnswers(label)}
-                  {/each}
-                  <div class="mb-4"></div>
-                {:else if attribute.t === ATTRIBUTES[0]}
-                  <p class="question">
-                    Is this the correct email address for the person or
-                    organization who signed the document?
-                  </p>
-                  {#each options as label}
-                    {@render emailAnswers(label)}
-                  {/each}
-                  <div class="mb-4"></div>
-                {/if}
-              </div>
-            </div>
-          {/each}
-        </div>
-      {/if}
-      {#if alertData}
-        <div class="row justify-content-center" id="alert-div">
-          <div class="alert alert-{alertData}" role="alert">
-            {#if alertData === "danger"}
-              <strong>
-                <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This document
-                should not be trusted!
-              </strong><br />
-              <hr />
-              <p>
-                You indicated that the document may have been signed by the
-                wrong person or organization, or the signer may have forgotten
-                to include relevant information (such as their name or email).
-              </p>
-              <p>
-                You can use our
-                <a href="/request" target="_blank"> signature request tool </a>
-                to request a signature that contains this information.
-              </p>
-            {:else if alertData === "warning"}
-              <strong
-                ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You may
-                need more information before trusting this document</strong
-              ><br />
-              <hr />
-              <p>
-                Before trusting this document, consider if you know enough about
-                the signer. For example:
-              </p>
-              <ul>
-                <li>Do you know who owns this email address?</li>
-                <li>
-                  Does this person/organization have the authority to sign this
-                  document?
-                </li>
-                <li>Should someone else have signed the file?</li>
-                <li>
-                  Do you need additional information (such as a name{version ==
-                  "0"
-                    ? " or address"
-                    : ""}) to be sure?
-                </li>
-              </ul>
-              <p>
-                If you have any doubts, use our
-                <a href="/request" target="_blank"> signature request tool </a>
-                to request a signature that contains the contains the information
-                you need.
-              </p>
-            {:else if alertData === "primary"}
-              <strong
-                ><i class="bi bi-info-circle-fill alert-icon"></i> This document
-                can most likely be trusted!</strong
-              > <br />
-              <hr />
-              You indicated that this document was signed by the correct person or
-              organization.
-            {/if}
-          </div>
-        </div>
-      {/if}
-    {/if}
   </div>
 </div>
 
@@ -667,11 +680,23 @@
     font-size: 20px;
     margin-right: 5px;
   }
+  .border-invisible {
+    --bs-border-opacity: 0;
+    border-color: rgba(
+      var(--bs-success-rgb),
+      var(--bs-border-opacity)
+    ) !important;
+  }
   @media (max-width: 992px) {
     .fill-space {
       width: 99.99% !important;
       transition: width 0s !important;
       padding-left: 0 !important;
+    }
+  }
+  @media (max-width: 992px) {
+    .small-image {
+      width: 75% !important;
     }
   }
 </style>
