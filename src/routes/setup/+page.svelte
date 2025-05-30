@@ -17,6 +17,7 @@
   const URL_PARAMS = new URLSearchParams(window.location.search);
   const PARAM_URL = URL_PARAMS.get("url");
   const PARAM_DEVMODE = URL_PARAMS.get("devmode");
+  const PARAM_PRODUCTION_VERSION = URL_PARAMS.get("productionVersion");
   const PARAM_GOHOME = URL_PARAMS.get("gohome");
 
   if (PARAM_URL || PARAM_DEVMODE) {

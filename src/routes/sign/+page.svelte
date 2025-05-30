@@ -32,7 +32,7 @@
   const PARAM_MAIL = "mail";
   const PARAM_ADDRESS = "address";
   const PARAM_FILE = "filename";
-  const PARAM_VERSION = "production";
+  const PARAM_VERSION = "prod";
 
   const SIGNED_FILE_ADDITION = "_signed.pdf";
 
