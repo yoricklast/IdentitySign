@@ -436,25 +436,26 @@
       <div class="spacer"></div>
       <div class="progress-label-div row">
         <div
-          class="progress-label text-wrap col position-absolute start-0 text-start align-self-end ps-0 overflow-hidden"
+          class="progress-label text-wrap position-absolute start-0 text-start align-self-end px-0 overflow-x-visible"
         >
-          <i class="bi bi-1-circle"></i> Select file & personal data
+          <i class="bi bi-1-circle"></i> Select file &
+          <br class="d-sm-none d-block" /> personal data
         </div>
         <div
-          class="progress-label text-wrap col position-absolute start-50 text-center translate-middle-x align-self-end overflow-hidden"
+          class="progress-label text-wrap position-absolute start-50 text-center translate-middle-x align-self-end px-0"
         >
           <i class="bi bi-2-circle"></i> Prove your identity
         </div>
         <div
-          class="progress-label text-wrap col text-center position-absolute translate-middle-x align-self-end overflow-hidden"
-          style="left: 80%;"
+          class="progress-label text-wrap text-center position-absolute translate-middle-x align-self-end px-0"
+          style="left: 74%;"
         >
-          <i class="bi bi-3-circle"></i> Sign
+          <i class="bi bi-3-circle"></i> <br class="d-sm-none d-block" /> Sign
         </div>
         <div
-          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0 overflow-hidden"
+          class="progress-label text-wrap position-absolute end-0 text-end align-self-end px-0"
         >
-          <i class="bi bi-4-circle"></i> Done
+          <i class="bi bi-4-circle"></i> <br class="d-sm-none d-block" /> Done
         </div>
       </div>
       <div class="progress" role="progressbar" aria-label="Progress">

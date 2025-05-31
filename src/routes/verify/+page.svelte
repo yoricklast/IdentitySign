@@ -314,21 +314,21 @@
       <div class="spacer"></div>
       <div class="progress-label-div row">
         <div
-          class="progress-label text-wrap col position-absolute start-0 ps-0 text-start align-self-end overflow-hidden"
+          class="progress-label text-wrap position-absolute start-0 px-0 text-start align-self-end"
         >
           <i class="bi bi-1-circle"></i>
           Select document
         </div>
         <div
-          class="progress-label text-wrap col position-absolute start-50 translate-middle-x text-center align-self-end overflow-hidden"
+          class="progress-label text-wrap position-absolute start-50 translate-middle-x text-center align-self-end px-0"
         >
           <i class="bi bi-2-circle"></i>
           Check signature
         </div>
         <div
-          class="progress-label text-wrap col position-absolute end-0 text-end align-self-end pe-0 overflow-hidden"
+          class="progress-label text-wrap position-absolute end-0 text-end align-self-end px-0"
         >
-          <i class="bi bi-3-circle"></i> Done
+          <i class="bi bi-3-circle"></i> <br class="d-sm-none d-block" /> Done
         </div>
       </div>
       <div class="progress" role="progressbar" aria-label="Progress">
