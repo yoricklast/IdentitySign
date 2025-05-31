@@ -105,7 +105,9 @@
   let addressTrust = $state<string>();
   let emailTrust = $state<string>();
 
-  let alertData = $derived.by(() => {
+  let alertData = $state<string | undefined>();
+
+  function setAlertData(): string | undefined {
     if (
       signatureAttributes?.filter((x) => x.trust !== undefined).length ==
       signatureAttributes?.length
@@ -126,7 +128,17 @@
         return "primary";
       }
     }
-  });
+  }
+
+  function scrollToAlert(): void {
+    const element = document.getElementById("alert-div");
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }
 
   function setProgress(): void {
     signatureAttributes?.forEach((x) => {
@@ -134,12 +146,15 @@
         progress += 50 / signatureAttributes.length;
         trustSet.push(x.name);
       }
-      const element = document.getElementById("alert-div");
-      element?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
     });
+    if (alertData !== setAlertData()) {
+      if (alertData === undefined) {
+        console.log("No alert data set, setting new alert data");
+        alertData = setAlertData();
+      }
+      scrollToAlert();
+    }
+    alertData = setAlertData();
   }
 
   function processFile(): void {
@@ -418,7 +433,7 @@
       {#if processDone && sigValid && transitionDone}
         {#if version == "0" && sigDummy && sigDummy.attributes}
           <div
-            class="container-xl"
+            class="container-xl align-self-start"
             in:fly|global={{
               x: "35%",
               y: "0",
@@ -560,71 +575,67 @@
             {/each}
           </div>
         {/if}
-        {#if alertData}
-          <div class="row justify-content-center" id="alert-div">
-            <div class="alert alert-{alertData}" role="alert">
-              {#if alertData === "danger"}
-                <strong>
-                  <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This
-                  document should not be trusted!
-                </strong><br />
-                <hr />
-                <p>
-                  You indicated that the document may have been signed by the
-                  wrong person or organization, or the signer may have forgotten
-                  to include relevant information (such as their name or email).
-                </p>
-                <p>
-                  You can use our
-                  <a href="/request" target="_blank">
-                    signature request tool
-                  </a>
-                  to request a signature that contains this information.
-                </p>
-              {:else if alertData === "warning"}
-                <strong
-                  ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You
-                  may need more information before trusting this document</strong
-                ><br />
-                <hr />
-                <p>
-                  Before trusting this document, consider if you know enough
-                  about the signer. For example:
-                </p>
-                <ul>
-                  <li>Do you know who owns this email address?</li>
-                  <li>
-                    Does this person/organization have the authority to sign
-                    this document?
-                  </li>
-                  <li>Should someone else have signed the file?</li>
-                  <li>
-                    Do you need additional information (such as a name{version ==
-                    "0"
-                      ? " or address"
-                      : ""}) to be sure?
-                  </li>
-                </ul>
-                <p>
-                  If you have any doubts, use our
-                  <a href="/request" target="_blank">
-                    signature request tool
-                  </a>
-                  to request a signature that contains the contains the information
-                  you need.
-                </p>
-              {:else if alertData === "primary"}
-                <strong
-                  ><i class="bi bi-info-circle-fill alert-icon"></i> This document
-                  can most likely be trusted!</strong
-                > <br />
-                <hr />
-                You indicated that this document was signed by the correct person
-                or organization.
-              {/if}
-            </div>
-          </div>
-        {/if}
+      {/if}
+    </div>
+    <div class="" id="alert-div">
+      {#if alertData}
+        <div class="alert alert-{alertData} mx-auto" role="alert">
+          {#if alertData === "danger"}
+            <strong>
+              <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This document
+              should not be trusted!
+            </strong><br />
+            <hr />
+            <p>
+              You indicated that the document may have been signed by the wrong
+              person or organization, or the signer may have forgotten to
+              include relevant information (such as their name or email).
+            </p>
+            <p>
+              You can use our
+              <a href="/request" target="_blank"> signature request tool </a>
+              to request a signature that contains this information.
+            </p>
+          {:else if alertData === "warning"}
+            <strong
+              ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You may
+              need more information before trusting this document</strong
+            ><br />
+            <hr />
+            <p>
+              Before trusting this document, consider if you know enough about
+              the signer. For example:
+            </p>
+            <ul>
+              <li>Do you know who owns this email address?</li>
+              <li>
+                Does this person/organization have the authority to sign this
+                document?
+              </li>
+              <li>Should someone else have signed the file?</li>
+              <li>
+                Do you need additional information (such as a name{version ==
+                "0"
+                  ? " or address"
+                  : ""}) to be sure?
+              </li>
+            </ul>
+            <p>
+              If you have any doubts, use our
+              <a href="/request" target="_blank"> signature request tool </a>
+              to request a signature that contains the contains the information you
+              need.
+            </p>
+          {:else if alertData === "primary"}
+            <strong
+              ><i class="bi bi-info-circle-fill alert-icon"></i> This document can
+              most likely be trusted!</strong
+            > <br />
+            <hr />
+            You indicated that this document was signed by the correct person or
+            organization.
+          {/if}
+        </div>
       {/if}
     </div>
   </div>
