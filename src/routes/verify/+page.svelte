@@ -26,7 +26,7 @@
 
   const version = localStorage.getItem("productionVersion");
 
-  let small = $state<boolean>(false);
+  let small = $state<boolean>(window.innerWidth < 992 ? true : false);
   window.addEventListener("resize", () => {
     if (window.innerWidth < 992) {
       small = true;
@@ -187,8 +187,8 @@
         `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
-        PDFjs.getDocument(value).promise.then((document) => {
-          document.getPage(document.numPages).then((page) => {
+        PDFjs.getDocument(value).promise.then((doc) => {
+          doc.getPage(doc.numPages).then((page) => {
             page.getTextContent().then((text) => {
               text.items.forEach((x) => {
                 let itemValue = Object.values(x)[0];
@@ -204,6 +204,16 @@
                       emailTrust = undefined;
                       trustSet = [];
                       console.log(`Length: ${signatureAttributes?.length}`);
+                      if (sigValid) {
+                        const element =
+                          document.getElementById("attribute-list");
+                        if (element) {
+                          element.scrollIntoView({
+                            behavior: "auto",
+                            block: "center",
+                          });
+                        }
+                      }
                     }
                   }
                 }
@@ -241,8 +251,8 @@
         `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
-        PDFjs.getDocument(value).promise.then((document) => {
-          document
+        PDFjs.getDocument(value).promise.then((doc) => {
+          doc
             .getAttachments()
             .then(async (attachments) => {
               if (attachments !== null) {
@@ -258,6 +268,14 @@
                         addressTrust = undefined;
                         emailTrust = undefined;
                         trustSet = [];
+                        const element =
+                          document.getElementById("attribute-list");
+                        if (element) {
+                          element.scrollIntoView({
+                            behavior: "auto",
+                            block: "center",
+                          });
+                        }
                       }
                     });
                   }
@@ -424,6 +442,7 @@
       {/if}
     {/if}
     <div
+      id="attribute-list"
       class="col-lg-5 {processDone && sigValid ? 'fill-space' : ''} "
       style={processDone && sigValid
         ? "width: 75%; transition: width 0.5s ease;"
