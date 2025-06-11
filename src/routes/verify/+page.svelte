@@ -16,7 +16,7 @@
     SignatureDummy,
     SignatureCrypto,
   } from "../../scripts/signature";
-  import { fly } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
   import { getFriendlyAttributeName } from "../../scripts/ts-util";
 
@@ -26,14 +26,6 @@
 
   const version = localStorage.getItem("productionVersion");
 
-  let small = $state<boolean>(window.innerWidth < 992 ? true : false);
-  window.addEventListener("resize", () => {
-    if (window.innerWidth < 992) {
-      small = true;
-    } else {
-      small = false;
-    }
-  });
   let files = $state<FileList>();
   let sigValid = $state<boolean>();
   let sigFound = $state<boolean>();
@@ -42,7 +34,6 @@
   let processDone = $state(false);
   let sigCrypto = $state<SignatureCrypto>();
   let sigDummy = $state<SignatureDummy>();
-  let transitionDone = $state(false);
 
   /* For cryptographic signatures */
   let signatureAttributesCrypto = $derived.by(() => {
@@ -135,7 +126,7 @@
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
-        block: "start",
+        block: "center",
       });
     }
   }
@@ -152,7 +143,7 @@
         console.log("No alert data set, setting new alert data");
         alertData = setAlertData();
       }
-      scrollToAlert();
+      setTimeout(scrollToAlert, 100);
     }
     alertData = setAlertData();
   }
@@ -170,11 +161,6 @@
     processDone = false;
     sigValid = false;
     sigFound = false;
-    if (small) {
-      transitionDone = true;
-    } else {
-      transitionDone = false;
-    }
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
@@ -204,16 +190,6 @@
                       emailTrust = undefined;
                       trustSet = [];
                       console.log(`Length: ${signatureAttributes?.length}`);
-                      if (sigValid) {
-                        const element =
-                          document.getElementById("attribute-list");
-                        if (element) {
-                          element.scrollIntoView({
-                            behavior: "auto",
-                            block: "center",
-                          });
-                        }
-                      }
                     }
                   }
                 }
@@ -234,11 +210,6 @@
     processDone = false;
     sigFound = false;
     sigValid = false;
-    if (small) {
-      transitionDone = true;
-    } else {
-      transitionDone = false;
-    }
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
@@ -336,7 +307,7 @@
   </div>
 {/snippet}
 
-<div class="mx-auto" style="">
+<div class="mx-auto">
   <!--   <div
     class="col-lg {processDone && sigValid
       ? 'align-self-start'
@@ -405,7 +376,7 @@
       />
     </div>
     {#if processDone}
-      {#if sigValid && transitionDone}
+      {#if sigValid}
         <h2 class="validity valid">
           <i class="bi bi-search"></i>
           <br />
@@ -442,25 +413,26 @@
       {/if}
     {/if}
     <div
-      id="attribute-list"
       class="col-lg-5 {processDone && sigValid ? 'fill-space' : ''} "
-      style={processDone && sigValid
-        ? "width: 75%; transition: width 0.5s ease;"
-        : "transition: all 0s;"}
-      ontransitionend={() => (transitionDone = true)}
+      style={processDone && sigValid ? "width: 75%;" : ""}
     >
-      {#if processDone && sigValid && transitionDone}
+      {#if processDone && sigValid}
         {#if version == "0" && sigDummy && sigDummy.attributes}
           <div
             class="container-xl align-self-start"
-            in:fly|global={{
-              x: "35%",
-              y: "0",
-              duration: 500,
-              delay: 100,
+            in:fade|global
+            onintroend={() => {
+              const element = document.getElementById("attribute-list");
+              console.log(element);
+              if (element) {
+                element.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
             }}
           >
-            <h3 class="attribute-heading">Signed with:</h3>
+            <h3 id="attribute-list" class="attribute-heading">Signed with:</h3>
             {#each sigDummy.attributes as attribute}
               <div class="row row-cols-sm-1">
                 <div class="col-xxl-6">
@@ -535,14 +507,19 @@
         {:else if version == "1" && sigCrypto && sigCrypto.attributes}
           <div
             class="container-xl"
-            in:fly|global={{
-              x: "35%",
-              y: "0",
-              duration: 500,
-              delay: 100,
+            in:fade|global
+            onintroend={() => {
+              const element = document.getElementById("attribute-list");
+              console.log(element);
+              if (element) {
+                element.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
             }}
           >
-            <h3 class="attribute-heading">Signed with:</h3>
+            <h3 id="attribute-list" class="attribute-heading">Signed with:</h3>
             {#each sigCrypto.attributes as attribute}
               <div class="row row-cols-sm-1">
                 <div class="col-xxl-6">
@@ -720,7 +697,6 @@
   @media (max-width: 992px) {
     .fill-space {
       width: 99.99% !important;
-      transition: width 0s !important;
       padding-left: 0 !important;
     }
   }
