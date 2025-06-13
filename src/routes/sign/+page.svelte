@@ -138,15 +138,22 @@
     inputFile.arrayBuffer().then((value) => {
       pdfjs.getDocument(value).promise.then((pdf) => {
         pdf.getPage(1).then((page) => {
-          const scale = 0.5;
+          const scale = 1;
           const canvas = document.getElementById(
             "pdf-canvas",
           ) as HTMLCanvasElement;
-          const viewport = page.getViewport({ scale: scale });
+          const viewport = page.getViewport({
+            scale: scale,
+          });
           const context = canvas.getContext("2d");
           if (context) {
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+            canvas.height = Math.ceil(viewport.height);
+            canvas.width = Math.ceil(viewport.width);
+            canvas.style.width =
+              Math.ceil(viewport.width) / (window.devicePixelRatio || 1) + "px";
+            canvas.style.height =
+              Math.ceil(viewport.height) / (window.devicePixelRatio || 1) +
+              "px";
             const renderContext = {
               canvasContext: context,
               viewport: viewport,
@@ -465,13 +472,7 @@
   </div>
   <div class={paramsGiven() ? "col-lg-7" : ""}>
     <div class="row justify-content-between">
-      <div class={files && fileSelected ? "col-5" : ""}>
-        {#if files && fileSelected}
-          <canvas id="pdf-canvas"></canvas>
-        {/if}
-      </div>
-
-      <div class={files && fileSelected ? "col-7" : "col-12"}>
+      <div class={files && fileSelected ? "col-lg-7" : "col-12"}>
         <div
           class="position-relative {paramsGiven()
             ? 'end-0 translate-middle-y top-50'
@@ -797,6 +798,19 @@
           </div>
         </div>
       </div>
+      <div
+        class={files && fileSelected
+          ? "col-lg-5 col-md-9 col-sm-11 align-self-start"
+          : ""}
+      >
+        {#if files && fileSelected}
+          <canvas
+            id="pdf-canvas"
+            class="h-100 w-100 align-self-start"
+            style="max-height: 90vh; max-width:max-content;"
+          ></canvas>
+        {/if}
+      </div>
     </div>
   </div>
 </div>
@@ -856,7 +870,7 @@
   }
   .spacer {
     height: 25px;
-    @media screen and (max-width: 992px) {
+    @media screen and (max-width: 768px) {
       height: 100px;
     }
   }
