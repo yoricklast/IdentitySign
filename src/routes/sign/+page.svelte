@@ -470,7 +470,7 @@
       </div>
     {/if}
   </div>
-  <div class={paramsGiven() ? "col-lg-7" : ""}>
+  <div class={paramsGiven() ? "col-lg-7" : "col-12 mx-auto"}>
     <div class="row justify-content-between">
       <div class={files && fileSelected ? "col-lg-7" : "col-12"}>
         <div
