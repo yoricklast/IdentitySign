@@ -267,7 +267,7 @@
 {#snippet personAnswers(label: string)}
   <div class="form-check">
     <input
-      class="form-check-input"
+      class="form-check-input focus-ring"
       type="radio"
       name="flexRadioName"
       id="{label}Person"
@@ -281,7 +281,7 @@
 {#snippet addressAnswers(label: string)}
   <div class="form-check">
     <input
-      class="form-check-input"
+      class="form-check-input focus-ring"
       type="radio"
       name="flexRadioAddress"
       id="{label}Address"
@@ -295,7 +295,7 @@
 {#snippet emailAnswers(label: string)}
   <div class="form-check">
     <input
-      class="form-check-input"
+      class="form-check-input focus-ring"
       type="radio"
       name="flexRadioEmail"
       id="{label}Email"
@@ -693,6 +693,21 @@
       var(--bs-success-rgb),
       var(--bs-border-opacity)
     ) !important;
+  }
+  .form-check-input:checked[value="Yes"] {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    --bs-focus-ring-color: rgba(var(--bs-primary-rgb), 0.25);
+  }
+  .form-check-input:checked[value="No"] {
+    background-color: var(--bs-danger);
+    border-color: var(--bs-danger);
+    --bs-focus-ring-color: rgba(var(--bs-danger-rgb), 0.25);
+  }
+  .form-check-input:checked[value="Not sure"] {
+    background-color: var(--bs-warning);
+    border-color: var(--bs-warning);
+    --bs-focus-ring-color: rgba(var(--bs-warning-rgb), 0.25);
   }
   @media (max-width: 992px) {
     .fill-space {

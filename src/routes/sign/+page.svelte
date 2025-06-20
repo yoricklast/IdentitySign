@@ -806,7 +806,7 @@
         {#if files && fileSelected}
           <canvas
             id="pdf-canvas"
-            class="h-100 w-100 align-self-start"
+            class="h-100 w-100 align-self-start border border-secondary mt-3"
             style="max-height: 90vh; max-width:max-content;"
           ></canvas>
         {/if}
