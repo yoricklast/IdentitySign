@@ -90,7 +90,11 @@
 
   let trustSet = $state<string[]>([]);
   let progress = $state(0);
-  let options = ["Yes", "No", "Not sure"];
+  let options = [
+    { label: "Yes", icon: '<i class="bi bi-check2"></i>' },
+    { label: "No", icon: '<i class="bi bi-x"></i>' },
+    { label: "Not sure", icon: '<i class="bi bi-question-lg"></i>' },
+  ];
 
   let personTrust = $state<string>();
   let addressTrust = $state<string>();
@@ -145,7 +149,6 @@
       }
       setTimeout(scrollToAlert, 100);
     }
-    alertData = setAlertData();
   }
 
   function processFile(): void {
@@ -264,47 +267,53 @@
   }
 </script>
 
-{#snippet personAnswers(label: string)}
-  <div class="form-check">
-    <input
-      class="form-check-input focus-ring"
-      type="radio"
-      name="flexRadioName"
-      id="{label}Person"
-      bind:group={personTrust}
-      value={label}
-      onchange={setProgress}
-    />
-    <label class="form-check-label" for="{label}Person"> {label} </label>
-  </div>
+{#snippet personAnswers(label: string, icon: string)}
+  <input
+    class="btn-check"
+    type="radio"
+    name="RadioGroupName"
+    id="{label}Person"
+    value={label}
+    autocomplete="off"
+    onchange={setProgress}
+    bind:group={personTrust}
+  />
+  <label class="btn radio-group-{label}" for="{label}Person">
+    {@html icon}
+    {label}
+  </label>
 {/snippet}
-{#snippet addressAnswers(label: string)}
-  <div class="form-check">
-    <input
-      class="form-check-input focus-ring"
-      type="radio"
-      name="flexRadioAddress"
-      id="{label}Address"
-      bind:group={addressTrust}
-      value={label}
-      onchange={setProgress}
-    />
-    <label class="form-check-label" for="{label}Address"> {label} </label>
-  </div>
+{#snippet addressAnswers(label: string, icon: string)}
+  <input
+    class="btn-check"
+    type="radio"
+    name="RadioGroupAddress"
+    id="{label}Address"
+    value={label}
+    autocomplete="off"
+    onchange={setProgress}
+    bind:group={addressTrust}
+  />
+  <label class="btn radio-group-{label}" for="{label}Address">
+    {@html icon}
+    {label}
+  </label>
 {/snippet}
-{#snippet emailAnswers(label: string)}
-  <div class="form-check">
-    <input
-      class="form-check-input focus-ring"
-      type="radio"
-      name="flexRadioEmail"
-      id="{label}Email"
-      bind:group={emailTrust}
-      value={label}
-      onchange={setProgress}
-    />
-    <label class="form-check-label" for="{label}Email"> {label} </label>
-  </div>
+{#snippet emailAnswers(label: string, icon: string)}
+  <input
+    class="btn-check"
+    type="radio"
+    name="RadioGroupEmail"
+    id="{label}Email"
+    value={label}
+    autocomplete="off"
+    onchange={setProgress}
+    bind:group={emailTrust}
+  />
+  <label class="btn radio-group-{label}" for="{label}Email">
+    {@html icon}
+    {label}
+  </label>
 {/snippet}
 
 <div class="mx-auto">
@@ -414,7 +423,7 @@
     {/if}
     <div
       class="col-lg-5 {processDone && sigValid ? 'fill-space' : ''} "
-      style={processDone && sigValid ? "width: 75%;" : ""}
+      style={processDone && sigValid ? "width: 100%;" : ""}
     >
       {#if processDone && sigValid}
         {#if version == "0" && sigDummy && sigDummy.attributes}
@@ -423,7 +432,6 @@
             in:fade|global
             onintroend={() => {
               const element = document.getElementById("attribute-list");
-              console.log(element);
               if (element) {
                 element.scrollIntoView({
                   behavior: "smooth",
@@ -476,29 +484,45 @@
                 <div class="col-xxl">
                   {#if attribute.attributeType == WalletAttributeType.Name}
                     <p class="question">
-                      Was this document signed by the right entity?
+                      Was this document signed by the right person or
+                      organization?
                     </p>
-                    {#each options as label}
-                      {@render personAnswers(label)}
-                    {/each}
-                    <div class="mb-4"></div>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Radio buttons for trust question of the name attribute"
+                    >
+                      {#each options as option}
+                        {@render personAnswers(option.label, option.icon)}
+                      {/each}
+                    </div>
                   {:else if attribute.attributeType == WalletAttributeType.Address}
                     <p class="question">
                       Is this address owned by the right person or organization?
                     </p>
-                    {#each options as label}
-                      {@render addressAnswers(label)}
-                    {/each}
-                    <div class="mb-4"></div>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Radio buttons for trust question of the address attribute"
+                    >
+                      {#each options as option}
+                        {@render addressAnswers(option.label, option.icon)}
+                      {/each}
+                    </div>
                   {:else if attribute.attributeType == WalletAttributeType.Email}
                     <p class="question">
-                      Is this email address owned by the right person or
-                      organization?
+                      Is this the correct email address for the person or
+                      organization who signed the document?
                     </p>
-                    {#each options as label}
-                      {@render emailAnswers(label)}
-                    {/each}
-                    <div class="mb-4"></div>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Radio buttons for trust question of the email attribute"
+                    >
+                      {#each options as option}
+                        {@render emailAnswers(option.label, option.icon)}
+                      {/each}
+                    </div>
                   {/if}
                 </div>
               </div>
@@ -510,7 +534,6 @@
             in:fade|global
             onintroend={() => {
               const element = document.getElementById("attribute-list");
-              console.log(element);
               if (element) {
                 element.scrollIntoView({
                   behavior: "smooth",
@@ -552,19 +575,29 @@
                       Was this document signed by the right person or
                       organization?
                     </p>
-                    {#each options as label}
-                      {@render personAnswers(label)}
-                    {/each}
-                    <div class="mb-4"></div>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Radio buttons for trust question of the name attribute"
+                    >
+                      {#each options as option}
+                        {@render personAnswers(option.label, option.icon)}
+                      {/each}
+                    </div>
                   {:else if attribute.t === ATTRIBUTES[0]}
                     <p class="question">
                       Is this the correct email address for the person or
                       organization who signed the document?
                     </p>
-                    {#each options as label}
-                      {@render emailAnswers(label)}
-                    {/each}
-                    <div class="mb-4"></div>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Radio buttons for trust question of the email attribute"
+                    >
+                      {#each options as option}
+                        {@render emailAnswers(option.label, option.icon)}
+                      {/each}
+                    </div>
                   {/if}
                 </div>
               </div>
@@ -609,18 +642,14 @@
                 document?
               </li>
               <li>Should someone else have signed the file?</li>
-              <li>
-                Do you need additional information (such as a name{version ==
-                "0"
-                  ? " or address"
-                  : ""}) to be sure?
-              </li>
             </ul>
             <p>
-              If you have any doubts, use our
+              If you need additional information the signature doesn't contain
+              yet (such as a name{version == "0"
+                ? ", email or address"
+                : "or email"}), use our
               <a href="/request" target="_blank"> signature request tool </a>
-              to request a signature that contains the contains the information you
-              need.
+              to create a signature request with the information you need.
             </p>
           {:else if alertData === "primary"}
             <strong
@@ -644,8 +673,12 @@
     margin-bottom: 2px;
   }
   .question {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
     font-weight: bold;
+  }
+  .btn-group {
+    width: 100%;
+    margin-bottom: 2rem;
   }
   .explainer {
     font-size: 14px;
@@ -694,20 +727,45 @@
       var(--bs-border-opacity)
     ) !important;
   }
-  .form-check-input:checked[value="Yes"] {
-    background-color: var(--bs-primary);
-    border-color: var(--bs-primary);
-    --bs-focus-ring-color: rgba(var(--bs-primary-rgb), 0.25);
+
+  .radio-group-Yes {
+    --bs-btn-border-color: var(--bs-secondary);
+    --bs-btn-hover-bg: var(--bs-primary-bg-subtle);
+    --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
+    --bs-btn-focus-shadow-rgb: 13, 110, 253;
+    --bs-btn-active-color: var(--bs-primary-text-emphasis);
+    --bs-btn-active-bg: var(--bs-primary-bg-subtle);
+    --bs-btn-active-border-color: var(--bs-btn-active-color);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--bs-secondary);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--bs-secondary);
   }
-  .form-check-input:checked[value="No"] {
-    background-color: var(--bs-danger);
-    border-color: var(--bs-danger);
-    --bs-focus-ring-color: rgba(var(--bs-danger-rgb), 0.25);
+  .radio-group-No {
+    --bs-btn-border-color: var(--bs-secondary);
+    --bs-btn-hover-bg: var(--bs-danger-bg-subtle);
+    --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
+    --bs-btn-focus-shadow-rgb: 220, 53, 69;
+    --bs-btn-active-color: var(--bs-danger-text-emphasis);
+    --bs-btn-active-bg: var(--bs-danger-bg-subtle);
+    --bs-btn-active-border-color: var(--bs-btn-active-color);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--bs-secondary);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--bs-secondary);
   }
-  .form-check-input:checked[value="Not sure"] {
-    background-color: var(--bs-warning);
-    border-color: var(--bs-warning);
-    --bs-focus-ring-color: rgba(var(--bs-warning-rgb), 0.25);
+  .radio-group-Not /*sure*/ {
+    --bs-btn-border-color: var(--bs-secondary);
+    --bs-btn-hover-bg: var(--bs-warning-bg-subtle);
+    --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
+    --bs-btn-focus-shadow-rgb: 255, 193, 7;
+    --bs-btn-active-color: var(--bs-warning-text-emphasis);
+    --bs-btn-active-bg: var(--bs-warning-bg-subtle);
+    --bs-btn-active-border-color: var(--bs-btn-active-color);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--bs-secondary);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--bs-secondary);
   }
   @media (max-width: 992px) {
     .fill-space {
