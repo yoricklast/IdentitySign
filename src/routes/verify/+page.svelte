@@ -278,7 +278,10 @@
     onchange={setProgress}
     bind:group={personTrust}
   />
-  <label class="btn radio-group-{label}" for="{label}Person">
+  <label
+    class="btn questionnaire-button radio-group-{label}"
+    for="{label}Person"
+  >
     {@html icon}
     {label}
   </label>
@@ -294,7 +297,10 @@
     onchange={setProgress}
     bind:group={addressTrust}
   />
-  <label class="btn radio-group-{label}" for="{label}Address">
+  <label
+    class="btn questionnaire-button radio-group-{label}"
+    for="{label}Address"
+  >
     {@html icon}
     {label}
   </label>
@@ -310,7 +316,10 @@
     onchange={setProgress}
     bind:group={emailTrust}
   />
-  <label class="btn radio-group-{label}" for="{label}Email">
+  <label
+    class="btn questionnaire-button radio-group-{label}"
+    for="{label}Email"
+  >
     {@html icon}
     {label}
   </label>
@@ -728,8 +737,17 @@
     ) !important;
   }
 
-  .radio-group-Yes {
+  .questionnaire-button {
+    --bs-btn-bg: rgba(var(--bs-secondary-bg-rgb));
     --bs-btn-border-color: var(--bs-secondary);
+    --bs-btn-disabled-color: var(--bs-secondary);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--bs-secondary);
+  }
+  .questionnaire-button:hover {
+    background-color: var(--bs-btn-hover-bg);
+  }
+  .radio-group-Yes {
     --bs-btn-hover-bg: var(--bs-primary-bg-subtle);
     --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
     --bs-btn-focus-shadow-rgb: 13, 110, 253;
@@ -737,12 +755,8 @@
     --bs-btn-active-bg: var(--bs-primary-bg-subtle);
     --bs-btn-active-border-color: var(--bs-btn-active-color);
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: var(--bs-secondary);
-    --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: var(--bs-secondary);
   }
   .radio-group-No {
-    --bs-btn-border-color: var(--bs-secondary);
     --bs-btn-hover-bg: var(--bs-danger-bg-subtle);
     --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
     --bs-btn-focus-shadow-rgb: 220, 53, 69;
@@ -750,12 +764,8 @@
     --bs-btn-active-bg: var(--bs-danger-bg-subtle);
     --bs-btn-active-border-color: var(--bs-btn-active-color);
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: var(--bs-secondary);
-    --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: var(--bs-secondary);
   }
   .radio-group-Not /*sure*/ {
-    --bs-btn-border-color: var(--bs-secondary);
     --bs-btn-hover-bg: var(--bs-warning-bg-subtle);
     --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
     --bs-btn-focus-shadow-rgb: 255, 193, 7;
@@ -763,10 +773,8 @@
     --bs-btn-active-bg: var(--bs-warning-bg-subtle);
     --bs-btn-active-border-color: var(--bs-btn-active-color);
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: var(--bs-secondary);
-    --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: var(--bs-secondary);
   }
+
   @media (max-width: 992px) {
     .fill-space {
       width: 99.99% !important;
