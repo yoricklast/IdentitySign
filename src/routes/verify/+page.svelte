@@ -142,6 +142,7 @@
         trustSet.push(x.name);
       }
     });
+    console.log(`AlerData: ${alertData}`);
     if (alertData !== setAlertData()) {
       if (alertData === undefined) {
         console.log("No alert data set, setting new alert data");
@@ -149,6 +150,7 @@
       }
       setTimeout(scrollToAlert, 100);
     }
+    alertData = setAlertData();
   }
 
   function processFile(): void {
@@ -615,7 +617,7 @@
         {/if}
       {/if}
     </div>
-    <div class="" id="alert-div">
+    <div id="alert-div">
       {#if alertData}
         <div class="alert alert-{alertData} mx-auto" role="alert">
           {#if alertData === "danger"}
@@ -744,12 +746,7 @@
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: var(--bs-secondary);
   }
-  .questionnaire-button:hover {
-    background-color: var(--bs-btn-hover-bg);
-  }
   .radio-group-Yes {
-    --bs-btn-hover-bg: var(--bs-primary-bg-subtle);
-    --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
     --bs-btn-focus-shadow-rgb: 13, 110, 253;
     --bs-btn-active-color: var(--bs-primary-text-emphasis);
     --bs-btn-active-bg: var(--bs-primary-bg-subtle);
@@ -757,8 +754,6 @@
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   }
   .radio-group-No {
-    --bs-btn-hover-bg: var(--bs-danger-bg-subtle);
-    --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
     --bs-btn-focus-shadow-rgb: 220, 53, 69;
     --bs-btn-active-color: var(--bs-danger-text-emphasis);
     --bs-btn-active-bg: var(--bs-danger-bg-subtle);
@@ -766,8 +761,6 @@
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   }
   .radio-group-Not /*sure*/ {
-    --bs-btn-hover-bg: var(--bs-warning-bg-subtle);
-    --bs-btn-hover-border-color: var(--bs-btn-hover-bg);
     --bs-btn-focus-shadow-rgb: 255, 193, 7;
     --bs-btn-active-color: var(--bs-warning-text-emphasis);
     --bs-btn-active-bg: var(--bs-warning-bg-subtle);
