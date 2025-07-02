@@ -804,6 +804,7 @@
           : ""}
       >
         {#if files && fileSelected}
+          <p class="mb-0">PDF Preview:</p>
           <canvas
             id="pdf-canvas"
             class="h-100 w-100 align-self-start border border-secondary mt-3"
