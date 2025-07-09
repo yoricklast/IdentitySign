@@ -416,19 +416,21 @@
 <!-- HTML / Svelte -->
 
 <div
-  class="{paramsGiven() ? 'row flex-wrap' : 'mx-auto'} {files && fileSelected
-    ? ''
+  class="{paramsGiven() ? 'row flex-wrap mx-auto w-100' : 'mx-auto'} {files &&
+  fileSelected
+    ? 'w-100'
     : 'w-75'}"
   style="margin-top: 5%;"
 >
   <div
-    class={paramsGiven()
-      ? "col-lg-5 col-md-8 col-sm-8 align-self-start flex-sm-fill"
-      : ""}
+    class="{paramsGiven()
+      ? 'col-lg-5 col-md-8 col-sm-8 align-self-start flex-sm-fill mb-4'
+      : ''} "
+    style="max-width: 720px;"
   >
     {#if paramsGiven()}
       <div class="card request-card">
-        <div class="card-body" style="padding: 2rem !important;">
+        <div class="card-body" style="padding: 1.5rem !important;">
           <h2 class="card-title">You have opened a sign request!</h2>
           <p class="card-text">You are requested to sign file:</p>
           {#if paramFile != null}
@@ -470,7 +472,11 @@
       </div>
     {/if}
   </div>
-  <div class={paramsGiven() ? "col-lg-7" : "col-12 mx-auto"}>
+  <div
+    class="{paramsGiven() && !files && !fileSelected
+      ? 'col-lg-7'
+      : 'col-12 mx-auto'} {files && fileSelected ? 'col-12' : ''}"
+  >
     <div class="row justify-content-between">
       <div class={files && fileSelected ? "col-lg-7" : "col-12"}>
         <div
