@@ -234,7 +234,7 @@
               if (attachments !== null) {
                 for (const [name, attachment] of Object.entries(attachments)) {
                   if (name === POSTGUARD_FILE) {
-                    const content = attachment.content;
+                    const content = (attachment as { content: Uint8Array }).content;
                     await signer.check(content).then((hasSignature) => {
                       if (hasSignature) {
                         sigCrypto = signer.decode("not needed");
@@ -501,7 +501,7 @@
                       aria-label="Radio buttons for trust question of the name attribute"
                     >
                       {#each options as option}
-                        {@render personAnswers(option.label, option.icon)}
+                        {@render personAnswers(option.label)}
                       {/each}
                     </div>
                   {:else if attribute.attributeType == WalletAttributeType.Address}
@@ -514,7 +514,7 @@
                       aria-label="Radio buttons for trust question of the address attribute"
                     >
                       {#each options as option}
-                        {@render addressAnswers(option.label, option.icon)}
+                        {@render addressAnswers(option.label)}
                       {/each}
                     </div>
                   {:else if attribute.attributeType == WalletAttributeType.Email}
@@ -528,7 +528,7 @@
                       aria-label="Radio buttons for trust question of the email attribute"
                     >
                       {#each options as option}
-                        {@render emailAnswers(option.label, option.icon)}
+                        {@render emailAnswers(option.label)}
                       {/each}
                     </div>
                   {/if}
@@ -589,7 +589,7 @@
                       aria-label="Radio buttons for trust question of the name attribute"
                     >
                       {#each options as option}
-                        {@render personAnswers(option.label, option.icon)}
+                        {@render personAnswers(option.label)}
                       {/each}
                     </div>
                   {:else if attribute.t === ATTRIBUTES[0]}
@@ -603,7 +603,7 @@
                       aria-label="Radio buttons for trust question of the email attribute"
                     >
                       {#each options as option}
-                        {@render emailAnswers(option.label, option.icon)}
+                        {@render emailAnswers(option.label)}
                       {/each}
                     </div>
                   {/if}
