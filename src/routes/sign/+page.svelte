@@ -565,7 +565,8 @@
               </div>
               <h2 style="margin-top: 30px;">Select personal data</h2>
               <label for="attr-checks" class="form-label"
-                >Signatures will be created using personal data, and will always contain the date and time.
+                >Signatures will be created using personal data, and will always
+                contain the date and time.
                 <span
                   class="d-inline-block"
                   data-bs-trigger="hover focus"

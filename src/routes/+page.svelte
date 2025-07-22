@@ -6,7 +6,7 @@
       Sign documents, verify signatures and request signatures from others using
       IdentitySign!
     </p>
-    
+
     <div class="infoblock rounded border">
       <h2>
         <i class="bi bi-patch-check heading-icon"></i>Know who you are working
@@ -69,12 +69,11 @@
     </div>
 
     <div class="infoblock rounded warning-block">
-    <p class="infoblock-text main-text prototype-warning">
-      This application is a prototype and has not been audited!
-      It is meant solely for testing, evaluation, and research purposes.
-    </p>
-  </div>
-
+      <p class="infoblock-text main-text prototype-warning">
+        This application is a prototype and has not been audited! It is meant
+        solely for testing, evaluation, and research purposes.
+      </p>
+    </div>
   </div>
   <div class="col-sm-5">
     <img
