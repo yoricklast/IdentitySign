@@ -2,11 +2,11 @@
   <div class="col-md-7">
     <h1>Welcome to IdentitySign</h1>
 
-    <p class="main-text fs-4">
+    <p class="subtitle">
       Sign documents, verify signatures and request signatures from others using
       IdentitySign!
     </p>
-
+    
     <div class="infoblock rounded border">
       <h2>
         <i class="bi bi-patch-check heading-icon"></i>Know who you are working
@@ -16,7 +16,7 @@
       <p class="main-text infoblock-text">
         Use IdentitySign to sign PDF documents with your verified name, email or
         home address. This way, the recipient knows the document comes from you
-        and no one else. Verify signatures with IdentitySign to know for certain
+        and no one else. Verify signatures with IdentitySign to know for sure
         who signed the document.
       </p>
     </div>
@@ -25,26 +25,16 @@
     <div class="infoblock rounded border">
       <h2>
         <i class="bi bi-pencil-square heading-icon"></i>Sign documents in three
-        steps
+        simple steps
       </h2>
 
       <!-- prettier-ignore -->
       <div class="main-text infoblock-text">
-        IdentitySign works in three simple steps:
-
-        <h5>1. Select a document and personal data</h5>
-        <p>
-          Select a document on your device that you want to sign and the
-          personal data you want to sign with.
-        </p>
-        <h5>2. Use Yivi to prove your identity</h5>
-        <p>
-          Use <a href="https://www.yivi.app/en">Yivi</a> to prove your personal data
-          are correct.
-        </p>
-
-        <h5>3. Sign your document</h5>
-        <p>Sign your document using the personal data obtained from Yivi.</p>
+        <ol>
+          <li>Select a document and personal data to sign with</li>
+          <li>Use the <a href="https://www.yivi.app/en">Yivi</a> app to prove who you are</li>
+          <li>Sign your document with a verified name, email, or address</li>
+        </ol>
 
         Get started with <a class="signlink" href="/sign">signing a document</a>
         or <a href="/verify">verifying a signature</a> now!
@@ -68,15 +58,23 @@
 
     <div class="infoblock rounded border">
       <h2>
-        <i class="bi bi-shield-shaded heading-icon"></i>All data stays on your
+        <i class="bi bi-shield-shaded heading-icon"></i>Documents stay on your
         device
       </h2>
 
       <p class="main-text infoblock-text">
         Documents you select never leave your device, keeping them (and their
-        content) private! Read more about this in <a href="/about">about.</a>
+        content) private! Read more on this in <a href="/about">about.</a>
       </p>
     </div>
+
+    <div class="infoblock rounded warning-block">
+    <p class="infoblock-text main-text prototype-warning">
+      This application is a prototype and has not been audited!
+      It is meant solely for testing, evaluation, and research purposes.
+    </p>
+  </div>
+
   </div>
   <div class="col-sm-5">
     <img
@@ -101,5 +99,13 @@
   }
   .topmargin {
     margin-top: 5%;
+  }
+  .warning-block {
+    border-style: solid;
+    border-color: var(--bs-danger);
+    background: none;
+  }
+  .prototype-warning {
+    color: var(--bs-danger);
   }
 </style>
