@@ -519,10 +519,10 @@
           </h1>
           {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
             <p>
-              Create a signature using <a
+              Create a signature using the <a
                 href="https://www.yivi.app/en"
                 target="_blank">Yivi</a
-              >.
+              > app.
             </p>
           {/if}
           <div class="infoblock rounded border">
@@ -536,7 +536,7 @@
 
               <div class="mb-3 file-select">
                 <label for="formFile" class="form-label"
-                  >Select a document to sign.
+                  >This document will be signed.
                   <span
                     class="d-inline-block"
                     data-bs-trigger="hover focus"
@@ -565,8 +565,7 @@
               </div>
               <h2 style="margin-top: 30px;">Select personal data</h2>
               <label for="attr-checks" class="form-label"
-                >Select the personal data you want to sign with. A signature
-                will always contain the date and time.
+                >Signatures will be created using personal data, and will always contain the date and time.
                 <span
                   class="d-inline-block"
                   data-bs-trigger="hover focus"

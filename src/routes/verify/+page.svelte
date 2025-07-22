@@ -628,8 +628,8 @@
             <hr />
             <p>
               You indicated that the document may have been signed by the wrong
-              person or organization, or the signer may have forgotten to
-              include relevant information (such as their name or email).
+              person or organization, or that relevant information (such as their name or email)
+              is missing.
             </p>
             <p>
               You can use our

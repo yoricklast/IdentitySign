@@ -49,10 +49,10 @@
       </h2>
 
       <p class="main-text infoblock-text">
-        This application can be freely used by everyone! Its source code is <a
+        This application can be freely used by everyone! It is <a
           href="https://github.com/yoricklast/IdentitySign"
-          target="_blank">available</a
-        > so that anyone can inspect it or make improvements!
+          target="_blank">open source</a
+        > and developed by a team of researchers.
       </p>
     </div>
 
