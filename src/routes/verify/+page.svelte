@@ -16,7 +16,7 @@
     SignatureDummy,
     SignatureCrypto,
   } from "../../scripts/signature";
-  import { fade, fly } from "svelte/transition";
+  import { fade } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
   import { getFriendlyAttributeName } from "../../scripts/ts-util";
 
@@ -269,7 +269,7 @@
   }
 </script>
 
-{#snippet personAnswers(label: string, icon: string)}
+{#snippet personAnswers(label: string)}
   <input
     class="btn-check"
     type="radio"
@@ -284,11 +284,10 @@
     class="btn questionnaire-button radio-group-{label}"
     for="{label}Person"
   >
-    {@html icon}
     {label}
   </label>
 {/snippet}
-{#snippet addressAnswers(label: string, icon: string)}
+{#snippet addressAnswers(label: string)}
   <input
     class="btn-check"
     type="radio"
@@ -303,11 +302,10 @@
     class="btn questionnaire-button radio-group-{label}"
     for="{label}Address"
   >
-    {@html icon}
     {label}
   </label>
 {/snippet}
-{#snippet emailAnswers(label: string, icon: string)}
+{#snippet emailAnswers(label: string)}
   <input
     class="btn-check"
     type="radio"
@@ -322,7 +320,6 @@
     class="btn questionnaire-button radio-group-{label}"
     for="{label}Email"
   >
-    {@html icon}
     {label}
   </label>
 {/snippet}
