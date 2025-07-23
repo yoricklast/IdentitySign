@@ -20,17 +20,6 @@
     </p>
   </div>
 
-  <div class="infoblock rounded warning-block">
-    <p class="infoblock-text main-text prototype-warning">
-      Please note that this application is only a prototype and does not
-      actually sign files using a cryptographic signature. It is meant solely
-      for testing and research purposes.<br />
-    </p>
-    <p class="infoblock-text main-text prototype-warning warning-emph">
-      Do NOT use this application for actually signing documents!
-    </p>
-  </div>
-
   <div class="infoblock rounded border">
     <h3>What is IdentitySign?</h3>
 
@@ -75,18 +64,6 @@
 </div>
 
 <style>
-  .warning-block {
-    border-style: solid;
-    border-color: var(--bs-danger);
-    background: none;
-  }
-  .prototype-warning {
-    color: var(--bs-danger);
-  }
-  .warning-emph {
-    margin-top: 10px;
-    font-weight: bold;
-  }
   .version-text {
     margin-bottom: 0px;
   }

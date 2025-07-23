@@ -34,43 +34,43 @@
 
     <ul class="nav nav-pills">
       <li class="nav-item main-nav">
-        <a href="/" class="nav-link" aria-current="page">
+        <a id="/" href="/" class="nav-link" aria-current="page">
           <i class="bi bi-house icon-nav"></i>
           Home
         </a>
       </li>
       <li class="nav-item main-nav">
-        <a href="/sign" class="nav-link">
+        <a id="/sign" href="/sign/" class="nav-link">
           <i class="bi bi-pencil-square icon-nav"></i>
-          Sign a document
+          Sign document
         </a>
       </li>
       <li class="nav-item main-nav">
-        <a href="/verify" class="nav-link">
+        <a id="/verify" href="/verify/" class="nav-link">
           <i
             class="bi bi-file-earmark-check icon-nav"
             style="margin-right: 1px"
           ></i>
-          Verify a signature
+          Verify signature
         </a>
       </li>
       <li class="nav-item main-nav">
-        <a href="/request" class="nav-link">
+        <a id="/request" href="/request/" class="nav-link">
           <i
             class="bi bi-envelope-check icon-nav"
             style="margin-right: 1px"
           ></i>
-          Request a signature
+          Request signature
         </a>
       </li>
       <li class="nav-item main-nav">
-        <a href="/about" class="nav-link">
+        <a id="/about" href="/about/" class="nav-link">
           <i class="bi bi-info-circle icon-nav"></i>
           About
         </a>
       </li>
       <li class="nav-item main-nav" id="setupNavItem">
-        <a href="/setup" class="nav-link setupNavLink">
+        <a id="/setup" href="/setup/" class="nav-link setupNavLink">
           <i
             class="bi bi-gear-wide-connected icon-nav"
             style="margin-right: 1px"
@@ -92,11 +92,11 @@
     </div>
   </body>
 
-  <footer>
+  <footer id="prototype">
     <nav class="navbar fixed-bottom nav-bottom">
       <div class="container-fluid">
         <a class="navbar-text nav-bottom-text" href="/about">
-          Please note: this is a prototype application, it does
+          Please note: <b>demo mode is enabled</b>, IdentitySign currently does
           <b>not</b> create actual signatures!
         </a>
       </div>
@@ -107,6 +107,9 @@
     if (localStorage.getItem("devMode") != "true") {
       document.getElementById("setupNavItem").style.display = "none";
     }
+    if (localStorage.getItem("productionVersion") == "1") {
+      document.getElementById("prototype").style.display = "none";
+    }
     try {
       if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
         document.documentElement.setAttribute("data-bs-theme", "dark");
@@ -114,106 +117,177 @@
     } catch {
       console.warn("Could not detect or set dark/light mode.");
     }
+
+    const navbar = document.querySelector(".nav");
+    navbar.addEventListener("click", (event) => {
+      const activePage = navbar.querySelector(".active");
+      activePage.classList.remove("active");
+      event.target.classList.add("active");
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const currentPath = window.location.pathname;
+      const currentPage =
+        document.querySelector(`.nav-link[href="${currentPath}"]`) ||
+        document.querySelector(`.nav-link[href="${currentPath}"]`);
+      if (currentPage) {
+        currentPage.classList.add("active");
+      }
+    });
   </script>
 </html>
 
 <style>
   @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
   @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap");
+
   body {
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
     padding-bottom: 75px;
   }
+
   h1 {
     font-size: 35px;
     font-weight: 650;
     margin-bottom: 15px;
   }
+
   h2 {
     font-size: 28px;
     font-weight: 500;
   }
+
   h3 {
     font-size: 22px;
     font-weight: 700;
   }
+
   .logo {
     height: 30px;
   }
+
   .main-div {
-    padding-left: 12%;
-    padding-right: 12%;
+    padding-left: 4%;
+    padding-right: 4%;
+    max-width: 1440px;
+    margin: 0 auto;
   }
+
   .main-text {
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 15px;
   }
+
+  .subtitle {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
   .main-nav {
     font-size: 18px;
     font-weight: 550;
   }
+
   .icon-nav {
     width: 1em;
     margin-right: 2px;
   }
+
   .main-navbar {
     background-color: var(--bs-primary-bg-subtle);
   }
+
   .logo-text {
     font-weight: 500;
   }
+
   .page-icon {
     display: inline-block;
     margin-bottom: 5px;
     font-size: 40px;
     margin-right: 10px;
   }
+
   .page-image {
     width: 100%;
     padding-right: 50px;
   }
+
   .page-image-r {
     width: 100%;
     padding-left: 30px;
   }
+
   .nav-bottom {
     background-color: var(--bs-body-bg);
   }
+
   .nav-bottom-text {
     width: 100%;
     text-decoration: none;
     text-align: center;
     color: var(--bs-danger);
   }
+
   .setupNavLink {
     color: var(--bs-secondary);
   }
+
   .narrower {
     max-width: 800px;
   }
+
   .infoblock {
     padding: 25px;
     background-color: var(--bs-tertiary-bg);
     margin-bottom: 20px;
   }
+
   .infoblock-text {
     margin-bottom: 0px;
   }
+
   .attribute-heading {
     margin-bottom: 15px;
   }
+
   .attribute-card {
     margin-bottom: 15px;
   }
+
   .card-icon {
     margin-right: 10px;
     color: var(--bs-primary);
   }
+
   .impressum {
     width: 100%;
     margin-top: 20px;
     font-size: 11pt;
     text-align: center;
+  }
+
+  .progress {
+    margin-bottom: 30px;
+  }
+
+  .progress-label-div {
+    padding-bottom: 10px;
+  }
+
+  .progress-label {
+    width: 18%;
+    min-width: 15vw;
+    font-weight: 600;
+  }
+
+  .spacer {
+    height: 25px;
+
+    @media screen and (max-width: 768px) {
+      height: 90px;
+      margin-top: 5%;
+    }
   }
 </style>

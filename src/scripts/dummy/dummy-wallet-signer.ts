@@ -1,11 +1,11 @@
 import type { PDFDocument } from "pdf-lib";
-import type { WalletAttribute } from "./wallet-attribute";
-import type { Signature } from "./signature";
+import type { WalletAttribute } from "../wallet-attribute";
+import type { SignatureDummy } from "../signature";
 
 /**
  * Interface for identity wallet implementations.
  */
-export interface WalletSigner {
+export interface WalletSignerDummy {
   /**
    * Sign a PDF document.
    * @param input Document to sign.
@@ -24,5 +24,5 @@ export interface WalletSigner {
    * Decode the signature from a string to a signature object.
    * @param input The string containing a signature.
    */
-  decode(input: string): Signature;
+  decode(input: string): [SignatureDummy, boolean];
 }
