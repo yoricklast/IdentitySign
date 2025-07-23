@@ -234,7 +234,8 @@
               if (attachments !== null) {
                 for (const [name, attachment] of Object.entries(attachments)) {
                   if (name === POSTGUARD_FILE) {
-                    const content = (attachment as { content: Uint8Array }).content;
+                    const content = (attachment as { content: Uint8Array })
+                      .content;
                     await signer.check(content).then((hasSignature) => {
                       if (hasSignature) {
                         sigCrypto = signer.decode("not needed");
