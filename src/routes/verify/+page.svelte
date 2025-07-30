@@ -18,7 +18,7 @@
   } from "../../scripts/signature";
   import { fade } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
-  import { getFriendlyAttributeName } from "../../scripts/ts-util";
+  import { getFriendlyAttributeName, getFriendlyCryptoDataSource, getFriendlyDummyDataSource } from "../../scripts/ts-util";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -467,6 +467,9 @@
                       <p class="attribute-value">
                         {attribute.value.toString()}
                       </p>
+                      <p class="attribute-datasource text-primary">
+                        <b>Data source:</b> {getFriendlyDummyDataSource(attribute.attributeType)}
+                      </p>
                       <h6>
                         <i class="bi bi-question-circle"></i>
                         What does this mean?
@@ -570,6 +573,9 @@
                     <div class="card-body">
                       <p class="attribute-value">
                         {attribute.v?.toString()}
+                      </p>
+                      <p class="attribute-datasource text-primary">
+                        <b>Data source:</b> {getFriendlyCryptoDataSource(attribute.t)}
                       </p>
                       <h6>
                         <i class="bi bi-question-circle"></i>
@@ -695,6 +701,10 @@
   .attribute-value {
     font-weight: 500;
     color: var(--bs-emphasis-color);
+  }
+  .attribute-datasource {
+    font-weight: 400;
+    font-size: 14px;
   }
   .attribute-heading {
     color: var(--bs-secondary);
