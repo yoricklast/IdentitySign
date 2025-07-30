@@ -13,7 +13,6 @@ import {
 } from "../ts-util";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
-const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
 
 /**
  * Dummy implementation of a wallet signer.
@@ -26,7 +25,7 @@ export class DummySigner implements WalletSignerDummy {
   ): Promise<Uint8Array> {
     const currentDate = new Date();
 
-    await input.attach(btoa("DummyAttachment"), DUMMY_SIG, {
+    await input.attach(btoa("DummyAttachment"), DUMMY_SIG_PREFIX, {
       mimeType: "image/jpeg",
       description: "️Dummy signed PDF file",
       creationDate: currentDate,
@@ -42,7 +41,7 @@ export class DummySigner implements WalletSignerDummy {
   }
 
   public check(input: string): boolean {
-    if (input.includes(DUMMY_SIG)) {
+    if (input.includes(DUMMY_SIG_PREFIX)) {
       console.log(`Valid sig "${input}" found!`);
       return true;
     }
@@ -76,7 +75,7 @@ function generateDummySignature(input: WalletAttribute[]): string {
   }
 
   const resultSignature: SignatureDummy = {
-    signature: DUMMY_SIG_PREFIX + DUMMY_SIG,
+    signature: DUMMY_SIG_PREFIX,
     attributes: input,
     date: new Date().toISOString(),
   };

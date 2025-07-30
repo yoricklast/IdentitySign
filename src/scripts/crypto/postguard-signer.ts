@@ -5,7 +5,6 @@ import { editPdf } from "../edit-pdf";
 import type { SignatureCrypto } from "../signature";
 
 export const DUMMY_SIG_PREFIX = "$SIG";
-const DUMMY_SIG = "01234567890ABCDEFGHIJKLMNOP";
 const DEFAULT_BASE_CODE = "SCODE";
 
 import {
@@ -217,7 +216,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
    */
   private generateVisibleSignature(input: AttributeCon): string {
     const resultSignature: SignatureCrypto = {
-      signature: DUMMY_SIG_PREFIX + DUMMY_SIG,
+      signature: DUMMY_SIG_PREFIX,
       attributes: input,
       date: new Date().toISOString(),
     };
