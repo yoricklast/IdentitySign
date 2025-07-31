@@ -115,7 +115,9 @@ export function getFriendlyCryptoDataSource(attributeName: string): string {
  * @param attributeType The attribute type for which to get the data source.
  * @returns Data source name if found, otherwise returns "other" data source name.
  */
-export function getFriendlyDummyDataSource(attributeType: WalletAttributeType): string {
+export function getFriendlyDummyDataSource(
+  attributeType: WalletAttributeType,
+): string {
   switch (attributeType) {
     case WalletAttributeType.Name:
     case WalletAttributeType.Address: {

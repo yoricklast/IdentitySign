@@ -18,7 +18,11 @@
   } from "../../scripts/signature";
   import { fade } from "svelte/transition";
   import { POSTGUARD_FILE } from "../../scripts/crypto/Constants";
-  import { getFriendlyAttributeName, getFriendlyCryptoDataSource, getFriendlyDummyDataSource } from "../../scripts/ts-util";
+  import {
+    getFriendlyAttributeName,
+    getFriendlyCryptoDataSource,
+    getFriendlyDummyDataSource,
+  } from "../../scripts/ts-util";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -468,7 +472,8 @@
                         {attribute.value.toString()}
                       </p>
                       <p class="attribute-datasource text-primary">
-                        <b>Data source:</b> {getFriendlyDummyDataSource(attribute.attributeType)}
+                        <b>Data source:</b>
+                        {getFriendlyDummyDataSource(attribute.attributeType)}
                       </p>
                       <h6>
                         <i class="bi bi-question-circle"></i>
@@ -575,7 +580,8 @@
                         {attribute.v?.toString()}
                       </p>
                       <p class="attribute-datasource text-primary">
-                        <b>Data source:</b> {getFriendlyCryptoDataSource(attribute.t)}
+                        <b>Data source:</b>
+                        {getFriendlyCryptoDataSource(attribute.t)}
                       </p>
                       <h6>
                         <i class="bi bi-question-circle"></i>
