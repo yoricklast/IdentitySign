@@ -517,14 +517,6 @@
             <i class="bi bi-pencil-square page-icon"></i>
             Sign a document
           </h1>
-          {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
-            <p>
-              Create a signature using the <a
-                href="https://www.yivi.app/en"
-                target="_blank">Yivi</a
-              > app.
-            </p>
-          {/if}
           <div class="infoblock rounded border">
             {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
               {#if paramsGiven()}

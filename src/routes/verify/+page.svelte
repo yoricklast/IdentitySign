@@ -170,6 +170,7 @@
     processDone = false;
     sigValid = false;
     sigFound = false;
+    alertData = undefined;
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
@@ -219,6 +220,7 @@
     processDone = false;
     sigFound = false;
     sigValid = false;
+    alertData = undefined;
     if (!files || files.length === 0) {
       alert("No file selected!");
       return;
