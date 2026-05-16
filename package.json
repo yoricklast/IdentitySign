@@ -16,10 +16,10 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
-    "@privacybydesign/yivi-client": "^0.2.1",
-    "@privacybydesign/yivi-core": "^0.2.1",
-    "@privacybydesign/yivi-css": "^0.2.1",
-    "@privacybydesign/yivi-popup": "^0.2.1",
+    "@privacybydesign/yivi-client": "^1.0.0",
+    "@privacybydesign/yivi-core": "^1.0.0",
+    "@privacybydesign/yivi-css": "^1.0.1",
+    "@privacybydesign/yivi-popup": "^1.0.1",
     "@sveltejs/adapter-auto": "^7.0.1",
     "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/kit": "^2.60.1",
@@ -45,7 +45,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@e4a/pg-wasm": "^0.6.0",
+    "@e4a/pg-wasm": "^0.6.1",
     "@pdf-lib/fontkit": "^1.1.1",
     "pdf-lib": "^1.17.1",
     "svelte-system-info": "^1.0.3",
