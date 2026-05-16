@@ -23,6 +23,7 @@
     DISCLOSE_FULL_NAME,
     disclose,
   } from "../../scripts/yivi-disclose";
+  import { resolve } from "$app/paths";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -655,8 +656,8 @@
                 </div>
                 <div class="form-text">
                   The document's signature will be based on the personal data
-                  you select. You can find out more on this in <a href="/about"
-                    >about</a
+                  you select. You can find out more on this in <a
+                    href={resolve("/about")}>about</a
                   >.
                 </div>
               {/if}

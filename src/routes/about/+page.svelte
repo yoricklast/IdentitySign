@@ -1,6 +1,7 @@
 <script lang="ts">
   /*global APPLICATION_VERSION*/
   const version: string = APPLICATION_VERSION;
+  import { resolve } from "$app/paths";
 </script>
 
 <div class="narrower position-relative start-50 translate-middle-x">
@@ -16,7 +17,7 @@
       {version}
     </p>
     <p class="infoblock-text credits">
-      <a href="/about/credit">Credits</a>
+      <a href={resolve("/about/credit")}>Credits</a>
     </p>
   </div>
 
@@ -57,8 +58,8 @@
     <h3>Got any questions?</h3>
 
     <p class="main-text infoblock-text">
-      Check out our <a href="/faq">frequently asked questions</a>, we might have
-      already answered them for you!
+      Check out our <a href={resolve("/faq")}>frequently asked questions</a>, we
+      might have already answered them for you!
     </p>
   </div>
 </div>

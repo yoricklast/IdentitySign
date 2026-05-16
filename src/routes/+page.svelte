@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { resolve } from "$app/paths";
+</script>
+
 <div class="row topmargin">
   <div class="col-md-7">
     <h1>Welcome to IdentitySign</h1>
@@ -36,8 +40,8 @@
           <li>Sign your document with a verified name, email, or address</li>
         </ol>
 
-        Get started with <a class="signlink" href="/sign">signing a document</a>
-        or <a href="/verify">verifying a signature</a> now!
+        Get started with <a class="signlink" href={resolve('/sign')}>signing a document</a>
+        or <a href={resolve('/verify')}>verifying a signature</a> now!
       </div>
     </div>
 
@@ -64,7 +68,9 @@
 
       <p class="main-text infoblock-text">
         Documents you select never leave your device, keeping them (and their
-        content) private! Read more on this in <a href="/about">about.</a>
+        content) private! Read more on this in <a href={resolve("/about")}
+          >about.</a
+        >
       </p>
     </div>
 

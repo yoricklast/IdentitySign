@@ -1,6 +1,10 @@
+<script lang="ts">
+  import { resolve } from "$app/paths";
+</script>
+
 <div class="narrower position-relative start-50 translate-middle-x">
   <p class="main-text page-nav" style="margin-top: 5%;">
-    <a href="/about">About</a> > Frequently Asked Questions (FAQ)
+    <a href={resolve("/about")}>About</a> > Frequently Asked Questions (FAQ)
   </p>
 
   <h1 style="margin-top: 20px;">Frequently asked questions</h1>
