@@ -701,7 +701,7 @@
                 Your document will be signed using the following personal data:
               </p>
               {#if version == "0" && yiviAttributesDummy != null}
-                {#each yiviAttributesDummy as attribute}
+                {#each yiviAttributesDummy as attribute (attribute.attributeType)}
                   <div class="card attribute-card">
                     <div class="card-header">
                       <i class="bi bi-patch-check card-icon"></i><b
@@ -714,7 +714,8 @@
                   </div>
                 {/each}
               {:else if version == "1" && yiviAttributesCrypto != null}
-                {#each yiviAttributesCrypto as attribute}
+                {#each yiviAttributesCrypto as attribute (attribute.t)}
+                  <!--or (yiviAttributesCrypto.indexOf(attribute)) as key ?-->
                   <div class="card attribute-card">
                     <div class="card-header">
                       <i class="bi bi-patch-check card-icon"></i><b

@@ -11,7 +11,7 @@ const pkg = JSON.parse(readFileSync(path, "utf8"));
 
 export default defineConfig({
   optimizeDeps: {
-    include: ["pdfjs-dist"]
+    include: ["pdfjs-dist"],
   },
   plugins: [sveltekit(), wasm()],
   define: {

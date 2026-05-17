@@ -457,7 +457,7 @@
             }}
           >
             <h3 id="attribute-list" class="attribute-heading">Signed with:</h3>
-            {#each sigDummy.attributes as attribute}
+            {#each sigDummy.attributes as attribute (attribute.attributeType)}
               <div class="row row-cols-sm-1">
                 <div class="col-xxl-6">
                   <div class="card attribute-card">
@@ -563,7 +563,8 @@
             }}
           >
             <h3 id="attribute-list" class="attribute-heading">Signed with:</h3>
-            {#each sigCrypto.attributes as attribute}
+            {#each sigCrypto.attributes as attribute (attribute.t)}
+              <!--or (yiviAttributesCrypto.indexOf(attribute)) as key ?-->
               <div class="row row-cols-sm-1">
                 <div class="col-xxl-6">
                   <div class="card attribute-card">
