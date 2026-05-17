@@ -22,7 +22,7 @@ export class DummySigner implements WalletSignerDummy {
   public async sign(
     input: PDFDocument,
     attributes: WalletAttribute[],
-  ): Promise<Uint8Array> {
+  ): Promise<Uint8Array<ArrayBuffer>> {
     const currentDate = new Date();
 
     await input.attach(btoa("DummyAttachment"), DUMMY_SIG_PREFIX, {
@@ -37,7 +37,7 @@ export class DummySigner implements WalletSignerDummy {
         generateDummySignature(attributes),
         await generateSuccessCode(attributes),
       )
-    ).save();
+    ).save() as Promise<Uint8Array<ArrayBuffer>>;
   }
 
   public check(input: string): boolean {

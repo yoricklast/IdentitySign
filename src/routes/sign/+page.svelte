@@ -24,6 +24,7 @@
     disclose,
   } from "../../scripts/yivi-disclose";
   import { resolve } from "$app/paths";
+  import type { RenderParameters } from "pdfjs-dist/types/src/display/api";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -89,7 +90,7 @@
   let signedDone = $state(false);
 
   let signedPdfName: string | null = null;
-  let signedPdfBytes: Uint8Array | null = null;
+  let signedPdfBytes: Uint8Array<ArrayBuffer> | null = null;
 
   if (paramAttributesGiven()) {
     attributeSelected = true;
@@ -158,7 +159,7 @@
             const renderContext = {
               canvasContext: context,
               viewport: viewport,
-            };
+            } as RenderParameters;
             page.render(renderContext).promise.then(() => {
               progress = 20;
             });
@@ -279,7 +280,7 @@
    * @param fileName Name of the file.
    * @param bytes File content as bytes.
    */
-  function downloadPdf(fileName: string, bytes: Uint8Array) {
+  function downloadPdf(fileName: string, bytes: Uint8Array<ArrayBuffer>) {
     var blob = new Blob([bytes], { type: "application/pdf" });
     var link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
