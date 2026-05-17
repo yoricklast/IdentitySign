@@ -184,9 +184,11 @@ export class PostGuardSigner implements WalletSignerCrypto {
     yivi.use(YiviWeb);
     yivi.use(YiviClient);
 
-    const signKeys = await yivi
+    const signKeys = (await yivi
       .start()
-      .catch((e: Error) => console.error("failed Yivi session: ", e)) as SigningKeys;
+      .catch((e: Error) =>
+        console.error("failed Yivi session: ", e),
+      )) as SigningKeys;
 
     this._signKeys = signKeys;
 
