@@ -7,11 +7,15 @@ A prototype web application for signing PDF-files using a digital identity walle
 
 ## Requirements
 
-This application relies on NodeJS and NPM being installed.
+This application relies on NodeJS and NPM being installed. (See NodeJS' [download page](https://nodejs.org/en/download) for installation details)
 
 ## How to build/run
 
 Before running the application, install its dependencies using `npm install`. Afterwards, run the application using `npm run dev`.
+
+### Production version
+
+To build a production version of the application, run `npm run build`. You can preview the production version using `npm run preview`.
 
 ### Formatting
 
@@ -20,6 +24,8 @@ Before running the application, install its dependencies using `npm install`. Af
 ### Linting
 
 [ESLint](https://eslint.org/) can be used for code analysis by running `npx eslint .` from the project's root directory.
+
+_To run code formatting and linting together, you can instead use `npm run format`._
 
 ## License
 
