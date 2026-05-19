@@ -12,7 +12,10 @@ export interface WalletSignerDummy {
    * @param attributes Wallet attributes to sign the PDF with.
    * @returns The signed PDF document in bytes.
    */
-  sign(input: PDFDocument, attributes: WalletAttribute[]): Promise<Uint8Array>;
+  sign(
+    input: PDFDocument,
+    attributes: WalletAttribute[],
+  ): Promise<Uint8Array<ArrayBuffer>>;
   /**
    * Check the validity of a PDF document.
    * @param input Document to check.

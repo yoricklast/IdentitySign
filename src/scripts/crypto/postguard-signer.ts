@@ -17,11 +17,11 @@ import {
 import { METRICS_HEADER, PKG_URL, POSTGUARD_FILE } from "./Constants";
 
 // @ts-ignore
-import YiviCore from "@privacybydesign/yivi-core";
+import { YiviCore, type YiviSessionOptions } from "@privacybydesign/yivi-core";
 // @ts-ignore
-import YiviWeb from "@privacybydesign/yivi-web";
+import { YiviWeb } from "@privacybydesign/yivi-web";
 // @ts-ignore
-import YiviClient from "@privacybydesign/yivi-client";
+import { YiviClient } from "@privacybydesign/yivi-client";
 
 type AttType =
   | "pbdf.sidn-pbdf.email.email"
@@ -57,9 +57,9 @@ async function applyEncryption(
     pubSignKey: pubSignKey,
   };
 
-  const chunks: Uint8Array[] = [];
+  const chunks: Uint8Array<ArrayBuffer>[] = [];
   const writable = new WritableStream({
-    write(chunk: Uint8Array) {
+    write(chunk: Uint8Array<ArrayBuffer>) {
       chunks.push(chunk);
     },
     close() {
@@ -114,7 +114,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
   }
 
   public async obtainSignKeys(pub: AttributeCon): Promise<AttributeCon> {
-    const session = {
+    const session: YiviSessionOptions = {
       url: PKG_URL,
       start: {
         // @ts-ignore
@@ -184,9 +184,11 @@ export class PostGuardSigner implements WalletSignerCrypto {
     yivi.use(YiviWeb);
     yivi.use(YiviClient);
 
-    const signKeys: SigningKeys = await yivi
+    const signKeys = (await yivi
       .start()
-      .catch((e: Error) => console.error("failed Yivi session: ", e));
+      .catch((e: Error) =>
+        console.error("failed Yivi session: ", e),
+      )) as SigningKeys;
 
     this._signKeys = signKeys;
 
@@ -198,7 +200,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
   // @ts-ignore
   private _signKeys: SigningKeys;
 
-  public async sign(input: PDFDocument): Promise<Uint8Array> {
+  public async sign(input: PDFDocument): Promise<Uint8Array<ArrayBuffer>> {
     const pubSignKey: ISigningKey = this._signKeys.pubSignKey;
     const con: AttributeCon = pubSignKey.policy.con;
 
@@ -206,7 +208,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
 
     input = await applyEncryption(pubSignKey, input);
 
-    return input.save();
+    return input.save() as Promise<Uint8Array<ArrayBuffer>>;
   }
 
   /**

@@ -23,6 +23,7 @@
     getFriendlyCryptoDataSource,
     getFriendlyDummyDataSource,
   } from "../../scripts/ts-util";
+  import { resolve } from "$app/paths";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -95,9 +96,9 @@
   let trustSet = $state<string[]>([]);
   let progress = $state(0);
   let options = [
-    { label: "Yes", icon: '<i class="bi bi-check2"></i>' },
-    { label: "No", icon: '<i class="bi bi-x"></i>' },
-    { label: "Not sure", icon: '<i class="bi bi-question-lg"></i>' },
+    { id: 1, label: "Yes", icon: '<i class="bi bi-check2"></i>' },
+    { id: 2, label: "No", icon: '<i class="bi bi-x"></i>' },
+    { id: 3, label: "Not sure", icon: '<i class="bi bi-question-lg"></i>' },
   ];
 
   let personTrust = $state<string>();
@@ -410,7 +411,7 @@
           Check who signed this document before trusting it.
         </p>
         <p class="validity-text">
-          <a href="/help/trust" target="_blank" class="helplink">
+          <a href={resolve("/help/trust")} target="_blank" class="helplink">
             <i class="bi bi-question-circle"></i>
             When should I not trust a document?
           </a>
@@ -456,7 +457,7 @@
             }}
           >
             <h3 id="attribute-list" class="attribute-heading">Signed with:</h3>
-            {#each sigDummy.attributes as attribute}
+            {#each sigDummy.attributes as attribute (attribute.attributeType)}
               <div class="row row-cols-sm-1">
                 <div class="col-xxl-6">
                   <div class="card attribute-card">
@@ -511,7 +512,7 @@
                       role="group"
                       aria-label="Radio buttons for trust question of the name attribute"
                     >
-                      {#each options as option}
+                      {#each options as option (option.id)}
                         {@render personAnswers(option.label)}
                       {/each}
                     </div>
@@ -524,7 +525,7 @@
                       role="group"
                       aria-label="Radio buttons for trust question of the address attribute"
                     >
-                      {#each options as option}
+                      {#each options as option (option.id)}
                         {@render addressAnswers(option.label)}
                       {/each}
                     </div>
@@ -538,7 +539,7 @@
                       role="group"
                       aria-label="Radio buttons for trust question of the email attribute"
                     >
-                      {#each options as option}
+                      {#each options as option (option.id)}
                         {@render emailAnswers(option.label)}
                       {/each}
                     </div>
@@ -562,7 +563,8 @@
             }}
           >
             <h3 id="attribute-list" class="attribute-heading">Signed with:</h3>
-            {#each sigCrypto.attributes as attribute}
+            {#each sigCrypto.attributes as attribute (attribute.t)}
+              <!--or (yiviAttributesCrypto.indexOf(attribute)) as key ?-->
               <div class="row row-cols-sm-1">
                 <div class="col-xxl-6">
                   <div class="card attribute-card">
@@ -603,7 +605,7 @@
                       role="group"
                       aria-label="Radio buttons for trust question of the name attribute"
                     >
-                      {#each options as option}
+                      {#each options as option (option.id)}
                         {@render personAnswers(option.label)}
                       {/each}
                     </div>
@@ -617,7 +619,7 @@
                       role="group"
                       aria-label="Radio buttons for trust question of the email attribute"
                     >
-                      {#each options as option}
+                      {#each options as option (option.id)}
                         {@render emailAnswers(option.label)}
                       {/each}
                     </div>
@@ -645,7 +647,9 @@
             </p>
             <p>
               You can use our
-              <a href="/request" target="_blank"> signature request tool </a>
+              <a href={resolve("/request")} target="_blank">
+                signature request tool
+              </a>
               to request a signature that contains this information.
             </p>
           {:else if alertData === "warning"}
@@ -671,7 +675,9 @@
               yet (such as a name{version == "0"
                 ? ", email or address"
                 : "or email"}), use our
-              <a href="/request" target="_blank"> signature request tool </a>
+              <a href={resolve("/request")} target="_blank">
+                signature request tool
+              </a>
               to create a signature request with the information you need.
             </p>
           {:else if alertData === "primary"}
@@ -680,8 +686,7 @@
               most likely be trusted!</strong
             > <br />
             <hr />
-            You indicated that this document was signed by the correct person or
-            organization.
+            You indicated that this document was signed by the correct person or organization.
           {/if}
         </div>
       {/if}

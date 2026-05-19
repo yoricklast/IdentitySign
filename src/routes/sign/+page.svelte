@@ -23,6 +23,8 @@
     DISCLOSE_FULL_NAME,
     disclose,
   } from "../../scripts/yivi-disclose";
+  import { resolve } from "$app/paths";
+  import type { RenderParameters } from "pdfjs-dist/types/src/display/api";
 
   // Get PDF.js worker from CDN, as using the one provided by the NPM package seems to cause issues in TypeScript
   // https://github.com/mozilla/pdf.js#including-via-a-cdn
@@ -88,7 +90,7 @@
   let signedDone = $state(false);
 
   let signedPdfName: string | null = null;
-  let signedPdfBytes: Uint8Array | null = null;
+  let signedPdfBytes: Uint8Array<ArrayBuffer> | null = null;
 
   if (paramAttributesGiven()) {
     attributeSelected = true;
@@ -157,7 +159,7 @@
             const renderContext = {
               canvasContext: context,
               viewport: viewport,
-            };
+            } as RenderParameters;
             page.render(renderContext).promise.then(() => {
               progress = 20;
             });
@@ -278,7 +280,7 @@
    * @param fileName Name of the file.
    * @param bytes File content as bytes.
    */
-  function downloadPdf(fileName: string, bytes: Uint8Array) {
+  function downloadPdf(fileName: string, bytes: Uint8Array<ArrayBuffer>) {
     var blob = new Blob([bytes], { type: "application/pdf" });
     var link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
@@ -655,8 +657,8 @@
                 </div>
                 <div class="form-text">
                   The document's signature will be based on the personal data
-                  you select. You can find out more on this in <a href="/about"
-                    >about</a
+                  you select. You can find out more on this in <a
+                    href={resolve("/about")}>about</a
                   >.
                 </div>
               {/if}
@@ -700,7 +702,7 @@
                 Your document will be signed using the following personal data:
               </p>
               {#if version == "0" && yiviAttributesDummy != null}
-                {#each yiviAttributesDummy as attribute}
+                {#each yiviAttributesDummy as attribute (attribute.attributeType)}
                   <div class="card attribute-card">
                     <div class="card-header">
                       <i class="bi bi-patch-check card-icon"></i><b
@@ -713,7 +715,8 @@
                   </div>
                 {/each}
               {:else if version == "1" && yiviAttributesCrypto != null}
-                {#each yiviAttributesCrypto as attribute}
+                {#each yiviAttributesCrypto as attribute (attribute.t)}
+                  <!--or (yiviAttributesCrypto.indexOf(attribute)) as key ?-->
                   <div class="card attribute-card">
                     <div class="card-header">
                       <i class="bi bi-patch-check card-icon"></i><b

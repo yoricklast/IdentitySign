@@ -5,7 +5,6 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import wasm from "vite-plugin-wasm";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 const path = fileURLToPath(new URL("package.json", import.meta.url));
 const pkg = JSON.parse(readFileSync(path, "utf8"));
@@ -13,18 +12,8 @@ const pkg = JSON.parse(readFileSync(path, "utf8"));
 export default defineConfig({
   optimizeDeps: {
     include: ["pdfjs-dist"],
-    esbuildOptions: {
-      supported: {
-        "top-level-await": true,
-      },
-    },
   },
-  esbuild: {
-    supported: {
-      "top-level-await": true,
-    },
-  },
-  plugins: [sveltekit(), wasm(), nodePolyfills()],
+  plugins: [sveltekit(), wasm()],
   define: {
     APPLICATION_VERSION: JSON.stringify(pkg.version),
   },

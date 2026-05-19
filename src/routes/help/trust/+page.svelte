@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { resolve } from "$app/paths";
+</script>
+
 <div class="helpitem">
   <h1>
     <i class="bi bi-question-circle page-icon"></i> When should I trust (or not trust)
@@ -5,7 +9,7 @@
   </h1>
 
   <div id="homelink">
-    <a href="/">Return to the homepage</a><br />
+    <a href={resolve("/")}>Return to the homepage</a><br />
     Came here from the verification page? The tab to your document verification should
     still be open!
   </div>
