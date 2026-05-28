@@ -27,7 +27,7 @@ To build a production version of the application, run `npm run build`. You can p
 
 _To run code formatting and linting together, you can instead use `npm run format`._
 
-## Publication
+## Publications
 
 Read our papers on IdentitySign in [CHI 2024's extended abstracts](https://dl.acm.org/doi/full/10.1145/3613905.3650977) (initial version) and SOUPS 2026 (redesign, link TBD).
 
