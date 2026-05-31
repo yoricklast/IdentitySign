@@ -26,12 +26,22 @@
     [...popoverTriggerList].map(
       (popoverTriggerEl) => new window.bootstrap.Popover(popoverTriggerEl),
     );
+    const dataSpy = document.querySelector('[data-bs-spy="scroll"]');
+    if (dataSpy) {
+      new window.bootstrap.ScrollSpy(dataSpy);
+    }
   });
 
   beforeNavigate(() => {
     const activePopoverList = document.querySelectorAll(".popover.show");
     if (activePopoverList) {
       activePopoverList.forEach((popover) => popover.remove());
+    }
+
+    const dataSpy = document.querySelector('[data-bs-spy="scroll"]');
+    console.log(dataSpy);
+    if (dataSpy && window.bootstrap.ScrollSpy.getInstance(dataSpy)) {
+      window.bootstrap.ScrollSpy.getInstance(dataSpy).dispose();
     }
   });
 </script>

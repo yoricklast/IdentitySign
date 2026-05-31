@@ -11,7 +11,10 @@
   >
     <p class="pt-2 ps-2 text-lg-center">Quick links:</p>
 
-    <nav class="nav nav-underline nav-justified flex-row flex-lg-column">
+    <nav
+      id="quick-links"
+      class="nav nav-underline nav-justified flex-row flex-lg-column"
+    >
       <a href="#setup-section" class="nav-link"
         ><span><i class="bi bi-arrow-right"></i></span> Setup</a
       >
@@ -30,6 +33,7 @@
     <div
       class="narrower position-relative start-50 translate-middle-x"
       data-bs-spy="scroll"
+      data-bs-target="#quick-links"
       data-bs-smooth-scroll="true"
     >
       <!-- Setup -->
