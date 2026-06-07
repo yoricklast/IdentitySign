@@ -156,7 +156,7 @@
 
 <div class="w-75 widthMobile mx-auto" style="margin-top: 5%;">
   <h1>
-    <i class="bi bi-gear-wide-connected"></i>
+    <i class="bi bi-gear-wide-connected page-icon"></i>
     Setup
   </h1>
 

@@ -2,7 +2,7 @@
   import { resolve } from "$app/paths";
 </script>
 
-<div class="narrower position-relative start-50 translate-middle-x widthMobile">
+<div class="w-75 mx-auto widthMobile">
   <p class="main-text" style="margin-top: 5%;">
     <a href={resolve("/about")}>About</a> > Credits
   </p>

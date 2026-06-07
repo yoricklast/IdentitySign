@@ -4,8 +4,8 @@
   import { resolve } from "$app/paths";
 </script>
 
-<div class="w-75 mx-auto widthMobile">
-  <h1 style="margin-top: 5%;">
+<div class="w-75 mx-auto widthMobile" style="margin-top: 5%;">
+  <h1>
     <i class="bi bi-info-circle page-icon"></i>About Identity&shy;Sign
   </h1>
 
