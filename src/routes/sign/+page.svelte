@@ -422,7 +422,7 @@
   fileSelected
     ? 'w-100'
     : 'w-75 widthMobile'}"
-  style="margin-top: 5%;"
+  style="margin-top: 3%;"
 >
   <div
     class="{paramsGiven()
@@ -516,7 +516,8 @@
           </div>
 
           <h1>
-            <i class="bi bi-pencil-square page-icon"></i>Sign a document
+            <i class="bi bi-pencil-square page-icon" style="margin-top: 1%;"
+            ></i>Sign a document
           </h1>
           <div class="infoblock rounded border">
             {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
@@ -820,8 +821,8 @@
 
 <style>
   h1 {
-    margin-top: 50px;
-    margin-bottom: 40px;
+    margin-top: 40px;
+    margin-bottom: 25px;
   }
   .btn-sign {
     margin-right: 10px;
@@ -870,9 +871,8 @@
     margin-right: 10px;
   }
   .spacer {
-    height: 25px;
     @media screen and (max-width: 768px) {
-      height: 100px;
+      height: 8vh;
     }
   }
 </style>

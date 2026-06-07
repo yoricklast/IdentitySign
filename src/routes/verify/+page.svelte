@@ -332,7 +332,7 @@
   </label>
 {/snippet}
 
-<div class="mx-auto">
+<div class="mx-auto mb-5" style="margin-top: 3%;">
   <div class="position-relative mx-auto w-75 widthMobile">
     <!--   <div
     class="col-lg {processDone && sigValid
@@ -361,15 +361,16 @@
         <i class="bi bi-3-circle"></i> <br class="d-sm-none d-block" /> Done
       </div>
     </div>
-    <div class="progress" role="progressbar" aria-label="Progress">
-      <div class="progress-bar" style="width: {progress}%"></div>
+    <div class="sticky-top card border-invisible" style="z-index: 1000;">
+      <div class="progress mb-1" role="progressbar" aria-label="Progress">
+        <div class="progress-bar" style="width: {progress}%"></div>
+      </div>
     </div>
-    <!-- </div> -->
     <!-- </div> -->
 
     <h1>
-      <i class="bi bi-file-earmark-check page-icon"></i>Verify a document's
-      signature
+      <i class="bi bi-file-earmark-check page-icon" style="margin-top: 1%;"
+      ></i>Verify a document's signature
     </h1>
     <div class="mb-3 file-select">
       <label for="formFile" class="form-label"
@@ -695,6 +696,10 @@
 </div>
 
 <style>
+  h1 {
+    margin-top: 40px;
+    /* margin-bottom: 25px; */
+  }
   h6 {
     font-size: 14px;
     font-weight: 600;

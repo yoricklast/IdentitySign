@@ -2,10 +2,10 @@
   import { resolve } from "$app/paths";
 </script>
 
-<div class="helpitem">
+<div class="helpitem widthMobile">
   <h1>
-    <i class="bi bi-question-circle page-icon"></i> When should I trust (or not trust)
-    a document signed with IdentitySign?
+    <i class="bi bi-question-circle page-icon"></i>When should I trust (or not
+    trust) a document signed with IdentitySign?
   </h1>
 
   <div id="homelink">

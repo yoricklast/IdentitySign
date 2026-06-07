@@ -11,7 +11,7 @@
       navigator.maxTouchPoints > 2);
 </script>
 
-<div class="row column-gap-3 justify-content-center">
+<div class="row column-gap-3 justify-content-center mx-auto">
   <div
     class="narrower col-lg-auto px-4 order-lg-last align-self-start sticky-top bg-body-tertiary rounded-3"
   >

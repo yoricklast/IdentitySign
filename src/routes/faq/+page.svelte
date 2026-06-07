@@ -2,7 +2,7 @@
   import { resolve } from "$app/paths";
 </script>
 
-<div class="narrower position-relative start-50 translate-middle-x">
+<div class="narrower position-relative start-50 translate-middle-x widthMobile">
   <p class="main-text page-nav" style="margin-top: 5%;">
     <a href={resolve("/about")}>About</a> > Frequently Asked Questions (FAQ)
   </p>
