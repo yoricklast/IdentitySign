@@ -53,16 +53,15 @@
   }
 </script>
 
-<div class="mx-auto w-75" style="margin-top: 5%;">
+<div class="mx-auto w-75 widthMobile" style="margin-top: 5%;">
   <h1>
-    <i class="bi bi-envelope-check page-icon"></i>
-    Request a signature
+    <i class="bi bi-envelope-check page-icon"></i>Request a signature
   </h1>
   <p class="main-text">Create a signature request link to share by email.</p>
   <div class="mb-3">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Document</h4>
+        <h2 class="card-title">Select document</h2>
         <label for="formFile" class="form-label"
           >Select a document you want the other person to sign.
           <span
@@ -94,7 +93,7 @@
 
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Personal data</h4>
+        <h2 class="card-title">Select personal data</h2>
         <label for="attr-checks" class="form-label"
           >Select the personal data you want the other person to sign with.
           <span

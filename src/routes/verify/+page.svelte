@@ -333,43 +333,43 @@
 {/snippet}
 
 <div class="mx-auto">
-  <!--   <div
+  <div class="position-relative mx-auto w-75 widthMobile">
+    <!--   <div
     class="col-lg {processDone && sigValid
       ? 'align-self-start'
       : 'align-self-center'}"
   > -->
-  <div class="sticky-top card border-invisible" style="z-index: 1000;">
-    <div class="position-relative card-body w-75 mx-auto">
-      <div class="spacer"></div>
-      <div class="progress-label-div row">
-        <div
-          class="progress-label text-wrap position-absolute start-0 px-0 text-start align-self-end"
-        >
-          <i class="bi bi-1-circle"></i>
-          Select document
-        </div>
-        <div
-          class="progress-label text-wrap position-absolute start-50 translate-middle-x text-center align-self-end px-0"
-        >
-          <i class="bi bi-2-circle"></i>
-          Check signature
-        </div>
-        <div
-          class="progress-label text-wrap position-absolute end-0 text-end align-self-end px-0"
-        >
-          <i class="bi bi-3-circle"></i> <br class="d-sm-none d-block" /> Done
-        </div>
+    <!-- <div class="sticky-top card border-invisible" style="z-index: 1000;"> -->
+    <!-- <div class="position-relative card-body w-75 widthMobile mx-auto"> -->
+    <div class="spacer"></div>
+    <div class="progress-label-div row">
+      <div
+        class="progress-label text-wrap position-absolute start-0 px-0 text-start align-self-end"
+      >
+        <i class="bi bi-1-circle"></i>
+        Select document
       </div>
-      <div class="progress" role="progressbar" aria-label="Progress">
-        <div class="progress-bar" style="width: {progress}%"></div>
+      <div
+        class="progress-label text-wrap position-absolute start-50 translate-middle-x text-center align-self-end px-0"
+      >
+        <i class="bi bi-2-circle"></i>
+        Check signature
+      </div>
+      <div
+        class="progress-label text-wrap position-absolute end-0 text-end align-self-end px-0"
+      >
+        <i class="bi bi-3-circle"></i> <br class="d-sm-none d-block" /> Done
       </div>
     </div>
-  </div>
+    <div class="progress" role="progressbar" aria-label="Progress">
+      <div class="progress-bar" style="width: {progress}%"></div>
+    </div>
+    <!-- </div> -->
+    <!-- </div> -->
 
-  <div class="mx-auto w-75">
-    <h1 style="margin-bottom: 35px;">
-      <i class="bi bi-file-earmark-check page-icon"></i>
-      Verify a document's signature
+    <h1>
+      <i class="bi bi-file-earmark-check page-icon"></i>Verify a document's
+      signature
     </h1>
     <div class="mb-3 file-select">
       <label for="formFile" class="form-label"
@@ -739,7 +739,7 @@
     color: var(--bs-warning);
   }
   .file-select {
-    margin-top: 50px;
+    margin-top: 40px;
   }
   .helplink {
     text-decoration: none;

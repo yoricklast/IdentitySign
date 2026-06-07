@@ -421,7 +421,7 @@
   class="{paramsGiven() ? 'row flex-wrap mx-auto w-100' : 'mx-auto'} {files &&
   fileSelected
     ? 'w-100'
-    : 'w-75'}"
+    : 'w-75 widthMobile'}"
   style="margin-top: 5%;"
 >
   <div
@@ -516,8 +516,7 @@
           </div>
 
           <h1>
-            <i class="bi bi-pencil-square page-icon"></i>
-            Sign a document
+            <i class="bi bi-pencil-square page-icon"></i>Sign a document
           </h1>
           <div class="infoblock rounded border">
             {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}

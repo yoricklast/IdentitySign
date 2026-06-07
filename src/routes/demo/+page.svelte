@@ -3,6 +3,12 @@
   import { resolve } from "$app/paths";
 
   const version = localStorage.getItem("productionVersion");
+
+  let isMobile =
+    /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
+    (/Macintosh/i.test(window.navigator.userAgent) &&
+      navigator.maxTouchPoints &&
+      navigator.maxTouchPoints > 2);
 </script>
 
 <div class="row column-gap-3 justify-content-center">
@@ -121,12 +127,13 @@
       <div class="infoblock rounded border">
         <h2>
           <i class="bi bi-2-circle heading-icon"></i>
-          Upload a document
+          Select a document
         </h2>
 
         <p class="main-text infoblock-text">
-          Clicking on the button below will download a PDF document you can use
-          to test the signing feature.
+          Use the file input field on the Sign page to select a document for
+          signing. Clicking the button below will download a PDF document you
+          can use during the demo.
         </p>
 
         <!-- eslint-disable-next-line -->
@@ -134,10 +141,11 @@
           <button class="btn btn-primary"> Download Demo PDF</button>
         </a>
 
-        <!-- <p class="note infoblock-text">
-      <i class="bi bi-exclamation-triangle"></i>
-      Note the demo PDF serves only the purpose of demonstrating features of IdentitySign.
-    </p> -->
+        <p class="note infoblock-text">
+          <i class="bi bi-info-square"></i>
+          Even though it says "Upload File", no information is sent to another device
+          or service!
+        </p>
       </div>
 
       <div class="infoblock rounded border">
@@ -152,9 +160,9 @@
           added by Yivi. <br />
           {#if version == "0"}
             There are 3 options: Your legal name, your address (i.e. street,
-            ...) and your Email address.
+            house no., postal code and city) and your email address.
           {:else}
-            There are 2 options: Your legal name and your Email address.
+            There are 2 options: Your legal name and your email address.
           {/if}
         </p>
       </div>
@@ -166,17 +174,20 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          Scan the QR code or click on the button to access the Yivi app. Check
-          if the credentials are the one you set up earlier and if only the one
-          you selected under personal data in IdentiySign.
+          Scan the QR code {#if isMobile}
+            or click on the 'Open Yivi app' button
+          {/if}
+          to access the Yivi app. Check if the credentials are correct and the ones
+          you want sign with.
         </p>
+        <!-- TODO: Add warning note -->
         <p class="note infoblock-text">
           <i class="bi bi-exclamation-triangle"></i>
           Yivi will show a warning because ... In the context of this demo, you can
           safely ignore it and continue!
         </p>
       </div>
-
+      <!-- TODO: Add more (specific) steps (in Yivi) -->
       <div class="infoblock rounded border">
         <h2>
           <i class="bi bi-check-circle heading-icon"></i>
@@ -185,12 +196,17 @@
 
         <p class="main-text infoblock-text">
           That's it! You successfully signed a document! You can find the signed
-          document in your download folder of your device.
+          document in your download folder of your device. You can also click
+          "Download again" to save the signed document manually.
         </p>
       </div>
 
       <!-- Verify -->
       <h1 id="verify-section">Verifying a signature</h1>
+      <p class="main-text">
+        Let's verify if a signed document is trustworthy! Please follow the
+        steps below.
+      </p>
 
       <div class="infoblock rounded border">
         <h2>
@@ -209,49 +225,73 @@
       <div class="infoblock rounded border">
         <h2>
           <i class="bi bi-2-circle heading-icon"></i>
-          Upload a document
+          Select a document
         </h2>
 
         <p class="main-text infoblock-text">
-          Upload a document with a signature. For example, use the demo PDF you
-          just signed to check if it was signed succefully.
+          Select a document with a signature from your device. For example, use
+          the demo PDF you just signed to check the information stored in the
+          signature.
         </p>
 
         <p class="note infoblock-text">
           <i class="bi bi-info-square"></i>
-          You can also try uploading a document without a signature. IdentitySign
-          identifies the issue and lets you upload another document!
+          Nice to know: IdentitySign also identifies if the document holds no signature
+          or an invalid one!
         </p>
       </div>
 
       <div class="infoblock rounded border">
         <h2>
           <i class="bi bi-3-circle heading-icon"></i>
-          Check the signature
+          Check the signature details
         </h2>
 
-        <!-- TODO: Styling -->
-        <!-- TODO: More on feedback/help/warnings etc -->
         <p class="main-text infoblock-text">
           If a signature was found, you can investigate the personal data the
           document was signed with. Using the questions
-          <!-- #if mobile (to the right of the data/ below each of the data points) -->
+          {#if isMobile}
+            below each of the data points
+          {:else}
+            next to the data
+          {/if}
           , you can indicate whether this data belongs to the person or organization
-          you expect to be the signature from. <br />
+          you expect the signature from. <br />
+          After answering all questions, you will receive feedback to interpret your
+          answer(s)!
         </p>
+
+        <h3 class="mt-2">
+          <i class="bi bi-lightbulb"></i> Tips on verifying a signature
+        </h3>
+        Note that the sender of the document is not necessarily the one that should
+        have signed the document (e.g. a graduation certificate would be signed by
+        the university/school).<br />
         <p class="main-text infoblock-text">
-          If you need help, use the ''<a
+          You can also check out our <a
             href={resolve("/help/trust")}
             target="_blank"
             class="helplink"
           >
-            When should I not trust a document?
-          </a>'' link. <br />
-          If you're still unsure, you can select 'Not sure'. <br />
+            help page
+          </a>
+          about ''When should I not trust a document?''. <br />
+
+          If you're still unsure, you can select ''Not sure''.
+          <br />
         </p>
+      </div>
+
+      <div class="infoblock rounded border">
+        <h2>
+          <i class="bi bi-4-circle heading-icon"></i>
+          Evaluate the result
+        </h2>
+
+        <!-- TODO: Add screenshot, add additional description? -->
         <p class="main-text infoblock-text">
-          After answering all questions, you will receive feedback to interpret
-          your answer(s)!
+          Depending on your answers, you receive feedback if the signature can
+          be trusted.
         </p>
       </div>
 
@@ -271,10 +311,6 @@
         <h3>
           <i class="bi bi-award"></i> Congratulations, you completed the demo!
         </h3>
-
-        <p class="main-text infoblock-text">
-          Check out... (request page, github, ...?)
-        </p>
       </div>
     </div>
   </div>
