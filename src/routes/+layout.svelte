@@ -1,33 +1,7 @@
 <script lang="ts">
   import { afterNavigate, beforeNavigate } from "$app/navigation";
-  import { onMount } from "svelte";
-  import { getProductionVersion, getDemoMode } from "../scripts/ts-util";
 
   let { children } = $props();
-
-  let productionVersion = $state(localStorage.getItem("productionVersion"));
-  let demoMode = $state(localStorage.getItem("demoMode"));
-
-  onMount(() => {
-    // if (demoMode == null) {
-    //   getDemoMode().then((result) => {
-    //     if (result != null) {
-    //       demoMode = `${result}`;
-    //       localStorage.setItem("demoMode", demoMode);
-    //       // window.location.reload();
-    //     }
-    //   });
-    // }
-    // if (productionVersion == null) {
-    //   getProductionVersion().then((result) => {
-    //     if (result != null) {
-    //       productionVersion = `${result}`;
-    //       localStorage.setItem("productionVersion", productionVersion);
-    //       // window.location.reload();
-    //     }
-    //   });
-    // }
-  });
 
   afterNavigate(() => {
     const popoverTriggerList = document.querySelectorAll(
