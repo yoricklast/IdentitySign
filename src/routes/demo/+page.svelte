@@ -142,7 +142,7 @@
         </a>
 
         <p class="note infoblock-text">
-          <i class="bi bi-info-square"></i>
+          <i class="bi bi-info-circle"></i>
           Even though it says "Upload File", no information is sent to another device
           or service!
         </p>
@@ -235,7 +235,7 @@
         </p>
 
         <p class="note infoblock-text">
-          <i class="bi bi-info-square"></i>
+          <i class="bi bi-info-circle"></i>
           Nice to know: IdentitySign also identifies if the document holds no signature
           or an invalid one!
         </p>

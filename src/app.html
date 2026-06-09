@@ -52,17 +52,16 @@
         About
       </a>
     </li>
-    <li class="nav-item main-nav" id="setupNavItem">
-      <a id="/setup" href="/setup/" class="nav-link setupNavLink">
-        <i class="bi bi-gear-wide-connected icon-nav" style="margin-right: 1px"></i>
-        Setup
+    <li class="nav-item main-nav" id="demoNavItem">
+      <a id="/demo" href="/demo/" class="nav-link secondaryNavLink">
+        <i class="bi bi-puzzle icon-nav" style="margin-right: 1px"></i>
+        Demo
       </a>
     </li>
-
     <li class="nav-item main-nav" id="setupNavItem">
-      <a id="/demo" href="/demo/" class="nav-link setupNavLink">
+      <a id="/setup" href="/setup/" class="nav-link secondaryNavLink">
         <i class="bi bi-gear-wide-connected icon-nav" style="margin-right: 1px"></i>
-        Demo
+        Setup
       </a>
     </li>
   </ul>
@@ -91,6 +90,9 @@
 <script>
   if (localStorage.getItem("devMode") != "true") {
     document.getElementById("setupNavItem").style.display = "none";
+  }
+  if (localStorage.getItem("demoMode") != "true") {
+    document.getElementById("demoNavItem").style.display = "none";
   }
   if (localStorage.getItem("productionVersion") == "1") {
     document.getElementById("prototype").style.display = "none";
@@ -223,7 +225,7 @@
     color: var(--bs-danger);
   }
 
-  .setupNavLink {
+  .secondaryNavLink {
     color: var(--bs-secondary);
   }
 

@@ -17,6 +17,8 @@
   const URL_PARAMS = new URLSearchParams(window.location.search);
   const PARAM_URL = URL_PARAMS.get("url");
   const PARAM_DEVMODE = URL_PARAMS.get("devmode");
+  const PARAM_DEMOMODE = URL_PARAMS.get("demomode");
+
   // TODO: implement or remove
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const PARAM_PRODUCTION_VERSION = URL_PARAMS.get("productionVersion");
@@ -32,6 +34,12 @@
     if (PARAM_DEVMODE == "false") {
       localStorage.setItem("devMode", "false");
     }
+    if (PARAM_DEMOMODE == "true") {
+      localStorage.setItem("demoMode", "true");
+    }
+    if (PARAM_DEVMODE == "false") {
+      localStorage.setItem("demoMode", "false");
+    }
     if (PARAM_GOHOME == "true") {
       window.location.href = "/";
     }
@@ -40,6 +48,7 @@
   let devMode = $state(localStorage.getItem("devMode"));
   let yiviUrl = $state(localStorage.getItem("yiviUrl"));
   let productionVersion = $state(localStorage.getItem("productionVersion"));
+  let demoMode = $state(localStorage.getItem("demoMode"));
   let baseCode: string | null = $state(null);
   let loadedYiviUrlFromDefaults = $state(false);
   let loadedBaseCodeFromDefaults = $state(false);
@@ -105,6 +114,20 @@
     reloadPage();
   }
 
+  function enableDemoMode() {
+    setDemoMode(true);
+  }
+
+  function disableDemoMode() {
+    setDemoMode(false);
+  }
+
+  function setDemoMode(value: boolean) {
+    localStorage.setItem("demoMode", value.toString());
+    demoMode = localStorage.getItem("demoMode");
+    reloadPage();
+  }
+
   function clearSettings() {
     localStorage.clear();
     alert("Settings cleared!");
@@ -138,7 +161,7 @@
   }
 
   function genLink(): string {
-    return `${window.location.origin}/setup?url=${yiviUrl}&devmode=${devMode}`;
+    return `${window.location.origin}/setup?url=${yiviUrl}&devmode=${devMode}&demomode=${demoMode}`;
   }
 
   function discloseFullName() {
@@ -274,6 +297,29 @@
         >
         <button class="btn btn-secondary" onclick={disableDevMode}
           >Disable developer mode</button
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Demo mode</h5>
+      <p>
+        Enable/Disable the IdentitySign demo. If enabled, the demo page is shown
+        in the navigation bar.
+      </p>
+      <p>
+        Demo mode is currently {#if demoMode == "true"}<b
+            style="color: var(--bs-success);">enabled</b
+          >{:else}<b style="color: var(--bs-danger);">disabled</b>{/if}.
+      </p>
+      <div class="d-grid gap-2 d-md-block">
+        <button class="btn btn-primary" onclick={enableDemoMode}
+          >Enable demo mode</button
+        >
+        <button class="btn btn-secondary" onclick={disableDemoMode}
+          >Disable demo mode</button
         >
       </div>
     </div>

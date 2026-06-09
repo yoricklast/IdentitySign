@@ -1,22 +1,32 @@
 <script lang="ts">
   import { afterNavigate, beforeNavigate } from "$app/navigation";
   import { onMount } from "svelte";
-  import { getProductionVersion } from "../scripts/ts-util";
+  import { getProductionVersion, getDemoMode } from "../scripts/ts-util";
 
   let { children } = $props();
 
   let productionVersion = $state(localStorage.getItem("productionVersion"));
+  let demoMode = $state(localStorage.getItem("demoMode"));
 
   onMount(() => {
-    if (productionVersion == null) {
-      getProductionVersion().then((result) => {
-        if (result != null) {
-          productionVersion = `${result}`;
-          localStorage.setItem("productionVersion", productionVersion);
-          window.location.reload();
-        }
-      });
-    }
+    // if (demoMode == null) {
+    //   getDemoMode().then((result) => {
+    //     if (result != null) {
+    //       demoMode = `${result}`;
+    //       localStorage.setItem("demoMode", demoMode);
+    //       // window.location.reload();
+    //     }
+    //   });
+    // }
+    // if (productionVersion == null) {
+    //   getProductionVersion().then((result) => {
+    //     if (result != null) {
+    //       productionVersion = `${result}`;
+    //       localStorage.setItem("productionVersion", productionVersion);
+    //       // window.location.reload();
+    //     }
+    //   });
+    // }
   });
 
   afterNavigate(() => {
@@ -39,7 +49,6 @@
     }
 
     const dataSpy = document.querySelector('[data-bs-spy="scroll"]');
-    console.log(dataSpy);
     if (dataSpy && window.bootstrap.ScrollSpy.getInstance(dataSpy)) {
       window.bootstrap.ScrollSpy.getInstance(dataSpy).dispose();
     }
