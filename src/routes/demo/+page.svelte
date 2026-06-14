@@ -1,6 +1,7 @@
 <script lang="ts">
   import { issuePopup } from "../../scripts/yivi-issue";
   import { resolve } from "$app/paths";
+  import { ReadableStreamGetReaderOptions } from "@e4a/pg-wasm";
 
   const version = localStorage.getItem("productionVersion");
 
@@ -133,18 +134,18 @@
         <p class="main-text infoblock-text">
           Use the file input field on the Sign page to select a document for
           signing. Clicking the button below will download a PDF document you
-          can use during the demo.
+          can use to sign.
         </p>
 
         <!-- eslint-disable-next-line -->
-        <a href="/demo/DemoPDF.pdf" download="unsigned_file">
+        <a href="/demo/DemoPDF.pdf" download="demo_file">
           <button class="btn btn-primary"> Download Demo PDF</button>
         </a>
 
         <p class="note infoblock-text">
           <i class="bi bi-info-circle"></i>
-          Even though it says "Upload File", no information is sent to another device
-          or service!
+          When "uploading" a file on IdentitySign, no information is sent to another
+          device or service!
         </p>
       </div>
 
@@ -157,12 +158,13 @@
         <p class="main-text infoblock-text">
           By selecting personal data, you can decide what information about you
           is included in the signature. The selected information will later be
-          added by Yivi. <br />
+          added by Yivi.
           {#if version == "0"}
             There are 3 options: Your legal name, your address (i.e. street,
             house no., postal code and city) and your email address.
           {:else}
-            There are 2 options: Your legal name and your email address.
+            There are 2 options: Your legal name (Robin Stevens) and your email
+            address (robin.stevens@example.com).
           {/if}
         </p>
       </div>
@@ -174,8 +176,8 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          Scan the QR code {#if isMobile}
-            or click on the 'Open Yivi app' button
+          After clicking "Next", scan the QR code {#if isMobile}
+            or click on the "Open Yivi app" button
           {/if}
           to access the Yivi app. Check if the credentials are correct and the ones
           you want sign with.
@@ -187,7 +189,19 @@
           safely ignore it and continue!
         </p>
       </div>
-      <!-- TODO: Add more (specific) steps (in Yivi) -->
+      <div class="infoblock rounded border">
+        <h2>
+          <i class="bi bi-5-circle heading-icon"></i>
+          Sign
+        </h2>
+
+        <p class="main-text infoblock-text">
+          If the data is correct, accept to share the data in Yivi. The document
+          is now ready to be signed! All you have to do is clicking the "Sign"
+          button in IdentitySign to complete the process.
+        </p>
+      </div>
+
       <div class="infoblock rounded border">
         <h2>
           <i class="bi bi-check-circle heading-icon"></i>
@@ -199,6 +213,8 @@
           document in your download folder of your device. You can also click
           "Download again" to save the signed document manually.
         </p>
+        <!-- Note that the signature is visible at the buttom of the document since we're using the demo version of IdentitySign. 
+         Cryptographic signatures are not easily read or identifiable by humans -->
       </div>
 
       <!-- Verify -->
@@ -291,8 +307,123 @@
         <!-- TODO: Add screenshot, add additional description? -->
         <p class="main-text infoblock-text">
           Depending on your answers, you receive feedback if the signature can
-          be trusted.
+          be trusted. Click on the buttons below to take a look at the possible
+          feedback messages.
         </p>
+        <div class="d-flex flex-wrap justify-content-evenly mb-3">
+          <button
+            class="btn btn-danger"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#noAlert"
+            aria-expanded="false"
+            aria-controls="noAlert"
+          >
+            Result: "No trust"
+          </button>
+          <button
+            class="btn btn-warning"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#notSureAlert"
+            aria-expanded="false"
+            aria-controls="notSureAlert"
+          >
+            Result: "Uncertain"
+          </button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#yesAlert"
+            aria-expanded="false"
+            aria-controls="yesAlert"
+          >
+            Result: "Credible"
+            <!-- Verified/Trustworthy? -->
+          </button>
+        </div>
+        <div class="collapse" id="noAlert">
+          <div class="card card-body">
+            <!-- TODO: More description -->
+            <p class="main-text infoblock-text text-wrap">
+              If at least one of your answers was "No", the document should not
+              be trusted.
+            </p>
+            <hr />
+            <div class="alert alert-danger">
+              <strong>
+                <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This document
+                should not be trusted!
+              </strong>
+              <hr />
+              <p>
+                You indicated that the document may have been signed by the
+                wrong person or organization, or that relevant information (such
+                as their name or email) is missing.
+              </p>
+              <p>
+                You can use our
+                <a href={resolve("/request")} target="_blank">
+                  signature request tool
+                </a>
+                to request a signature that contains this information.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="collapse" id="notSureAlert">
+          <div class="card card-body">
+            <!-- TODO: More description -->
+            <p class="main-text infoblock-text text-wrap">[Description]</p>
+            <hr />
+            <div class="alert alert-warning">
+              <strong
+                ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You may
+                need more information before trusting this document</strong
+              ><br />
+              <hr />
+              <p>
+                Before trusting this document, consider if you know enough about
+                the signer. For example:
+              </p>
+              <ul>
+                <li>Do you know who owns this email address?</li>
+                <li>
+                  Does this person/organization have the authority to sign this
+                  document?
+                </li>
+                <li>Should someone else have signed the file?</li>
+              </ul>
+              <p>
+                If you need additional information the signature doesn't contain
+                yet (such as a name{version == "0"
+                  ? ", email or address"
+                  : "or email"}), use our
+                <a href={resolve("/request")} target="_blank">
+                  signature request tool
+                </a>
+                to create a signature request with the information you need.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="collapse" id="yesAlert">
+          <div class="card card-body">
+            <!-- TODO: More description -->
+            <p class="main-text infoblock-text text-wrap">[Description]</p>
+            <hr />
+            <div class="alert alert-primary">
+              <strong
+                ><i class="bi bi-info-circle-fill alert-icon"></i> This document can
+                most likely be trusted!</strong
+              > <br />
+              <hr />
+              You indicated that this document was signed by the correct person or
+              organization.
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="infoblock rounded border">
