@@ -184,6 +184,7 @@
         `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
+        // @ts-ignore
         PDFjs.getDocument(value).promise.then((doc) => {
           doc.getPage(doc.numPages).then((page) => {
             page.getTextContent().then((text) => {
@@ -234,6 +235,7 @@
         `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
+        // @ts-ignore
         PDFjs.getDocument(value).promise.then((doc) => {
           doc
             .getAttachments()

@@ -138,6 +138,7 @@
 
   function renderPDFCanvas(inputFile: File) {
     inputFile.arrayBuffer().then((value) => {
+      // @ts-ignore
       pdfjs.getDocument(value).promise.then((pdf) => {
         pdf.getPage(1).then((page) => {
           const scale = 1;

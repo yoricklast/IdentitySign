@@ -1,7 +1,6 @@
 <script lang="ts">
   import { issuePopup } from "../../scripts/yivi-issue";
   import { resolve } from "$app/paths";
-  import { ReadableStreamGetReaderOptions } from "@e4a/pg-wasm";
 
   const version = localStorage.getItem("productionVersion");
 

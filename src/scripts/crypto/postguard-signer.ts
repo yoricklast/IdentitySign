@@ -24,8 +24,7 @@ import { YiviWeb } from "@privacybydesign/yivi-web";
 import { YiviClient } from "@privacybydesign/yivi-client";
 
 type AttType =
-  | "pbdf.sidn-pbdf.email.email"
-  | "pbdf.gemeente.personalData.fullname";
+  "pbdf.sidn-pbdf.email.email" | "pbdf.gemeente.personalData.fullname";
 
 export const ATTRIBUTES: Array<AttType> = [
   "pbdf.sidn-pbdf.email.email",

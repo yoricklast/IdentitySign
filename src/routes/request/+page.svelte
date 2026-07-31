@@ -188,8 +188,7 @@
         id="request-textarea"
         rows="3"
         bind:value={request}
-        disabled
-      ></textarea>
+        disabled></textarea>
       <div style="margin-top: 5px;">
         <button type="button" class="btn btn-light mt-2" onclick={btnCopyClick}
           ><i class="bi bi-clipboard btn-icon"></i>Copy to clipboard</button
