@@ -239,13 +239,11 @@
             .getAttachments()
             .then(async (attachments) => {
               if (attachments !== null) {
-                for (const [name, attachment] of Object.entries(
-                  // @ts-ignore
-                  attachments.get(POSTGUARD_FILE),
-                )) {
+                for (const [name, _] of attachments) {
                   if (name === POSTGUARD_FILE) {
-                    const content = (attachment as { content: Uint8Array })
-                      .content;
+                    const content = (await doc.getAttachmentContent(
+                      POSTGUARD_FILE,
+                    )) as Uint8Array;
                     await signer.check(content).then((hasSignature) => {
                       if (hasSignature) {
                         sigCrypto = signer.decode("not needed");
