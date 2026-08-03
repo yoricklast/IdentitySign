@@ -130,16 +130,26 @@
           Select a document
         </h2>
 
-        <p class="main-text infoblock-text">
-          Use the file input field on the Sign page to select a document for
-          signing. Clicking the button below will download a PDF document you
-          can use to sign.
-        </p>
+        <div class="row clearfix">
+          <div class="mb-3 col">
+            <p class="main-text infoblock-text">
+              Use the file input field on the Sign page to select a document for
+              signing. Clicking the button below will download a PDF document
+              you can use to sign.
+            </p>
 
-        <!-- eslint-disable-next-line -->
-        <a href="/demo/DemoPDF.pdf" download="demo_file">
-          <button class="btn btn-primary"> Download Demo PDF</button>
-        </a>
+            <!-- eslint-disable-next-line -->
+            <a href="/demo/DemoPDF.pdf" download="demo_file">
+              <button class="btn btn-primary"> Download Demo PDF</button>
+            </a>
+          </div>
+
+          <img
+            src="Sign_Upload_File.png"
+            alt="Sign page with file upload form highlighted"
+            class="ms-md-2 float-md-end col-md-6 col-12 object-fit-contain"
+          />
+        </div>
 
         <p class="note infoblock-text">
           <i class="bi bi-info-circle"></i>
@@ -153,19 +163,26 @@
           <i class="bi bi-3-circle heading-icon"></i>
           Select personal data
         </h2>
+        <div class="row clearfix">
+          <p class="main-text infoblock-text col mb-3">
+            By selecting personal data, you can decide what information about
+            you is included in the signature. The selected information will
+            later be added by Yivi.
+            {#if version == "0"}
+              There are 3 options: Your legal name, your address (i.e. street,
+              house no., postal code and city) and your email address.
+            {:else}
+              There are 2 options: Your legal name (Robin Stevens) and your
+              email address (robin.stevens@example.com).
+            {/if}
+          </p>
 
-        <p class="main-text infoblock-text">
-          By selecting personal data, you can decide what information about you
-          is included in the signature. The selected information will later be
-          added by Yivi.
-          {#if version == "0"}
-            There are 3 options: Your legal name, your address (i.e. street,
-            house no., postal code and city) and your email address.
-          {:else}
-            There are 2 options: Your legal name (Robin Stevens) and your email
-            address (robin.stevens@example.com).
-          {/if}
-        </p>
+          <img
+            src="Personal_data.png"
+            alt="Sign page with personal data options highlighted"
+            class="ms-md-2 float-md-end col-md-6 col-12 object-fit-contain"
+          />
+        </div>
       </div>
 
       <div class="infoblock rounded border">
