@@ -184,8 +184,7 @@
         `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
-        // @ts-ignore
-        PDFjs.getDocument(value).promise.then((doc) => {
+        PDFjs.getDocument({ data: value }).promise.then((doc) => {
           doc.getPage(doc.numPages).then((page) => {
             page.getTextContent().then((text) => {
               text.items.forEach((x) => {
@@ -235,13 +234,15 @@
         `${file.name}: ${file.size} bytes, type: ${file.type}, last modified: ${file.lastModified}`,
       );
       file.arrayBuffer().then((value) => {
-        // @ts-ignore
-        PDFjs.getDocument(value).promise.then((doc) => {
+        PDFjs.getDocument({ data: value }).promise.then((doc) => {
           doc
             .getAttachments()
             .then(async (attachments) => {
               if (attachments !== null) {
-                for (const [name, attachment] of Object.entries(attachments)) {
+                for (const [name, attachment] of Object.entries(
+                  // @ts-ignore
+                  attachments.get(POSTGUARD_FILE),
+                )) {
                   if (name === POSTGUARD_FILE) {
                     const content = (attachment as { content: Uint8Array })
                       .content;
@@ -677,7 +678,7 @@
               If you need additional information the signature doesn't contain
               yet (such as a name{version == "0"
                 ? ", email or address"
-                : "or email"}), use our
+                : " or email"}), use our
               <a href={resolve("/request")} target="_blank">
                 signature request tool
               </a>

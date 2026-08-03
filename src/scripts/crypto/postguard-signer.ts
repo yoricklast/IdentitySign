@@ -91,7 +91,7 @@ async function applyEncryption(
 
   await file.attach(arrayBuffer, POSTGUARD_FILE, {
     mimeType: "image/jpeg",
-    description: "️PostGuard encrypted PDF file",
+    description: "PostGuard encrypted PDF file",
     creationDate: currentDate,
     modificationDate: currentDate,
   });

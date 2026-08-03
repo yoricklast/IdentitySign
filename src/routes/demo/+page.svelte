@@ -309,6 +309,12 @@
           be trusted. Click on the buttons below to take a look at the possible
           feedback messages.
         </p>
+
+        <p class="note infoblock-text">
+          <i class="bi bi-info-circle"></i>
+          IdentitySign cannot guarantee a valid signature is trustworthy but supports
+          you on making an informed decision!
+        </p>
         <div class="d-flex flex-wrap justify-content-evenly mb-3">
           <button
             class="btn btn-danger"
@@ -339,12 +345,10 @@
             aria-controls="yesAlert"
           >
             Result: "Credible"
-            <!-- Verified/Trustworthy? -->
           </button>
         </div>
         <div class="collapse" id="noAlert">
           <div class="card card-body">
-            <!-- TODO: More description -->
             <p class="main-text infoblock-text text-wrap">
               If at least one of your answers was "No", the document should not
               be trusted.
@@ -373,8 +377,12 @@
         </div>
         <div class="collapse" id="notSureAlert">
           <div class="card card-body">
-            <!-- TODO: More description -->
-            <p class="main-text infoblock-text text-wrap">[Description]</p>
+            <p class="main-text infoblock-text text-wrap">
+              You indicated uncertainty in your answer(s). Ask yourself what the
+              reasons behind your uncertainty are and refer to the tips and
+              tricks in the feedback message. You can still change your answers
+              towards "Yes" or "No" or contact the signer.
+            </p>
             <hr />
             <div class="alert alert-warning">
               <strong
@@ -398,7 +406,7 @@
                 If you need additional information the signature doesn't contain
                 yet (such as a name{version == "0"
                   ? ", email or address"
-                  : "or email"}), use our
+                  : " or email"}), use our
                 <a href={resolve("/request")} target="_blank">
                   signature request tool
                 </a>
@@ -409,8 +417,10 @@
         </div>
         <div class="collapse" id="yesAlert">
           <div class="card card-body">
-            <!-- TODO: More description -->
-            <p class="main-text infoblock-text text-wrap">[Description]</p>
+            <p class="main-text infoblock-text text-wrap">
+              If all of your answer(s) are "Yes", you rated the document as
+              trustworthy.
+            </p>
             <hr />
             <div class="alert alert-primary">
               <strong
