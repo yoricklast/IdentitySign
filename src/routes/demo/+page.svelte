@@ -145,9 +145,9 @@
           </div>
 
           <img
-            src="Sign_Upload_File.png"
+            src="Upload_File_Sign.png"
             alt="Sign page with file upload form highlighted"
-            class="ms-md-2 float-md-end col-md-6 col-12 object-fit-contain"
+            class="ms-md-2 float-md-end col-md-6 px-0 px-md-0 px-sm-5 object-fit-contain"
           />
         </div>
 
@@ -178,9 +178,9 @@
           </p>
 
           <img
-            src="Personal_data.png"
+            src="Personal_Data.png"
             alt="Sign page with personal data options highlighted"
-            class="ms-md-2 float-md-end col-md-6 col-12 object-fit-contain"
+            class="ms-md-2 float-md-end col-md-6 px-0 px-md-0 px-sm-5 object-fit-contain"
           />
         </div>
       </div>
@@ -198,11 +198,12 @@
           to access the Yivi app. Check if the credentials are correct and the ones
           you want sign with.
         </p>
-        <!-- TODO: Add warning note -->
+
         <p class="note infoblock-text">
           <i class="bi bi-exclamation-triangle"></i>
-          Yivi will show a warning because ... In the context of this demo, you can
-          safely ignore it and continue!
+          The Yivi app will show a warning as a safety caution because IdentitySign
+          is not officially registered as an organization at Yivi. In the context
+          of this demo, you can safely ignore it and continue!
         </p>
       </div>
       <div class="infoblock rounded border">
@@ -211,11 +212,21 @@
           Sign
         </h2>
 
-        <p class="main-text infoblock-text">
-          If the data is correct, accept to share the data in Yivi. The document
-          is now ready to be signed! All you have to do is clicking the "Sign"
-          button in IdentitySign to complete the process.
-        </p>
+        <div class="row clearfix">
+          <p class="main-text infoblock-text mb-3 col">
+            If the data is correct, accept to share the data in Yivi. You can
+            view the data attributes you are about to add in the signature again
+            in IdentitySign. <br />
+            The document is now ready to be signed! All you have to do is clicking
+            the "Sign" button in IdentitySign to complete the process.
+          </p>
+
+          <img
+            src="Sign.png"
+            alt="The 'Ready to sign!' page with the 'Sign' button at the bottom right highlighted"
+            class="ms-md-2 float-md-end col-md-6 px-0 px-md-0 px-sm-5 object-fit-contain"
+          />
+        </div>
       </div>
 
       <div class="infoblock rounded border">
@@ -260,17 +271,43 @@
           Select a document
         </h2>
 
-        <p class="main-text infoblock-text">
-          Select a document with a signature from your device. For example, use
-          the demo PDF you just signed to check the information stored in the
-          signature.
-        </p>
+        <div class="row clearfix gx-2 gy-2">
+          <p class="main-text infoblock-text col">
+            Select a document with a signature from your device. For example,
+            use the demo PDF you just signed to check the information stored in
+            the signature.
+          </p>
+
+          <img
+            src="Upload_File_Verify.png"
+            alt="Verify page with file upload form highlighted"
+            class="float-md-end col-md-6 px-0 px-md-0 px-sm-5 object-fit-contain"
+          />
+        </div>
 
         <p class="note infoblock-text">
           <i class="bi bi-info-circle"></i>
           Nice to know: IdentitySign also identifies if the document holds no signature
           or an invalid one!
         </p>
+
+        <div class="row justify-content-center gy-2 gx-2">
+          <img
+            src="Found.png"
+            alt="Example of 'Signature found...' feedback"
+            class="col-md-4 col-6 object-fit-contain"
+          />
+          <img
+            src="No_Signature.png"
+            alt="Example of 'No signature found!' feedback"
+            class="col-md-4 col-6 object-fit-contain"
+          />
+          <img
+            src="Invalid.png"
+            alt="Example of 'Signature invalid!' feedback"
+            class="col-md-4 col-6 object-fit-contain"
+          />
+        </div>
       </div>
 
       <div class="infoblock rounded border">
