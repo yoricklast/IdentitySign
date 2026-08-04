@@ -81,7 +81,7 @@
   let selectedAttributes: WalletAttributeType[] = [];
 
   let yiviAttributesCrypto: AttributeCon | null = $state(null);
-  let yiviAttributesDummy: WalletAttribute[] | null = $state(null);
+  let yiviAttributesDummy: WalletAttribute[] | null = $state.raw(null);
 
   let fileSelected = $state(false);
   let attributeSelected = $state(false);
@@ -716,7 +716,6 @@
                 {/each}
               {:else if version == "1" && yiviAttributesCrypto != null}
                 {#each yiviAttributesCrypto as attribute (attribute.t)}
-                  <!--or (yiviAttributesCrypto.indexOf(attribute)) as key ?-->
                   <div class="card attribute-card">
                     <div class="card-header">
                       <i class="bi bi-patch-check card-icon"></i><b
