@@ -81,7 +81,7 @@
   let selectedAttributes: WalletAttributeType[] = [];
 
   let yiviAttributesCrypto: AttributeCon | null = $state(null);
-  let yiviAttributesDummy: WalletAttribute[] | null = $state(null);
+  let yiviAttributesDummy: WalletAttribute[] | null = $state.raw(null);
 
   let fileSelected = $state(false);
   let attributeSelected = $state(false);
@@ -138,7 +138,7 @@
 
   function renderPDFCanvas(inputFile: File) {
     inputFile.arrayBuffer().then((value) => {
-      pdfjs.getDocument(value).promise.then((pdf) => {
+      pdfjs.getDocument({ data: value }).promise.then((pdf) => {
         pdf.getPage(1).then((page) => {
           const scale = 1;
           const canvas = document.getElementById(
@@ -421,8 +421,8 @@
   class="{paramsGiven() ? 'row flex-wrap mx-auto w-100' : 'mx-auto'} {files &&
   fileSelected
     ? 'w-100'
-    : 'w-75'}"
-  style="margin-top: 5%;"
+    : 'w-75 widthMobile'}"
+  style="margin-top: 3%;"
 >
   <div
     class="{paramsGiven()
@@ -516,8 +516,8 @@
           </div>
 
           <h1>
-            <i class="bi bi-pencil-square page-icon"></i>
-            Sign a document
+            <i class="bi bi-pencil-square page-icon" style="margin-top: 1%;"
+            ></i>Sign a document
           </h1>
           <div class="infoblock rounded border">
             {#if !signedDone && (!attributeSelected || paramsGiven()) && !yiviActive}
@@ -716,7 +716,6 @@
                 {/each}
               {:else if version == "1" && yiviAttributesCrypto != null}
                 {#each yiviAttributesCrypto as attribute (attribute.t)}
-                  <!--or (yiviAttributesCrypto.indexOf(attribute)) as key ?-->
                   <div class="card attribute-card">
                     <div class="card-header">
                       <i class="bi bi-patch-check card-icon"></i><b
@@ -821,8 +820,8 @@
 
 <style>
   h1 {
-    margin-top: 50px;
-    margin-bottom: 40px;
+    margin-top: 40px;
+    margin-bottom: 25px;
   }
   .btn-sign {
     margin-right: 10px;
@@ -871,9 +870,8 @@
     margin-right: 10px;
   }
   .spacer {
-    height: 25px;
     @media screen and (max-width: 768px) {
-      height: 100px;
+      height: 8vh;
     }
   }
 </style>

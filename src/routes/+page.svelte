@@ -2,7 +2,7 @@
   import { resolve } from "$app/paths";
 </script>
 
-<div class="row topmargin">
+<div class="row topmargin mx-auto">
   <div class="col-md-7">
     <h1>Welcome to IdentitySign</h1>
 

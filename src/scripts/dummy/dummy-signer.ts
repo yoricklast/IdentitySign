@@ -27,7 +27,7 @@ export class DummySigner implements WalletSignerDummy {
 
     await input.attach(btoa("DummyAttachment"), DUMMY_SIG_PREFIX, {
       mimeType: "image/jpeg",
-      description: "️Dummy signed PDF file",
+      description: "Dummy signed PDF file",
       creationDate: currentDate,
       modificationDate: currentDate,
     });

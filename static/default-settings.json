@@ -1,5 +1,6 @@
 {
   "yiviUrl": "https://yivi.cs.upb.de",
   "successBaseCode": "",
-  "productionVersion": "1"
+  "productionVersion": "1",
+  "demoMode": "false"
 }

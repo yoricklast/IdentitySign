@@ -71,6 +71,28 @@ export function getProductionVersion(): Promise<unknown> {
 }
 
 /**
+ * Obtain demo mode setting from default settings.
+ * @returns Demo mode setting.
+ */
+export function getDemoMode(): Promise<unknown> {
+  return new Promise((resolve) => {
+    fetch("../default-settings.json").then((response) => {
+      response.json().then((jsonData) => {
+        if (
+          jsonData &&
+          Object.hasOwn(jsonData, "demoMode") &&
+          jsonData.demoMode != null
+        ) {
+          resolve(jsonData.demoMode);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  });
+}
+
+/**
  * Obtain a user-friendly name for an attribute
  * @param attributeName The attribute name for which to get a friendly version.
  * @returns Friendly attribute name if found, otherwise returns attributeName

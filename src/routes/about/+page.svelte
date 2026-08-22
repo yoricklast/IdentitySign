@@ -4,10 +4,9 @@
   import { resolve } from "$app/paths";
 </script>
 
-<div class="narrower position-relative start-50 translate-middle-x">
-  <h1 style="margin-top: 10%;">
-    <i class="bi bi-info-circle page-icon"></i>
-    About IdentitySign
+<div class="w-75 mx-auto widthMobile" style="margin-top: 5%;">
+  <h1>
+    <i class="bi bi-info-circle page-icon"></i>About Identity&shy;Sign
   </h1>
 
   <div class="infoblock rounded border">

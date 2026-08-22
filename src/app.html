@@ -42,7 +42,7 @@
       <li class="nav-item main-nav">
         <a id="/sign" href="/sign/" class="nav-link">
           <i class="bi bi-pencil-square icon-nav"></i>
-          Sign document
+          Sign<span class="mobileHide"> document</span>
         </a>
       </li>
       <li class="nav-item main-nav">
@@ -51,7 +51,7 @@
             class="bi bi-file-earmark-check icon-nav"
             style="margin-right: 1px"
           ></i>
-          Verify signature
+          Verify<span class="mobileHide"> signature</span>
         </a>
       </li>
       <li class="nav-item main-nav">
@@ -60,7 +60,7 @@
             class="bi bi-envelope-check icon-nav"
             style="margin-right: 1px"
           ></i>
-          Request signature
+          Request<span class="mobileHide"> signature</span>
         </a>
       </li>
       <li class="nav-item main-nav">
@@ -69,8 +69,14 @@
           About
         </a>
       </li>
+      <li class="nav-item main-nav" id="demoNavItem">
+        <a id="/demo" href="/demo/" class="nav-link secondaryNavLink">
+          <i class="bi bi-puzzle icon-nav" style="margin-right: 1px"></i>
+          Demo
+        </a>
+      </li>
       <li class="nav-item main-nav" id="setupNavItem">
-        <a id="/setup" href="/setup/" class="nav-link setupNavLink">
+        <a id="/setup" href="/setup/" class="nav-link secondaryNavLink">
           <i
             class="bi bi-gear-wide-connected icon-nav"
             style="margin-right: 1px"
@@ -106,6 +112,9 @@
   <script>
     if (localStorage.getItem("devMode") != "true") {
       document.getElementById("setupNavItem").style.display = "none";
+    }
+    if (localStorage.getItem("demoMode") != "true") {
+      document.getElementById("demoNavItem").style.display = "none";
     }
     if (localStorage.getItem("productionVersion") == "1") {
       document.getElementById("prototype").style.display = "none";
@@ -145,22 +154,28 @@
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
     padding-bottom: 75px;
+    /* max-width: 1080px; */
+    margin: 0 auto 0 auto;
   }
 
   h1 {
-    font-size: 35px;
+    font-size: 2.2rem;
+    /* font-size: 35px; */
     font-weight: 650;
     margin-bottom: 15px;
+    hyphens: auto;
   }
 
   h2 {
     font-size: 28px;
     font-weight: 500;
+    hyphens: auto;
   }
 
   h3 {
     font-size: 22px;
     font-weight: 700;
+    hyphens: auto;
   }
 
   .logo {
@@ -177,6 +192,7 @@
   .main-text {
     font-size: 18px;
     margin-bottom: 15px;
+    hyphens: auto;
   }
 
   .subtitle {
@@ -230,7 +246,7 @@
     color: var(--bs-danger);
   }
 
-  .setupNavLink {
+  .secondaryNavLink {
     color: var(--bs-secondary);
   }
 
@@ -277,17 +293,23 @@
   }
 
   .progress-label {
-    width: 18%;
+    width: min-content;
     min-width: 15vw;
     font-weight: 600;
+    font-size: 1.1rem;
   }
 
   .spacer {
-    height: 25px;
+    height: 3vh;
+  }
 
-    @media screen and (max-width: 768px) {
-      height: 90px;
-      margin-top: 5%;
+  @media only screen and (max-width: 768px) {
+    .mobileHide {
+      display: none;
+    }
+
+    .widthMobile {
+      width: 90% !important;
     }
   }
 </style>
