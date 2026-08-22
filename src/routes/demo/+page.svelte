@@ -2,8 +2,6 @@
   import { issuePopup } from "../../scripts/yivi-issue";
   import { resolve } from "$app/paths";
 
-  const version = localStorage.getItem("productionVersion");
-
   let isMobile =
     /Android|iPad|iPhone|iPod/i.test(window.navigator.userAgent) ||
     (/Macintosh/i.test(window.navigator.userAgent) &&
@@ -30,12 +28,11 @@
       >
 
       <a href="#verify-section" class="nav-link"
-        ><span><i class="bi bi-arrow-right"></i></span> Verify</a
+        ><span><i class="bi bi-arrow-right"></i></span> Verifying</a
       >
     </nav>
   </div>
   <div class="col-auto order-lg-first">
-    <!-- TODO: Add Screenshots -->
     <div
       class="narrower position-relative start-50 translate-middle-x"
       data-bs-spy="scroll"
@@ -72,8 +69,8 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          Clicking on the button below will show you a pop-up containing a
-          QR-code which you can scan using the Yivi app on your smartphone. This
+          Clicking on the button below will show you a pop-up containing a QR
+          code which you can scan using the Yivi app on your smartphone. This
           will add the required personal data to your Yivi app.
         </p>
 
@@ -83,8 +80,8 @@
 
         <p class="note infoblock-text">
           <i class="bi bi-exclamation-triangle"></i>
-          Note that personal data would normally come from a trusted source such as
-          a municipality. Using this data is only possible during this demo!
+          Note that personal data would normally come from a trusted source, such
+          as a municipality. Using this data is only possible for this demo!
         </p>
       </div>
 
@@ -95,7 +92,7 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          That's it! You're now all set up to use IdentitySign! Check out some
+          That's it! You're now all set up to try IdentitySign! Check out some
           of its features by using the 'Signing a document' and 'Verifying a
           signature' section down below!
         </p>
@@ -105,9 +102,8 @@
       <h1 id="sign-section">Signing a document</h1>
 
       <p class="main-text">
-        IdentitySign lets you add an invisible signature to your documents such
-        that others can verifiy if it has actually been issued by you. Let's go
-        through the signing process step-by-step:
+        IdentitySign lets you add a signature to your documents. Let's go
+        through the signing process step by step:
       </p>
 
       <div class="infoblock rounded border">
@@ -117,10 +113,12 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          You can find the page <a href={resolve("/sign")} target="_blank"
-            >here</a
-          >. It will open in a new browser tab so you can come back to keep
-          track of the following steps.
+          You can find the "Sign document" page in the menu at the top right of
+          this page, or by simply clicking <a
+            href={resolve("/sign")}
+            target="_blank">here</a
+          > (this link will open in a new browser tab so you can come back to keep
+          track of the following steps).
         </p>
       </div>
 
@@ -133,14 +131,14 @@
         <div class="row clearfix">
           <div class="mb-3 col">
             <p class="main-text infoblock-text">
-              Use the file input field on the Sign page to select a document for
-              signing. Clicking the button below will download a PDF document
-              you can use to sign.
+              Use the file input field on the Signing page to select a document
+              for signing. Optionally, clicking the button below will download a
+              sample document you can use to sign.
             </p>
 
             <!-- eslint-disable-next-line -->
             <a href="/demo/DemoPDF.pdf" download="demo_file">
-              <button class="btn btn-primary"> Download Demo PDF</button>
+              <button class="btn btn-primary"> Download Sample PDF</button>
             </a>
           </div>
 
@@ -153,8 +151,9 @@
 
         <p class="note infoblock-text">
           <i class="bi bi-info-circle"></i>
-          When "uploading" a file on IdentitySign, no information is sent to another
-          device or service!
+          IdentitySign runs client-side in your browser. In other words, when "uploading"
+          a file for signing in IdentitySign, it is <b>not</b> sent to another device
+          or service!
         </p>
       </div>
 
@@ -165,16 +164,8 @@
         </h2>
         <div class="row clearfix">
           <p class="main-text infoblock-text col mb-3">
-            By selecting personal data, you can decide what information about
-            you is included in the signature. The selected information will
-            later be added by Yivi.
-            {#if version == "0"}
-              There are 3 options: Your legal name, your address (i.e. street,
-              house no., postal code and city) and your email address.
-            {:else}
-              There are 2 options: Your legal name (Robin Stevens) and your
-              email address (robin.stevens@example.com).
-            {/if}
+            You can select what personal data is included in the signature. The
+            selected data will be obtained from Yivi in the next step.
           </p>
 
           <img
@@ -188,22 +179,22 @@
       <div class="infoblock rounded border">
         <h2>
           <i class="bi bi-4-circle heading-icon"></i>
-          Use Yivi to sign
+          Obtain data from Yivi
         </h2>
 
         <p class="main-text infoblock-text">
           After clicking "Next", scan the QR code {#if isMobile}
             or click on the "Open Yivi app" button
           {/if}
-          to access the Yivi app. Check if the credentials are correct and the ones
-          you want sign with.
+          to access the Yivi app. Yivi will show you what data is being shared and
+          will ask you to confirm.
         </p>
 
         <p class="note infoblock-text">
           <i class="bi bi-exclamation-triangle"></i>
-          The Yivi app will show a warning as a safety caution because IdentitySign
-          is not officially registered as an organization at Yivi. In the context
-          of this demo, you can safely ignore it and continue!
+          The Yivi app will show a warning because (this hosted instance of) IdentitySign
+          is not registered as a trusted organization at Yivi. As we are not using
+          real data in this demo, you can ignore this warning.
         </p>
       </div>
       <div class="infoblock rounded border">
@@ -214,11 +205,8 @@
 
         <div class="row clearfix">
           <p class="main-text infoblock-text mb-3 col">
-            If the data is correct, accept to share the data in Yivi. You can
-            view the data attributes you are about to add in the signature again
-            in IdentitySign. <br />
-            The document is now ready to be signed! All you have to do is clicking
-            the "Sign" button in IdentitySign to complete the process.
+            IdentitySign now displays the data it obtained from Yivi. You can
+            complete the signature process by clicking the "Sign" button!
           </p>
 
           <img
@@ -236,19 +224,17 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          That's it! You successfully signed a document! You can find the signed
-          document in your download folder of your device. You can also click
-          "Download again" to save the signed document manually.
+          That's it! You can find the signed document in the downloads folder of
+          your device. You can also click "Download again" to save the signed
+          document manually.
         </p>
-        <!-- Note that the signature is visible at the buttom of the document since we're using the demo version of IdentitySign. 
-         Cryptographic signatures are not easily read or identifiable by humans -->
       </div>
 
       <!-- Verify -->
       <h1 id="verify-section">Verifying a signature</h1>
       <p class="main-text">
-        Let's verify if a signed document is trustworthy! Please follow the
-        steps below.
+        Let's verify a signature made with IdentitySign! Please follow the steps
+        below.
       </p>
 
       <div class="infoblock rounded border">
@@ -258,10 +244,12 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          You can find the page <a href={resolve("/verify")} target="_blank"
-            >here</a
-          >. It will open in a new browser tab so you can come back to keep
-          track of the following steps.
+          You can find the "Verify signature" in the menu at the top right of
+          this page, or by simply clicking <a
+            href={resolve("/verify")}
+            target="_blank">here</a
+          > (this link will open in a new browser tab so you can come back to keep
+          track of the following steps).
         </p>
       </div>
 
@@ -274,8 +262,7 @@
         <div class="row clearfix gx-2 gy-2">
           <p class="main-text infoblock-text col">
             Select a document with a signature from your device. For example,
-            use the demo PDF you just signed to check the information stored in
-            the signature.
+            use the signed sample PDF you just signed to check its signature.
           </p>
 
           <img
@@ -287,8 +274,8 @@
 
         <p class="note infoblock-text">
           <i class="bi bi-info-circle"></i>
-          Nice to know: IdentitySign also identifies if the document holds no signature
-          or an invalid one!
+          IdentitySign also identifies when the document holds no signature or an
+          invalid one!
         </p>
 
         <div class="row justify-content-center gy-2 gx-2">
@@ -317,176 +304,17 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          If a signature was found, you can investigate the personal data the
-          document was signed with. Using the questions
+          If a signature was found, you can investigate the personal data used
+          to sign the document. Using the questions
           {#if isMobile}
             below each of the data points
           {:else}
             next to the data
           {/if}
           , you can indicate whether this data belongs to the person or organization
-          you expect the signature from. <br />
-          After answering all questions, you will receive feedback to interpret your
-          answer(s)!
+          you expect the signature from. After answering all questions, you will receive
+          further feedback from IdentitySign.
         </p>
-
-        <h3 class="mt-2">
-          <i class="bi bi-lightbulb"></i> Tips on verifying a signature
-        </h3>
-        Note that the sender of the document is not necessarily the one that should
-        have signed the document (e.g. a graduation certificate would be signed by
-        the university/school).<br />
-        <p class="main-text infoblock-text">
-          You can also check out our <a
-            href={resolve("/help/trust")}
-            target="_blank"
-            class="helplink"
-          >
-            help page
-          </a>
-          about ''When should I not trust a document?''. <br />
-
-          If you're still unsure, you can select ''Not sure''.
-          <br />
-        </p>
-      </div>
-
-      <div class="infoblock rounded border">
-        <h2>
-          <i class="bi bi-4-circle heading-icon"></i>
-          Evaluate the result
-        </h2>
-
-        <!-- TODO: Add screenshot, add additional description? -->
-        <p class="main-text infoblock-text">
-          Depending on your answers, you receive feedback if the signature can
-          be trusted. Click on the buttons below to take a look at the possible
-          feedback messages.
-        </p>
-
-        <p class="note infoblock-text">
-          <i class="bi bi-info-circle"></i>
-          IdentitySign cannot guarantee a valid signature is trustworthy but supports
-          you on making an informed decision!
-        </p>
-        <div class="d-flex flex-wrap justify-content-evenly mb-3">
-          <button
-            class="btn btn-danger"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#noAlert"
-            aria-expanded="false"
-            aria-controls="noAlert"
-          >
-            Result: "No trust"
-          </button>
-          <button
-            class="btn btn-warning"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#notSureAlert"
-            aria-expanded="false"
-            aria-controls="notSureAlert"
-          >
-            Result: "Uncertain"
-          </button>
-          <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#yesAlert"
-            aria-expanded="false"
-            aria-controls="yesAlert"
-          >
-            Result: "Credible"
-          </button>
-        </div>
-        <div class="collapse" id="noAlert">
-          <div class="card card-body">
-            <p class="main-text infoblock-text text-wrap">
-              If at least one of your answers was "No", the document should not
-              be trusted.
-            </p>
-            <hr />
-            <div class="alert alert-danger">
-              <strong>
-                <i class="bi bi-exclamation-triangle-fill alert-icon"></i> This document
-                should not be trusted!
-              </strong>
-              <hr />
-              <p>
-                You indicated that the document may have been signed by the
-                wrong person or organization, or that relevant information (such
-                as their name or email) is missing.
-              </p>
-              <p>
-                You can use our
-                <a href={resolve("/request")} target="_blank">
-                  signature request tool
-                </a>
-                to request a signature that contains this information.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="collapse" id="notSureAlert">
-          <div class="card card-body">
-            <p class="main-text infoblock-text text-wrap">
-              You indicated uncertainty in your answer(s). Ask yourself what the
-              reasons behind your uncertainty are and refer to the tips and
-              tricks in the feedback message. You can still change your answers
-              towards "Yes" or "No" or contact the signer.
-            </p>
-            <hr />
-            <div class="alert alert-warning">
-              <strong
-                ><i class="bi bi-exclamation-triangle-fill alert-icon"></i> You may
-                need more information before trusting this document</strong
-              ><br />
-              <hr />
-              <p>
-                Before trusting this document, consider if you know enough about
-                the signer. For example:
-              </p>
-              <ul>
-                <li>Do you know who owns this email address?</li>
-                <li>
-                  Does this person/organization have the authority to sign this
-                  document?
-                </li>
-                <li>Should someone else have signed the file?</li>
-              </ul>
-              <p>
-                If you need additional information the signature doesn't contain
-                yet (such as a name{version == "0"
-                  ? ", email or address"
-                  : " or email"}), use our
-                <a href={resolve("/request")} target="_blank">
-                  signature request tool
-                </a>
-                to create a signature request with the information you need.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="collapse" id="yesAlert">
-          <div class="card card-body">
-            <p class="main-text infoblock-text text-wrap">
-              If all of your answer(s) are "Yes", you rated the document as
-              trustworthy.
-            </p>
-            <hr />
-            <div class="alert alert-primary">
-              <strong
-                ><i class="bi bi-info-circle-fill alert-icon"></i> This document can
-                most likely be trusted!</strong
-              > <br />
-              <hr />
-              You indicated that this document was signed by the correct person or
-              organization.
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="infoblock rounded border">
@@ -496,14 +324,15 @@
         </h2>
 
         <p class="main-text infoblock-text">
-          That's it! You successfully verified a signature and evaluated if it's
-          trustworthy!
+          That's it! You successfully verified and evaluated a signature using
+          IdentitySign!
         </p>
       </div>
 
       <div class="text-center">
         <h3>
-          <i class="bi bi-award"></i> Congratulations, you completed the demo!
+          <i class="bi bi-award"></i> Congratulations, you've tried the two main features
+          of IdentitySign!
         </h3>
       </div>
     </div>

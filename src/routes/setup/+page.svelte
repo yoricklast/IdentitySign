@@ -334,7 +334,8 @@
           class="form-control linkbox"
           bind:value={link}
           rows="3"
-          disabled></textarea>
+          disabled
+        ></textarea>
         <div class="form-check">
           <input
             class="form-check-input"
