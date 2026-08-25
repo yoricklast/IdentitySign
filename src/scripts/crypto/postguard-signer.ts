@@ -11,7 +11,6 @@ import {
   type AttributeCon,
   type ISealOptions,
   type ISigningKey,
-  StreamUnsealer,
 } from "@e4a/pg-wasm";
 
 import { METRICS_HEADER, PKG_URL, POSTGUARD_FILE } from "./Constants";
@@ -240,6 +239,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
     });
 
     try {
+      const { StreamUnsealer } = await import('@e4a/pg-wasm');
       const unsealer = await StreamUnsealer.new(readable, vk);
       const recipients = unsealer.inspect_header();
       console.log("header contains the following recipients", recipients);
