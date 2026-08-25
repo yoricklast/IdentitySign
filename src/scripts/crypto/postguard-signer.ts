@@ -239,7 +239,7 @@ export class PostGuardSigner implements WalletSignerCrypto {
     });
 
     try {
-      const { StreamUnsealer } = await import('@e4a/pg-wasm');
+      const { StreamUnsealer } = await import("@e4a/pg-wasm");
       const unsealer = await StreamUnsealer.new(readable, vk);
       const recipients = unsealer.inspect_header();
       console.log("header contains the following recipients", recipients);
